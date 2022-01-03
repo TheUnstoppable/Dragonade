@@ -1,0 +1,758 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{9B549C98-0BF4-4092-AE2A-AD7F780F8405}</ProjectGuid>
+    <RootNamespace>scripts</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\MemoryManager\compiler_workarounds\MemoryManager_VS2010_Workaround.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)bin\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)temp\$(ProjectName)\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)bin\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)temp\$(ProjectName)\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</PostBuildEventUseInBuild>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <TypeLibraryName>$(OutDir)scripts.tlb</TypeLibraryName>
+      <HeaderFileName>
+      </HeaderFileName>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>.;..\MemoryManager;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DRAGONADE;MEMORY_MANAGER;NDEBUG;SCRIPTS_EXPORTS;WIN32;_CRT_SECURE_NO_DEPRECATE;_HAS_EXCEPTIONS=0;_SECURE_SCL=0;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>General.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).$(Configuration).pch</PrecompiledHeaderOutputFile>
+      <WarningLevel>Level4</WarningLevel>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0c09</Culture>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>ws2_32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>$(TargetDir)$(TargetName).map</MapFileName>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <SetChecksum>true</SetChecksum>
+      <BaseAddress>0x11000000</BaseAddress>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>..\bin\release</AdditionalLibraryDirectories>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <MinimumRequiredVersion>6.01</MinimumRequiredVersion>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <TypeLibraryName>$(OutDir)scripts.tlb</TypeLibraryName>
+      <HeaderFileName>
+      </HeaderFileName>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>.;..\MemoryManager;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DRAGONADE;D3D_DEBUG_INFO;DEBUG;MEMORY_MANAGER;SCRIPTS_EXPORTS;WIN32;_CRT_SECURE_NO_DEPRECATE;_HAS_EXCEPTIONS=0;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <RuntimeTypeInfo>
+      </RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>General.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).$(Configuration).pch</PrecompiledHeaderOutputFile>
+      <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
+      <WarningLevel>Level4</WarningLevel>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0c09</Culture>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>ws2_32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>$(TargetDir)$(TargetName).map</MapFileName>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <BaseAddress>0x11000000</BaseAddress>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>..\bin\debug</AdditionalLibraryDirectories>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <MinimumRequiredVersion>6.01</MinimumRequiredVersion>
+    </Link>
+    <PostBuildEvent>
+      <Command>if defined RenPath (
+del "%RenPath%\$(TargetFileName).removeme" 1&gt;NUL 2&gt;NUL
+move "%RenPath%\$(TargetFileName)" "%RenPath%\$(TargetFileName).removeme" 1&gt;NUL 2&gt;NUL
+del "%RenPath%\$(TargetFileName).removeme" 1&gt;NUL 2&gt;NUL
+)
+
+if defined RenServerPath (
+del "%RenServerPath%\$(TargetFileName).removeme" 1&gt;NUL 2&gt;NUL
+move "%RenServerPath%\$(TargetFileName)" "%RenServerPath%\$(TargetFileName).removeme" 1&gt;NUL 2&gt;NUL
+del "%RenServerPath%\$(TargetFileName).removeme" 1&gt;NUL 2&gt;NUL
+)
+
+verify &gt;NUL
+
+if defined RenPath (
+copy "$(TargetPath)" "%RenPath%\$(TargetFileName)"
+)
+if defined RenServerPath (
+copy "$(TargetPath)" "%RenServerPath%\$(TargetFileName)"
+)
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="cAMpaScripts.cpp" />
+    <ClCompile Include="CommandLineParser.cpp" />
+    <ClCompile Include="Crc32.cpp" />
+    <ClCompile Include="da.cpp" />
+    <ClCompile Include="dan.cpp" />
+    <ClCompile Include="da_aow.cpp" />
+    <ClCompile Include="da_ban.cpp" />
+    <ClCompile Include="da_building.cpp" />
+    <ClCompile Include="da_buildingannotations.cpp" />
+    <ClCompile Include="da_c4beacon.cpp" />
+    <ClCompile Include="da_characterrefunds.cpp" />
+    <ClCompile Include="da_chatcommand.cpp" />
+    <ClCompile Include="da_chatsounds.cpp" />
+    <ClCompile Include="da_coop.cpp" />
+    <ClCompile Include="da_cratemodifiers.cpp" />
+    <ClCompile Include="da_crate.cpp" />
+    <ClCompile Include="da_cratemanager.cpp" />
+    <ClCompile Include="da_ctf.cpp" />
+    <ClCompile Include="da_damagelog.cpp" />
+    <ClCompile Include="da_deathmatch.cpp" />
+    <ClCompile Include="da_disable.cpp" />
+    <ClCompile Include="da_domination.cpp" />
+    <ClCompile Include="da_donate.cpp" />
+    <ClCompile Include="da_genericcrates.cpp" />
+    <ClCompile Include="da_infantrycrates.cpp" />
+    <ClCompile Include="da_loot.cpp" />
+    <ClCompile Include="da_event.cpp" />
+    <ClCompile Include="da_game.cpp" />
+    <ClCompile Include="da_gamelog.cpp" />
+    <ClCompile Include="da_gameobj.cpp" />
+    <ClCompile Include="da_gameobjobservers.cpp" />
+    <ClCompile Include="da_gamespy.cpp" />
+    <ClCompile Include="da_infammo.cpp" />
+    <ClCompile Include="da_infantry.cpp" />
+    <ClCompile Include="da_killmessages.cpp" />
+    <ClCompile Include="da_log.cpp" />
+    <ClCompile Include="da_marathon.cpp" />
+    <ClCompile Include="da_nodemanager.cpp" />
+    <ClCompile Include="da_parachutes.cpp" />
+    <ClCompile Include="da_plugin.cpp" />
+    <ClCompile Include="da_pointsdistribution.cpp" />
+    <ClCompile Include="da_radio.cpp" />
+    <ClCompile Include="da_rtc.cpp" />
+    <ClCompile Include="da_settings.cpp" />
+    <ClCompile Include="da_levelcleaner.cpp" />
+    <ClCompile Include="da_shotgun.cpp" />
+    <ClCompile Include="da_sniping.cpp" />
+    <ClCompile Include="da_soldier.cpp" />
+    <ClCompile Include="da_spawnprotection.cpp" />
+    <ClCompile Include="da_spawnsystem.cpp" />
+    <ClCompile Include="da_squad.cpp" />
+    <ClCompile Include="da_ssgm.cpp" />
+    <ClCompile Include="da_taunt.cpp" />
+    <ClCompile Include="da_team.cpp" />
+    <ClCompile Include="da_teleporter.cpp" />
+    <ClCompile Include="da_translation.cpp" />
+    <ClCompile Include="da_vehicle.cpp" />
+    <ClCompile Include="da_vehiclecrates.cpp" />
+    <ClCompile Include="da_vehicleownership.cpp" />
+    <ClCompile Include="da_vehicleshells.cpp" />
+    <ClCompile Include="da_vehiclespawn.cpp" />
+    <ClCompile Include="da_vehiclequeue.cpp" />
+    <ClCompile Include="da_veteran.cpp" />
+    <ClCompile Include="da_weapons.cpp" />
+    <ClCompile Include="DBIKScripts.cpp" />
+    <ClCompile Include="DBScripts.cpp" />
+    <ClCompile Include="DBVehicleBypass.cpp" />
+    <ClCompile Include="DB_Innate.cpp" />
+    <ClCompile Include="DB_Research_Terminals.cpp" />
+    <ClCompile Include="DefaultConnectionAcceptanceFilter.cpp" />
+    <ClCompile Include="DefinitionFactoryClass.cpp" />
+    <ClCompile Include="DefinitionFactoryMgrClass.cpp" />
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="dp88_ar.cpp" />
+    <ClCompile Include="dp88_ar_unitScripts.cpp" />
+    <ClCompile Include="dp88_buildingScripts.cpp" />
+    <ClCompile Include="dp88_customAI.cpp" />
+    <ClCompile Include="dp88_misc.cpp" />
+    <ClCompile Include="dp88_veterancy.cpp" />
+    <ClCompile Include="engine_common.cpp" />
+    <ClCompile Include="engine_da.cpp" />
+    <ClCompile Include="engine_def.cpp" />
+    <ClCompile Include="engine_dmg.cpp" />
+    <ClCompile Include="engine_game.cpp" />
+    <ClCompile Include="engine_io.cpp" />
+    <ClCompile Include="engine_math.cpp" />
+    <ClCompile Include="engine_obj.cpp" />
+    <ClCompile Include="engine_obj2.cpp" />
+    <ClCompile Include="engine_phys.cpp" />
+    <ClCompile Include="engine_player.cpp" />
+    <ClCompile Include="engine_pt.cpp" />
+    <ClCompile Include="engine_script.cpp" />
+    <ClCompile Include="engine_string.cpp" />
+    <ClCompile Include="engine_tdb.cpp" />
+    <ClCompile Include="engine_threading.cpp" />
+    <ClCompile Include="engine_tt.cpp" />
+    <ClCompile Include="engine_weap.cpp" />
+    <ClCompile Include="FileFactoryListClass.cpp" />
+    <ClCompile Include="gap.cpp" />
+    <ClCompile Include="iran_scripts.cpp" />
+    <ClCompile Include="jfwcine.cpp" />
+    <ClCompile Include="jfwcust.cpp" />
+    <ClCompile Include="jfwdef.cpp" />
+    <ClCompile Include="jfwdmg.cpp" />
+    <ClCompile Include="jfwgame.cpp" />
+    <ClCompile Include="jfwgun.cpp" />
+    <ClCompile Include="jfwhook.cpp" />
+    <ClCompile Include="jfwmisc.cpp" />
+    <ClCompile Include="jfwobj.cpp" />
+    <ClCompile Include="jfwpoke.cpp" />
+    <ClCompile Include="jfwpow.cpp" />
+    <ClCompile Include="jfwscr.cpp" />
+    <ClCompile Include="jfwsnd.cpp" />
+    <ClCompile Include="jfwveh.cpp" />
+    <ClCompile Include="jfwweap.cpp" />
+    <ClCompile Include="jfwws.cpp" />
+    <ClCompile Include="jfwzone.cpp" />
+    <ClCompile Include="jmgBearHunter.cpp" />
+    <ClCompile Include="JmgDeathMatch.cpp" />
+    <ClCompile Include="jmgMetroid.cpp" />
+    <ClCompile Include="JMGRenetBusters.cpp" />
+    <ClCompile Include="jmgUtility.cpp" />
+    <ClCompile Include="kak.cpp" />
+    <ClCompile Include="kamuix.cpp" />
+    <ClCompile Include="LoopedAnimationController.cpp" />
+    <ClCompile Include="MasterCan_Scripts.cpp" />
+    <ClCompile Include="mdb.cpp" />
+    <ClCompile Include="mdbdef.cpp" />
+    <ClCompile Include="mdbevf.cpp" />
+    <ClCompile Include="ms.cpp" />
+    <ClCompile Include="ms_ai.cpp" />
+    <ClCompile Include="neo.cpp" />
+    <ClCompile Include="nh.cpp" />
+    <ClCompile Include="nhp.cpp" />
+    <ClCompile Include="ObjectLibraryManager.cpp" />
+    <ClCompile Include="PersistFactoryClass.cpp" />
+    <ClCompile Include="da_player.cpp" />
+    <ClCompile Include="PointerRemapClass.cpp" />
+    <ClCompile Include="Quaternion.cpp" />
+    <ClCompile Include="ra2.cpp" />
+    <ClCompile Include="Random2Class.cpp" />
+    <ClCompile Include="Random3Class.cpp" />
+    <ClCompile Include="RandomClass.cpp" />
+    <ClCompile Include="ra_legacy.cpp" />
+    <ClCompile Include="reborn.cpp" />
+    <ClCompile Include="renalert.cpp" />
+    <ClCompile Include="renalert2.cpp" />
+    <ClCompile Include="scriptfactory.cpp" />
+    <ClCompile Include="scriptregistrar.cpp" />
+    <ClCompile Include="scripts.cpp" />
+    <ClCompile Include="scud.cpp" />
+    <ClCompile Include="sh_blocker.cpp" />
+    <ClCompile Include="sh_factory.cpp" />
+    <ClCompile Include="sh_underground.cpp" />
+    <ClCompile Include="shawk.cpp" />
+    <ClCompile Include="SimpleFileFactoryClass.cpp" />
+    <ClCompile Include="straw.cpp" />
+    <ClCompile Include="survival.cpp" />
+    <ClCompile Include="tda.cpp" />
+    <ClCompile Include="tfx.cpp" />
+    <ClCompile Include="ThreadClass.cpp" />
+    <ClCompile Include="WeaponManager.cpp" />
+    <ClCompile Include="agtfix.cpp" />
+    <ClCompile Include="cGameType.cpp" />
+    <ClCompile Include="ChunkClasses.cpp" />
+    <ClCompile Include="coltest.cpp" />
+    <ClCompile Include="CriticalSectionClass.cpp" />
+    <ClCompile Include="datasafe.cpp" />
+    <ClCompile Include="General.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="HashTemplateKeyClass.cpp" />
+    <ClCompile Include="Iterator.cpp" />
+    <ClCompile Include="LineSegClass.cpp" />
+    <ClCompile Include="Matrix3.cpp" />
+    <ClCompile Include="Matrix3D.cpp" />
+    <ClCompile Include="matrix4.cpp" />
+    <ClCompile Include="obelfix.cpp" />
+    <ClCompile Include="ReferencerClass.cpp" />
+    <ClCompile Include="SysTimeClass.cpp" />
+    <ClCompile Include="wwmath.cpp" />
+    <ClCompile Include="xpert.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="scripts.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AABTreeCull.h" />
+    <ClInclude Include="AAPlaneClass.h" />
+    <ClInclude Include="AirFactoryGameObj.h" />
+    <ClInclude Include="AirFactoryGameObjDef.h" />
+    <ClInclude Include="AirStripGameObj.h" />
+    <ClInclude Include="AirStripGameObjDef.h" />
+    <ClInclude Include="ArmedGameObj.h" />
+    <ClInclude Include="ArmedGameObjDef.h" />
+    <ClInclude Include="ArmorWarheadManager.h" />
+    <ClInclude Include="AudibleSoundClass.h" />
+    <ClInclude Include="AudibleSoundDefinitionClass.h" />
+    <ClInclude Include="audiocallback.h" />
+    <ClInclude Include="AudioCallbackListClass.h" />
+    <ClInclude Include="boxrenderobjclass.h" />
+    <ClInclude Include="BuildingAggregateDefClass.h" />
+    <ClInclude Include="cNetEvent.h" />
+    <ClInclude Include="ConversationClass.h" />
+    <ClInclude Include="cPlayerKill.h" />
+    <ClInclude Include="cPurchaseResponseEvent.h" />
+    <ClInclude Include="cScTextObj.h" />
+    <ClInclude Include="cTeam.h" />
+    <ClInclude Include="BaseControllerClass.h" />
+    <ClInclude Include="BaseGameObj.h" />
+    <ClInclude Include="BaseGameObjDef.h" />
+    <ClInclude Include="BeaconGameObj.h" />
+    <ClInclude Include="BeaconGameObjDef.h" />
+    <ClInclude Include="BufferedFileClass.h" />
+    <ClInclude Include="C4GameObj.h" />
+    <ClInclude Include="C4GameObjDef.h" />
+    <ClInclude Include="cAMpaScripts.h" />
+    <ClInclude Include="CinematicGameObj.h" />
+    <ClInclude Include="CinematicGameObjDef.h" />
+    <ClInclude Include="coltest.h" />
+    <ClInclude Include="coltype.h" />
+    <ClInclude Include="CombatManager.h" />
+    <ClInclude Include="ComCenterGameObj.h" />
+    <ClInclude Include="ComCenterGameObjDef.h" />
+    <ClInclude Include="CommandLineParser.h" />
+    <ClInclude Include="ConnectionAcceptanceFilter.h" />
+    <ClInclude Include="ConnectionRequest.h" />
+    <ClInclude Include="cPlayer.h" />
+    <ClInclude Include="Crc32.h" />
+    <ClInclude Include="CullSystemClass.h" />
+    <ClInclude Include="da.h" />
+    <ClInclude Include="DamageableGameObj.h" />
+    <ClInclude Include="DamageableGameObjDef.h" />
+    <ClInclude Include="DamageZoneGameObj.h" />
+    <ClInclude Include="DamageZoneGameObjDef.h" />
+    <ClInclude Include="dan.h" />
+    <ClInclude Include="da_ban.h" />
+    <ClInclude Include="da_building.h" />
+    <ClInclude Include="da_buildingannotations.h" />
+    <ClInclude Include="da_c4beacon.h" />
+    <ClInclude Include="da_characterrefunds.h" />
+    <ClInclude Include="da_chatcommand.h" />
+    <ClInclude Include="da_crate.h" />
+    <ClInclude Include="da_cratemanager.h" />
+    <ClInclude Include="da_damagelog.h" />
+    <ClInclude Include="da_disable.h" />
+    <ClInclude Include="da_domination.h" />
+    <ClInclude Include="da_donate.h" />
+    <ClInclude Include="da_loot.h" />
+    <ClInclude Include="da_event.h" />
+    <ClInclude Include="da_game.h" />
+    <ClInclude Include="da_gamefeature.h" />
+    <ClInclude Include="da_gamelog.h" />
+    <ClInclude Include="da_gamemode.h" />
+    <ClInclude Include="da_gameobj.h" />
+    <ClInclude Include="da_gameobjobservers.h" />
+    <ClInclude Include="da_gamespy.h" />
+    <ClInclude Include="da_hook.h" />
+    <ClInclude Include="da_infammo.h" />
+    <ClInclude Include="da_killmessages.h" />
+    <ClInclude Include="da_log.h" />
+    <ClInclude Include="da_nodemanager.h" />
+    <ClInclude Include="da_parachutes.h" />
+    <ClInclude Include="da_player.h" />
+    <ClInclude Include="da_plugin.h" />
+    <ClInclude Include="da_pointsdistribution.h" />
+    <ClInclude Include="da_radio.h" />
+    <ClInclude Include="da_rtc.h" />
+    <ClInclude Include="da_settings.h" />
+    <ClInclude Include="da_levelcleaner.h" />
+    <ClInclude Include="da_shotgun.h" />
+    <ClInclude Include="da_soldier.h" />
+    <ClInclude Include="da_chatsounds.h" />
+    <ClInclude Include="da_spawnprotection.h" />
+    <ClInclude Include="da_spawnsystem.h" />
+    <ClInclude Include="da_ssgm.h" />
+    <ClInclude Include="da_string.h" />
+    <ClInclude Include="da_taunt.h" />
+    <ClInclude Include="da_team.h" />
+    <ClInclude Include="da_teleporter.h" />
+    <ClInclude Include="da_token.h" />
+    <ClInclude Include="da_squad.h" />
+    <ClInclude Include="da_translation.h" />
+    <ClInclude Include="da_vehicle.h" />
+    <ClInclude Include="da_vehicleownership.h" />
+    <ClInclude Include="da_vehicleshells.h" />
+    <ClInclude Include="da_vehiclespawn.h" />
+    <ClInclude Include="da_vehiclequeue.h" />
+    <ClInclude Include="da_veteran.h" />
+    <ClInclude Include="da_weapons.h" />
+    <ClInclude Include="DBIKScripts.h" />
+    <ClInclude Include="DB_General.h" />
+    <ClInclude Include="DB_Innate.h" />
+    <ClInclude Include="DB_Research_Terminals.h" />
+    <ClInclude Include="DefaultConnectionAcceptanceFilter.h" />
+    <ClInclude Include="DefenseObjectDefClass.h" />
+    <ClInclude Include="Definition.h" />
+    <ClInclude Include="DefinitionFactoryClass.h" />
+    <ClInclude Include="DefinitionFactoryMgrClass.h" />
+    <ClInclude Include="DefinitionMgrClass.h" />
+    <ClInclude Include="dp88_ar.h" />
+    <ClInclude Include="dp88_ar_unitScripts.h" />
+    <ClInclude Include="dp88_buildingScripts.h" />
+    <ClInclude Include="dp88_custom_timer_defines.h" />
+    <ClInclude Include="dp88_customAI.h" />
+    <ClInclude Include="dp88_misc.h" />
+    <ClInclude Include="dp88_veterancy.h" />
+    <ClInclude Include="DynamicPhysClass.h" />
+    <ClInclude Include="DynamicPhysDefClass.h" />
+    <ClInclude Include="DynamicShadowManager.h" />
+    <ClInclude Include="Editable.h" />
+    <ClInclude Include="engine.h" />
+    <ClInclude Include="engine_common.h" />
+    <ClInclude Include="engine_da.h" />
+    <ClInclude Include="engine_def.h" />
+    <ClInclude Include="engine_dmg.h" />
+    <ClInclude Include="engine_game.h" />
+    <ClInclude Include="engine_io.h" />
+    <ClInclude Include="engine_math.h" />
+    <ClInclude Include="engine_obj.h" />
+    <ClInclude Include="engine_obj2.h" />
+    <ClInclude Include="engine_phys.h" />
+    <ClInclude Include="engine_player.h" />
+    <ClInclude Include="engine_pt.h" />
+    <ClInclude Include="engine_script.h" />
+    <ClInclude Include="engine_string.h" />
+    <ClInclude Include="engine_tdb.h" />
+    <ClInclude Include="engine_threading.h" />
+    <ClInclude Include="engine_tt.h" />
+    <ClInclude Include="engine_ttdef.h" />
+    <ClInclude Include="engine_vector.h" />
+    <ClInclude Include="engine_weap.h" />
+    <ClInclude Include="ExtendedNetworkObject.h" />
+    <ClInclude Include="FileFactoryListClass.h" />
+    <ClInclude Include="FrustumClass.h" />
+    <ClInclude Include="GameData.h" />
+    <ClInclude Include="GameDefinition.h" />
+    <ClInclude Include="gap.h" />
+    <ClInclude Include="GridCull.h" />
+    <ClInclude Include="HarvesterClass.h" />
+    <ClInclude Include="inttest.h" />
+    <ClInclude Include="iran_scripts.h" />
+    <ClInclude Include="jfwcine.h" />
+    <ClInclude Include="jfwcust.h" />
+    <ClInclude Include="jfwdef.h" />
+    <ClInclude Include="jfwdmg.h" />
+    <ClInclude Include="jfwgame.h" />
+    <ClInclude Include="jfwgun.h" />
+    <ClInclude Include="jfwhook.h" />
+    <ClInclude Include="jfwmisc.h" />
+    <ClInclude Include="jfwobj.h" />
+    <ClInclude Include="jfwpoke.h" />
+    <ClInclude Include="jfwpow.h" />
+    <ClInclude Include="jfwscr.h" />
+    <ClInclude Include="jfwsnd.h" />
+    <ClInclude Include="jfwveh.h" />
+    <ClInclude Include="jfwweap.h" />
+    <ClInclude Include="jfwws.h" />
+    <ClInclude Include="jfwzone.h" />
+    <ClInclude Include="jmgBearHunter.h" />
+    <ClInclude Include="JmgDeathMatch.h" />
+    <ClInclude Include="jmgMetroid.h" />
+    <ClInclude Include="JMGRenetBuster.h" />
+    <ClInclude Include="jmgUtility.h" />
+    <ClInclude Include="kak.h" />
+    <ClInclude Include="kamuix.h" />
+    <ClInclude Include="LoopedAnimationController.h" />
+    <ClInclude Include="mdb.h" />
+    <ClInclude Include="mdbdef.h" />
+    <ClInclude Include="mdbevf.h" />
+    <ClInclude Include="MixFileFactoryClass.h" />
+    <ClInclude Include="MoveablePhysDefClass.h" />
+    <ClInclude Include="ms.h" />
+    <ClInclude Include="MuzzleFlashClass.h" />
+    <ClInclude Include="MuzzleRecoilClass.h" />
+    <ClInclude Include="NavalFactoryGameObj.h" />
+    <ClInclude Include="NavalFactoryGameObjDef.h" />
+    <ClInclude Include="neo.h" />
+    <ClInclude Include="NetworkObjectClass.h" />
+    <ClInclude Include="nh.h" />
+    <ClInclude Include="nhp.h" />
+    <ClInclude Include="obboxclass.h" />
+    <ClInclude Include="ObjectLibraryManager.h" />
+    <ClInclude Include="ObserverImpClass.h" />
+    <ClInclude Include="OffenseObjectClass.h" />
+    <ClInclude Include="Parameter.h" />
+    <ClInclude Include="Persist.h" />
+    <ClInclude Include="PersistFactoryClass.h" />
+    <ClInclude Include="PhysDefClass.h" />
+    <ClInclude Include="PhysicalGameObj.h" />
+    <ClInclude Include="PhysicalGameObjDef.h" />
+    <ClInclude Include="PhysicsSceneClass.h" />
+    <ClInclude Include="physinttest.h" />
+    <ClInclude Include="PhysObserverClass.h" />
+    <ClInclude Include="PlayerDataClass.h" />
+    <ClInclude Include="PointerRemapClass.h" />
+    <ClInclude Include="PowerPlantGameObj.h" />
+    <ClInclude Include="PowerPlantGameObjDef.h" />
+    <ClInclude Include="PowerupGameObj.h" />
+    <ClInclude Include="PowerupGameObjDef.h" />
+    <ClInclude Include="PresetMgr.h" />
+    <ClInclude Include="prototypeclass.h" />
+    <ClInclude Include="PurchaseSettingsDefClass.h" />
+    <ClInclude Include="Quaternion.h" />
+    <ClInclude Include="ra2.h" />
+    <ClInclude Include="Random2Class.h" />
+    <ClInclude Include="Random3Class.h" />
+    <ClInclude Include="RandomClass.h" />
+    <ClInclude Include="RawFileClass.h" />
+    <ClInclude Include="ra_legacy.h" />
+    <ClInclude Include="reborn.h" />
+    <ClInclude Include="ReferenceableClass.h" />
+    <ClInclude Include="renalert.h" />
+    <ClInclude Include="renalert2.h" />
+    <ClInclude Include="RepairBayGameObj.h" />
+    <ClInclude Include="RepairBayGameObjDef.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="SamSiteGameObj.h" />
+    <ClInclude Include="SamSiteGameObjDef.h" />
+    <ClInclude Include="SaveLoadSubSystemClass.h" />
+    <ClInclude Include="SaveLoadSystemClass.h" />
+    <ClInclude Include="SCAnnouncement.h" />
+    <ClInclude Include="SceneClass.h" />
+    <ClInclude Include="ScriptableGameObj.h" />
+    <ClInclude Include="ScriptableGameObjDef.h" />
+    <ClInclude Include="scripts.h" />
+    <ClInclude Include="ScriptZoneGameObj.h" />
+    <ClInclude Include="ScriptZoneGameObjDef.h" />
+    <ClInclude Include="scud.h" />
+    <ClInclude Include="shawk.h" />
+    <ClInclude Include="SimpleDefinitionFactoryClass.h" />
+    <ClInclude Include="SimpleFileFactoryClass.h" />
+    <ClInclude Include="SimpleGameObj.h" />
+    <ClInclude Include="SimpleGameObjDef.h" />
+    <ClInclude Include="SimplePersistFactoryClass.h" />
+    <ClInclude Include="SoldierFactoryGameObj.h" />
+    <ClInclude Include="SoldierFactoryGameObjDef.h" />
+    <ClInclude Include="Sound3DClass.h" />
+    <ClInclude Include="SoundBufferClass.h" />
+    <ClInclude Include="SoundSceneObjClass.h" />
+    <ClInclude Include="SpawnerClass.h" />
+    <ClInclude Include="SpawnerDefClass.h" />
+    <ClInclude Include="SpecialEffectsGameObj.h" />
+    <ClInclude Include="SpecialEffectsGameObjDef.h" />
+    <ClInclude Include="StaticAnimPhysDefClass.h" />
+    <ClInclude Include="StaticPhysClass.h" />
+    <ClInclude Include="StaticPhysDefClass.h" />
+    <ClInclude Include="straw.h" />
+    <ClInclude Include="SuperweaponGameObj.h" />
+    <ClInclude Include="SuperweaponGameObjDef.h" />
+    <ClInclude Include="survival.h" />
+    <ClInclude Include="SysTimeClass.h" />
+    <ClInclude Include="tda.h" />
+    <ClInclude Include="TeamPurchaseSettingsDefClass.h" />
+    <ClInclude Include="tfx.h" />
+    <ClInclude Include="TransitionGameObj.h" />
+    <ClInclude Include="TransitionGameObjDef.h" />
+    <ClInclude Include="TransitionInstanceClass.h" />
+    <ClInclude Include="Observee.h" />
+    <ClInclude Include="TwiddlerClass.h" />
+    <ClInclude Include="Vector3i.h" />
+    <ClInclude Include="VisTableClass.h" />
+    <ClInclude Include="VisTableMgrClass.h" />
+    <ClInclude Include="w3d.h" />
+    <ClInclude Include="WarFactoryGameObj.h" />
+    <ClInclude Include="WarFactoryGameObjDef.h" />
+    <ClInclude Include="WeaponBagClass.h" />
+    <ClInclude Include="WeaponClass.h" />
+    <ClInclude Include="WeaponManager.h" />
+    <ClInclude Include="weaponmgr.h" />
+    <ClInclude Include="WidgetUserClass.h" />
+    <ClInclude Include="WWAudioClass.h" />
+    <ClInclude Include="AABoxClass.h" />
+    <ClInclude Include="action.h" />
+    <ClInclude Include="agtfix.h" />
+    <ClInclude Include="AnimCollisionManagerClass.h" />
+    <ClInclude Include="AnimControlClass.h" />
+    <ClInclude Include="BuildingAggregateClass.h" />
+    <ClInclude Include="BuildingGameObj.h" />
+    <ClInclude Include="BuildingGameObjDef.h" />
+    <ClInclude Include="CastResultStruct.h" />
+    <ClInclude Include="cGameType.h" />
+    <ClInclude Include="ChunkClass.h" />
+    <ClInclude Include="ConstructionYardGameObj.h" />
+    <ClInclude Include="ConstructionYardGameObjDef.h" />
+    <ClInclude Include="ControlClass.h" />
+    <ClInclude Include="CriticalSectionClass.h" />
+    <ClInclude Include="CullableClass.h" />
+    <ClInclude Include="datasafe.h" />
+    <ClInclude Include="DecorationPhysClass.h" />
+    <ClInclude Include="DecorationPhysDefClass.h" />
+    <ClInclude Include="DefenseObjectClass.h" />
+    <ClInclude Include="Defines.h" />
+    <ClInclude Include="DialogueClass.h" />
+    <ClInclude Include="GameObjManager.h" />
+    <ClInclude Include="General.h" />
+    <ClInclude Include="HashTemplateClass.h" />
+    <ClInclude Include="HashTemplateIterator.h" />
+    <ClInclude Include="HashTemplateKeyClass.h" />
+    <ClInclude Include="HTreeClass.h" />
+    <ClInclude Include="HumanStateClass.h" />
+    <ClInclude Include="Iterator.h" />
+    <ClInclude Include="LightPhysClass.h" />
+    <ClInclude Include="LineSegClass.h" />
+    <ClInclude Include="MaterialEffectClass.h" />
+    <ClInclude Include="Matrix3.h" />
+    <ClInclude Include="Matrix3D.h" />
+    <ClInclude Include="matrix4.h" />
+    <ClInclude Include="MeshClass.h" />
+    <ClInclude Include="MoveablePhysClass.h" />
+    <ClInclude Include="multilist.h" />
+    <ClInclude Include="obelfix.h" />
+    <ClInclude Include="PhysClass.h" />
+    <ClInclude Include="physcoltest.h" />
+    <ClInclude Include="PhysControllerClass.h" />
+    <ClInclude Include="plane.h" />
+    <ClInclude Include="PostLoadableClass.h" />
+    <ClInclude Include="ProjectorManagerClass.h" />
+    <ClInclude Include="rect.h" />
+    <ClInclude Include="ReferencerClass.h" />
+    <ClInclude Include="RefineryGameObj.h" />
+    <ClInclude Include="RefineryGameObjDef.h" />
+    <ClInclude Include="RenderObjClass.h" />
+    <ClInclude Include="Singleton.h" />
+    <ClInclude Include="SList.h" />
+    <ClInclude Include="SmartGameObj.h" />
+    <ClInclude Include="SmartGameObjDef.h" />
+    <ClInclude Include="SoldierGameObj.h" />
+    <ClInclude Include="SoldierGameObjDef.h" />
+    <ClInclude Include="SphereClass.h" />
+    <ClInclude Include="Standard.h" />
+    <ClInclude Include="StaticAnimPhysClass.h" />
+    <ClInclude Include="StealthEffectClass.h" />
+    <ClInclude Include="TDBCategoryClass.h" />
+    <ClInclude Include="TDBObjClass.h" />
+    <ClInclude Include="ThreadClass.h" />
+    <ClInclude Include="TranslateDBClass.h" />
+    <ClInclude Include="Types.h" />
+    <ClInclude Include="UndergroundEffectClass.h" />
+    <ClInclude Include="vector2.h" />
+    <ClInclude Include="Vector3.h" />
+    <ClInclude Include="vector4.h" />
+    <ClInclude Include="VehicleFactoryGameObj.h" />
+    <ClInclude Include="VehicleFactoryGameObjDef.h" />
+    <ClInclude Include="VehicleGameObj.h" />
+    <ClInclude Include="VehicleGameObjDef.h" />
+    <ClInclude Include="wwmath.h" />
+    <ClInclude Include="xpert.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MemoryManager\MemoryManager.vcxproj">
+      <Project>{2fef1c76-9e4a-4921-b2d3-e536da918810}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\shared\shared.vcxproj">
+      <Project>{6636e311-e860-4f52-9d23-fe38e38d6020}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

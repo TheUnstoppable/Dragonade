@@ -1,0 +1,1662 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="DA Core">
+      <UniqueIdentifier>{cbabc835-46f3-47fc-95d4-20435211abca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DA Game Features">
+      <UniqueIdentifier>{9512153b-76cc-4d67-9169-20df6a8b01de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DA Game Mode Framework">
+      <UniqueIdentifier>{baf0b51c-c09f-4fe0-bbe5-02752bb03141}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DA Game Modes">
+      <UniqueIdentifier>{314b74c6-ce6a-4088-b41c-968ba7616fa1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts">
+      <UniqueIdentifier>{d65ff58e-d3f3-467a-90b7-c1a953cb3424}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{fb772dcb-3042-4c30-9947-c6543e48698c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DA Engine">
+      <UniqueIdentifier>{cb7a58a0-a60a-43da-9388-25395bdd8f80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DA Crates">
+      <UniqueIdentifier>{0ab9acd4-0566-4cc9-8d70-1590f537a0bd}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="cAMpaScripts.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="dan.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="dp88_buildingScripts.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="dp88_customAI.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="dp88_misc.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="dp88_veterancy.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="gap.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="jfwcine.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="jfwcust.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="jfwdef.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="jfwgame.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="jfwgun.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="jfwhook.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="jfwmisc.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="jfwobj.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="jfwpoke.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="jfwpow.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="jfwscr.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="jfwsnd.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="jfwveh.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="jfwweap.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="jfwws.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="jfwzone.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="JMGRenetBusters.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="kak.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="kamuix.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="mdb.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="mdbdef.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="mdbevf.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="neo.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="nh.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="nhp.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="ra2.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="ra_legacy.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="reborn.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="renalert.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="renalert2.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="scud.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="sh_blocker.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="sh_underground.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="shawk.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="survival.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="tda.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="tfx.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="cGameType.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="ChunkClasses.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="coltest.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="CriticalSectionClass.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="datasafe.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="General.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="HashTemplateKeyClass.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Iterator.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="LineSegClass.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix3.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix3D.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="matrix4.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="ReferencerClass.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="SysTimeClass.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="wwmath.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadClass.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="DefinitionFactoryClass.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="DefinitionFactoryMgrClass.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="FileFactoryListClass.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="PersistFactoryClass.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="PointerRemapClass.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleFileFactoryClass.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="straw.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandLineParser.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="iran_scripts.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="da_domination.cpp">
+      <Filter>DA Game Modes</Filter>
+    </ClCompile>
+    <ClCompile Include="LoopedAnimationController.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="RandomClass.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="da_chatcommand.cpp">
+      <Filter>DA Core</Filter>
+    </ClCompile>
+    <ClCompile Include="da_event.cpp">
+      <Filter>DA Core</Filter>
+    </ClCompile>
+    <ClCompile Include="da_gamespy.cpp">
+      <Filter>DA Game Features</Filter>
+    </ClCompile>
+    <ClCompile Include="da_infammo.cpp">
+      <Filter>DA Game Features</Filter>
+    </ClCompile>
+    <ClCompile Include="da_player.cpp">
+      <Filter>DA Core</Filter>
+    </ClCompile>
+    <ClCompile Include="da_radio.cpp">
+      <Filter>DA Game Features</Filter>
+    </ClCompile>
+    <ClCompile Include="da_settings.cpp">
+      <Filter>DA Core</Filter>
+    </ClCompile>
+    <ClCompile Include="da_squad.cpp">
+      <Filter>DA Game Features</Filter>
+    </ClCompile>
+    <ClCompile Include="da_taunt.cpp">
+      <Filter>DA Game Features</Filter>
+    </ClCompile>
+    <ClCompile Include="da_vehicle.cpp">
+      <Filter>DA Core</Filter>
+    </ClCompile>
+    <ClCompile Include="da.cpp">
+      <Filter>DA Core</Filter>
+    </ClCompile>
+    <ClCompile Include="da_team.cpp">
+      <Filter>DA Core</Filter>
+    </ClCompile>
+    <ClCompile Include="da_rtc.cpp">
+      <Filter>DA Game Features</Filter>
+    </ClCompile>
+    <ClCompile Include="da_levelcleaner.cpp">
+      <Filter>DA Game Mode Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="da_nodemanager.cpp">
+      <Filter>DA Game Mode Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="da_spawnsystem.cpp">
+      <Filter>DA Game Mode Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="da_teleporter.cpp">
+      <Filter>DA Game Mode Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="da_vehiclespawn.cpp">
+      <Filter>DA Game Mode Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="da_disable.cpp">
+      <Filter>DA Core</Filter>
+    </ClCompile>
+    <ClCompile Include="da_translation.cpp">
+      <Filter>DA Core</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_weap.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_def.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_dmg.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_math.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_obj2.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_phys.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_pt.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_script.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_threading.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_da.cpp">
+      <Filter>DA Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>DA Core</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_player.cpp">
+      <Filter>DA Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="da_plugin.cpp">
+      <Filter>DA Core</Filter>
+    </ClCompile>
+    <ClCompile Include="da_ssgm.cpp">
+      <Filter>DA Core</Filter>
+    </ClCompile>
+    <ClCompile Include="da_log.cpp">
+      <Filter>DA Core</Filter>
+    </ClCompile>
+    <ClCompile Include="da_killmessages.cpp">
+      <Filter>DA Game Features</Filter>
+    </ClCompile>
+    <ClCompile Include="agtfix.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="da_aow.cpp">
+      <Filter>DA Game Modes</Filter>
+    </ClCompile>
+    <ClCompile Include="da_sniping.cpp">
+      <Filter>DA Game Modes</Filter>
+    </ClCompile>
+    <ClCompile Include="da_infantry.cpp">
+      <Filter>DA Game Modes</Filter>
+    </ClCompile>
+    <ClCompile Include="da_spawnprotection.cpp">
+      <Filter>DA Game Features</Filter>
+    </ClCompile>
+    <ClCompile Include="scriptfactory.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="scriptregistrar.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="scripts.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Crc32.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="dp88_ar.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="dp88_ar_unitScripts.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="da_damagelog.cpp">
+      <Filter>DA Core</Filter>
+    </ClCompile>
+    <ClCompile Include="da_vehicleownership.cpp">
+      <Filter>DA Game Features</Filter>
+    </ClCompile>
+    <ClCompile Include="da_vehicleshells.cpp">
+      <Filter>DA Game Features</Filter>
+    </ClCompile>
+    <ClCompile Include="da_pointsdistribution.cpp">
+      <Filter>DA Game Features</Filter>
+    </ClCompile>
+    <ClCompile Include="da_gameobj.cpp">
+      <Filter>DA Core</Filter>
+    </ClCompile>
+    <ClCompile Include="da_soldier.cpp">
+      <Filter>DA Core</Filter>
+    </ClCompile>
+    <ClCompile Include="da_building.cpp">
+      <Filter>DA Core</Filter>
+    </ClCompile>
+    <ClCompile Include="da_c4beacon.cpp">
+      <Filter>DA Core</Filter>
+    </ClCompile>
+    <ClCompile Include="da_marathon.cpp">
+      <Filter>DA Game Modes</Filter>
+    </ClCompile>
+    <ClCompile Include="da_gameobjobservers.cpp">
+      <Filter>DA Core</Filter>
+    </ClCompile>
+    <ClCompile Include="da_game.cpp">
+      <Filter>DA Core</Filter>
+    </ClCompile>
+    <ClCompile Include="jfwdmg.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_game.cpp">
+      <Filter>DA Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="da_ctf.cpp">
+      <Filter>DA Game Modes</Filter>
+    </ClCompile>
+    <ClCompile Include="da_coop.cpp">
+      <Filter>DA Game Modes</Filter>
+    </ClCompile>
+    <ClCompile Include="da_deathmatch.cpp">
+      <Filter>DA Game Modes</Filter>
+    </ClCompile>
+    <ClCompile Include="da_gamelog.cpp">
+      <Filter>DA Game Features</Filter>
+    </ClCompile>
+    <ClCompile Include="da_donate.cpp">
+      <Filter>DA Game Features</Filter>
+    </ClCompile>
+    <ClCompile Include="da_characterrefunds.cpp">
+      <Filter>DA Game Features</Filter>
+    </ClCompile>
+    <ClCompile Include="da_vehiclequeue.cpp">
+      <Filter>DA Game Features</Filter>
+    </ClCompile>
+    <ClCompile Include="da_loot.cpp">
+      <Filter>DA Game Features</Filter>
+    </ClCompile>
+    <ClCompile Include="da_parachutes.cpp">
+      <Filter>DA Game Features</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_tt.cpp">
+      <Filter>DA Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Quaternion.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="da_infantrycrates.cpp">
+      <Filter>DA Crates</Filter>
+    </ClCompile>
+    <ClCompile Include="da_vehiclecrates.cpp">
+      <Filter>DA Crates</Filter>
+    </ClCompile>
+    <ClCompile Include="da_genericcrates.cpp">
+      <Filter>DA Crates</Filter>
+    </ClCompile>
+    <ClCompile Include="da_cratemodifiers.cpp">
+      <Filter>DA Crates</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_common.cpp">
+      <Filter>DA Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="da_cratemanager.cpp">
+      <Filter>DA Crates</Filter>
+    </ClCompile>
+    <ClCompile Include="da_crate.cpp">
+      <Filter>DA Crates</Filter>
+    </ClCompile>
+    <ClCompile Include="obelfix.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="da_ban.cpp">
+      <Filter>DA Core</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_tdb.cpp">
+      <Filter>DA Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_io.cpp">
+      <Filter>DA Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Random2Class.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Random3Class.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponManager.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_string.cpp">
+      <Filter>DA Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_obj.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="DB_Research_Terminals.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="DBIKScripts.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="jmgBearHunter.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="JmgDeathMatch.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="jmgMetroid.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="jmgUtility.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="sh_factory.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="xpert.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="da_shotgun.cpp">
+      <Filter>DA Game Modes</Filter>
+    </ClCompile>
+    <ClCompile Include="da_weapons.cpp">
+      <Filter>DA Game Features</Filter>
+    </ClCompile>
+    <ClCompile Include="da_chatsounds.cpp">
+      <Filter>DA Game Features</Filter>
+    </ClCompile>
+    <ClCompile Include="DB_Innate.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="DBScripts.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="DBVehicleBypass.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="MasterCan_Scripts.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="DefaultConnectionAcceptanceFilter.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="ms.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="ms_ai.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectLibraryManager.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="da_buildingannotations.cpp">
+      <Filter>DA Game Features</Filter>
+    </ClCompile>
+    <ClCompile Include="da_veteran.cpp">
+      <Filter>DA Game Features</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AABoxClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="action.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimCollisionManagerClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimControlClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="BuildingAggregateClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="CastResultStruct.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="cGameType.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ChunkClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstructionYardGameObj.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ControlClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="CriticalSectionClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="CullableClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="datasafe.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="DecorationPhysClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="DecorationPhysDefClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="DialogueClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObjManager.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="General.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="HashTemplateIterator.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="HashTemplateKeyClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="HTreeClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Iterator.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="LightPhysClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="LineSegClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialEffectClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix3.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix3D.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="matrix4.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveablePhysClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="multilist.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="physcoltest.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysControllerClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="plane.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="PostLoadableClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectorManagerClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="rect.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ReferencerClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderObjClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Singleton.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SList.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SphereClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Standard.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticAnimPhysClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="StealthEffectClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="TDBCategoryClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="TDBObjClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="TranslateDBClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Types.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="UndergroundEffectClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="vector2.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="vector4.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="wwmath.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="AABTreeCull.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="AAPlaneClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ArmorWarheadManager.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="AudibleSoundClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="AudibleSoundDefinitionClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioCallbackListClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="BufferedFileClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="coltest.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="coltype.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="CullSystemClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="DefinitionFactoryClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="DefinitionFactoryMgrClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicPhysClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicPhysDefClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicShadowManager.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="FileFactoryListClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="FrustumClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="GridCull.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="inttest.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="MixFileFactoryClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="PersistFactoryClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysDefClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsSceneClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="physinttest.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="PointerRemapClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="prototypeclass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Quaternion.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Random2Class.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="RawFileClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SaveLoadSubSystemClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SaveLoadSystemClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleDefinitionFactoryClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleFileFactoryClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SimplePersistFactoryClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound3DClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundBufferClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundSceneObjClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticPhysClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="straw.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="TwiddlerClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="VisTableMgrClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="w3d.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponManager.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="WidgetUserClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="WWAudioClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandLineParser.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="HarvesterClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="da_domination.h">
+      <Filter>DA Game Modes</Filter>
+    </ClInclude>
+    <ClInclude Include="cScTextObj.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SCAnnouncement.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="cNetEvent.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="LoopedAnimationController.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="NavalFactoryGameObj.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="da_chatcommand.h">
+      <Filter>DA Core</Filter>
+    </ClInclude>
+    <ClInclude Include="da_event.h">
+      <Filter>DA Core</Filter>
+    </ClInclude>
+    <ClInclude Include="da_gamefeature.h">
+      <Filter>DA Core</Filter>
+    </ClInclude>
+    <ClInclude Include="da_gamespy.h">
+      <Filter>DA Game Features</Filter>
+    </ClInclude>
+    <ClInclude Include="da_hook.h">
+      <Filter>DA Core</Filter>
+    </ClInclude>
+    <ClInclude Include="da_infammo.h">
+      <Filter>DA Game Features</Filter>
+    </ClInclude>
+    <ClInclude Include="da_player.h">
+      <Filter>DA Core</Filter>
+    </ClInclude>
+    <ClInclude Include="da_radio.h">
+      <Filter>DA Game Features</Filter>
+    </ClInclude>
+    <ClInclude Include="da_settings.h">
+      <Filter>DA Core</Filter>
+    </ClInclude>
+    <ClInclude Include="da_squad.h">
+      <Filter>DA Game Features</Filter>
+    </ClInclude>
+    <ClInclude Include="da_taunt.h">
+      <Filter>DA Game Features</Filter>
+    </ClInclude>
+    <ClInclude Include="da_token.h">
+      <Filter>DA Core</Filter>
+    </ClInclude>
+    <ClInclude Include="da_vehicle.h">
+      <Filter>DA Core</Filter>
+    </ClInclude>
+    <ClInclude Include="da.h">
+      <Filter>DA Core</Filter>
+    </ClInclude>
+    <ClInclude Include="da_gamemode.h">
+      <Filter>DA Core</Filter>
+    </ClInclude>
+    <ClInclude Include="da_team.h">
+      <Filter>DA Core</Filter>
+    </ClInclude>
+    <ClInclude Include="da_rtc.h">
+      <Filter>DA Game Features</Filter>
+    </ClInclude>
+    <ClInclude Include="da_levelcleaner.h">
+      <Filter>DA Game Mode Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="da_nodemanager.h">
+      <Filter>DA Game Mode Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="da_spawnsystem.h">
+      <Filter>DA Game Mode Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="da_teleporter.h">
+      <Filter>DA Game Mode Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="da_vehiclespawn.h">
+      <Filter>DA Game Mode Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="da_disable.h">
+      <Filter>DA Core</Filter>
+    </ClInclude>
+    <ClInclude Include="da_translation.h">
+      <Filter>DA Core</Filter>
+    </ClInclude>
+    <ClInclude Include="weaponmgr.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="WarFactoryGameObjDef.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="WarFactoryGameObj.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="TransitionGameObjDef.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="TransitionGameObj.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3i.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SpecialEffectsGameObjDef.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SpecialEffectsGameObj.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SoldierFactoryGameObjDef.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SoldierFactoryGameObj.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleGameObj.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptZoneGameObj.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SamSiteGameObjDef.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SamSiteGameObj.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="RepairBayGameObj.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ReferenceableClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="PowerupGameObj.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="PowerPlantGameObjDef.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="PowerPlantGameObj.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysObserverClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Persist.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Parameter.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Observee.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="obboxclass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkObjectClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="GameDefinition.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ExtendedNetworkObject.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_weap.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_threading.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_tdb.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_script.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_pt.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_player.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_phys.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_obj2.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_obj.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_math.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_dmg.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_common.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_def.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Editable.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseGameObj.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseGameObjDef.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ArmedGameObj.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="AirStripGameObj.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="AirFactoryGameObj.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="CinematicGameObj.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="CinematicGameObjDef.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ComCenterGameObj.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ComCenterGameObjDef.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ConnectionAcceptanceFilter.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ConnectionRequest.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Crc32.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="DamageableGameObj.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="DamageZoneGameObj.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="DefenseObjectDefClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Definition.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="cAMpaScripts.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="dan.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="dp88_buildingScripts.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="dp88_custom_timer_defines.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="dp88_customAI.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="dp88_misc.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="dp88_veterancy.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="gap.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="iran_scripts.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="jfwcine.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="jfwcust.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="jfwdef.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="jfwgame.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="jfwgun.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="jfwhook.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="jfwmisc.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="jfwobj.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="jfwpoke.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="jfwpow.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="jfwscr.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="jfwsnd.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="jfwveh.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="jfwweap.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="jfwws.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="jfwzone.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="JMGRenetBuster.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="kak.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="kamuix.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="mdb.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="mdbdef.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="mdbevf.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="neo.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="nh.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="nhp.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="ra2.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="ra_legacy.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="reborn.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="renalert.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="renalert2.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="scud.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="shawk.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="survival.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="tda.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="tfx.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_da.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="cPlayer.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SoldierGameObj.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponBagClass.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="PurchaseSettingsDefClass.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="TeamPurchaseSettingsDefClass.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="cTeam.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="da_plugin.h">
+      <Filter>DA Core</Filter>
+    </ClInclude>
+    <ClInclude Include="da_ssgm.h">
+      <Filter>DA Core</Filter>
+    </ClInclude>
+    <ClInclude Include="da_log.h">
+      <Filter>DA Core</Filter>
+    </ClInclude>
+    <ClInclude Include="da_killmessages.h">
+      <Filter>DA Game Features</Filter>
+    </ClInclude>
+    <ClInclude Include="OffenseObjectClass.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="VehicleGameObj.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="da_string.h">
+      <Filter>DA Core</Filter>
+    </ClInclude>
+    <ClInclude Include="agtfix.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_io.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_vector.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Defines.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseControllerClass.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="RefineryGameObj.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="C4GameObj.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="da_spawnprotection.h">
+      <Filter>DA Game Features</Filter>
+    </ClInclude>
+    <ClInclude Include="DefenseObjectClass.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="scripts.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="dp88_ar.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="dp88_ar_unitScripts.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysClass.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="HashTemplateClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptableGameObj.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SmartGameObj.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="da_damagelog.h">
+      <Filter>DA Core</Filter>
+    </ClInclude>
+    <ClInclude Include="da_vehicleownership.h">
+      <Filter>DA Game Features</Filter>
+    </ClInclude>
+    <ClInclude Include="da_vehicleshells.h">
+      <Filter>DA Game Features</Filter>
+    </ClInclude>
+    <ClInclude Include="da_pointsdistribution.h">
+      <Filter>DA Game Features</Filter>
+    </ClInclude>
+    <ClInclude Include="da_gameobj.h">
+      <Filter>DA Core</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicalGameObjDef.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="da_soldier.h">
+      <Filter>DA Core</Filter>
+    </ClInclude>
+    <ClInclude Include="da_building.h">
+      <Filter>DA Core</Filter>
+    </ClInclude>
+    <ClInclude Include="da_c4beacon.h">
+      <Filter>DA Core</Filter>
+    </ClInclude>
+    <ClInclude Include="da_gameobjobservers.h">
+      <Filter>DA Core</Filter>
+    </ClInclude>
+    <ClInclude Include="da_game.h">
+      <Filter>DA Core</Filter>
+    </ClInclude>
+    <ClInclude Include="BeaconGameObjDef.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_string.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="BuildingGameObj.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="jfwdmg.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_game.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="da_gamelog.h">
+      <Filter>DA Game Features</Filter>
+    </ClInclude>
+    <ClInclude Include="da_donate.h">
+      <Filter>DA Game Features</Filter>
+    </ClInclude>
+    <ClInclude Include="da_characterrefunds.h">
+      <Filter>DA Game Features</Filter>
+    </ClInclude>
+    <ClInclude Include="da_vehiclequeue.h">
+      <Filter>DA Game Features</Filter>
+    </ClInclude>
+    <ClInclude Include="ArmedGameObjDef.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="TransitionInstanceClass.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerDataClass.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="RefineryGameObjDef.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveablePhysDefClass.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SmartGameObjDef.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="da_loot.h">
+      <Filter>DA Game Features</Filter>
+    </ClInclude>
+    <ClInclude Include="da_parachutes.h">
+      <Filter>DA Game Features</Filter>
+    </ClInclude>
+    <ClInclude Include="CombatManager.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="HumanStateClass.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_ttdef.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SoldierGameObjDef.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_tt.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="VehicleFactoryGameObj.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="da_cratemanager.h">
+      <Filter>DA Crates</Filter>
+    </ClInclude>
+    <ClInclude Include="da_crate.h">
+      <Filter>DA Crates</Filter>
+    </ClInclude>
+    <ClInclude Include="obelfix.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="da_ban.h">
+      <Filter>DA Core</Filter>
+    </ClInclude>
+    <ClInclude Include="BuildingGameObjDef.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="VehicleGameObjDef.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SysTimeClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="AirFactoryGameObjDef.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="AirStripGameObjDef.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="C4GameObjDef.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstructionYardGameObjDef.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="DamageableGameObjDef.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="DamageZoneGameObjDef.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="NavalFactoryGameObjDef.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="PowerupGameObjDef.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="RepairBayGameObjDef.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptableGameObjDef.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptZoneGameObjDef.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleGameObjDef.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="VehicleFactoryGameObjDef.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Random3Class.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="RandomClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="DefinitionMgrClass.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="GameData.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicalGameObj.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="BeaconGameObj.h">
+      <Filter>DA Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="DB_General.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="DB_Research_Terminals.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="DBIKScripts.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="jmgBearHunter.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="JmgDeathMatch.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="jmgMetroid.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="jmgUtility.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="xpert.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="audiocallback.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="boxrenderobjclass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="BuildingAggregateDefClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ConversationClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticAnimPhysDefClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticPhysDefClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SuperweaponGameObj.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SuperweaponGameObjDef.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="VisTableClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SpawnerDefClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SpawnerClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="da_shotgun.h">
+      <Filter>DA Game Modes</Filter>
+    </ClInclude>
+    <ClInclude Include="da_weapons.h">
+      <Filter>DA Game Features</Filter>
+    </ClInclude>
+    <ClInclude Include="da_chatsounds.h">
+      <Filter>DA Game Features</Filter>
+    </ClInclude>
+    <ClInclude Include="DB_Innate.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="cPlayerKill.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="cPurchaseResponseEvent.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="MuzzleFlashClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="MuzzleRecoilClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ObserverImpClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="PresetMgr.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="DefaultConnectionAcceptanceFilter.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ms.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectLibraryManager.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="da_buildingannotations.h">
+      <Filter>DA Game Features</Filter>
+    </ClInclude>
+    <ClInclude Include="da_veteran.h">
+      <Filter>DA Game Features</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="scripts.rc">
+      <Filter>Engine</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

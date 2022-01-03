@@ -1,0 +1,226 @@
+/*!
+* \page page_ttini tt.ini
+* \ingroup configuration
+*
+* This configuration file contains settings that control a wide range of optional features in the game engine. This file is cheat checked and must be identical on both client and server.
+*
+* \section s_ttini_general General
+*
+*   \subsection ss_ttini_ContinueReloadOnVehicleExit ContinueReloadOnVehicleExit
+*     \since 4.0
+*     <b>Type:</b> Boolean<br/>
+*     <b>Default:</b> True<br/>
+*     <b>Affects:</b> Server<br/>
+*     <br/>
+*     When enabled vehicles will continue their reload cycle when there is no driver present, allowing players to hop in and out of a vehicle using both infantry and vehicle weapons by timing it such that they re-enter the vehicle just as the reload completes. Disabling this will cause the reload to be cancelled when they exit the vehicle and not start again until a driver gets in, thus preventing this behaviour
+*
+*   \subsection ss_ttini_NoPowerCostMultiplier NoPowerCostMultiplier
+*     \since 4.1
+*     <b>Type:</b> Float<br/>
+*     <b>Default:</b> 2.0<br/>
+*     <b>Affects:</b> Server<br/>
+*     <br/>
+*     Sets the cost multiplier for purchasing infantry and vehicles when base power is offline
+*
+*   \subsection ss_ttini_BuildTimeDelay BuildTimeDelay
+*     \since 4.0
+*     <b>Type:</b> Float<br/>
+*     <b>Default:</b> 2.0<br/>
+*     <b>Affects:</b> Server<br/>
+*     <br/>
+*     Sets the vehicle constuction time multiplier when base power is offline
+*
+*     \note
+*       The construction time when base power is online is 5.0 seconds. This is the value the multipler gets applied to when base power is offline
+*
+*   \subsection ss_ttini_VehicleOwnershipDisable VehicleOwnershipDisable
+*     \since 4.0
+*     <b>Type:</b> Boolean<br/>
+*     <b>Default:</b> False<br/>
+*     <b>Affects:</b> Server<br/>
+*     <br/>
+*     Disables the SSGM vehicle ownership system
+*
+*   \subsection ss_ttini_DisableVehicleFlipKill DisableVehicleFlipKill
+*     \since 4.0
+*     <b>Type:</b> Boolean<br/>
+*     <b>Default:</b> False<br/>
+*     <b>Affects:</b> Server<br/>
+*     <br/>
+*     Disables the destruction of vehicles which have flipped upside down
+*
+*   \subsection ss_ttini_Unsquishable Unsquishable
+*     \since 4.0
+*     <b>Type:</b> Boolean<br/>
+*     <b>Default:</b> False<br/>
+*     <b>Affects:</b> Server<br/>
+*     <br/>
+*     If this is enabled up to four unsquishable armor types can be defined to prevent any soldier with that armor type from being squished by vehicles. If disabled the UnsquishableArmor1-4 settings are ignored
+*
+*     \deprecated
+*       This setting is now deprecated in favour of the unsquishable checkbox on infantry presets in LevelEdit and only exists for backwards compatibility. It is highly recommended that the preset checkbox is used in favour of this flag for all new projects
+*
+*   \subsection ss_ttini_UnsquishableArmour1 UnsquishableArmour1
+*     \since 4.0
+*     <b>Type:</b> Int<br/>
+*     <b>Default:</b> 0<br/>
+*     <b>Affects:</b> Server<br/>
+*     <br/>
+*     The ID of the first armor type to be treated as unsquishable if \ref ss_ttini_Unsquishable is enabled
+*
+*     \deprecated
+*       See deprecation note on \ref ss_ttini_Unsquishable
+*
+*   \subsection ss_ttini_UnsquishableArmour2 UnsquishableArmour2
+*     \since 4.0
+*     <b>Type:</b> Int<br/>
+*     <b>Default:</b> 0<br/>
+*     <b>Affects:</b> Server<br/>
+*     <br/>
+*     The ID of the second armor type to be treated as unsquishable if \ref ss_ttini_Unsquishable is enabled
+*
+*     \deprecated
+*       See deprecation note on \ref ss_ttini_Unsquishable
+*
+*   \subsection ss_ttini_UnsquishableArmour3 UnsquishableArmour3
+*     \since 4.0
+*     <b>Type:</b> Int<br/>
+*     <b>Default:</b> 0<br/>
+*     <b>Affects:</b> Server<br/>
+*     <br/>
+*     The ID of the third armor type to be treated as unsquishable if \ref ss_ttini_Unsquishable is enabled
+*
+*     \deprecated
+*       See deprecation note on \ref ss_ttini_Unsquishable
+*
+*   \subsection ss_ttini_UnsquishableArmour4 UnsquishableArmour4
+*     \since 4.0
+*     <b>Type:</b> Int<br/>
+*     <b>Default:</b> 0<br/>
+*     <b>Affects:</b> Server<br/>
+*     <br/>
+*     The ID of the fourth armor type to be treated as unsquishable if \ref ss_ttini_Unsquishable is enabled
+*
+*     \deprecated
+*       See deprecation note on \ref ss_ttini_Unsquishable
+*
+*   \subsection ss_ttini_MapPrefix MapPrefix
+*     \since 4.0
+*     <b>Type:</b> String<br/>
+*     <b>Default:</b> C&C_<br/>
+*     <b>Affects:</b> Server, Client<br/>
+*     <br/>
+*     Sets the prefix to use when searching for map files in the data folder
+*
+*   \subsection ss_ttini_NeutralVechiclePointsFix NeutralVechiclePointsFix
+*     \since 4.0
+*     <b>Type:</b> Boolean<br/>
+*     <b>Default:</b> True<br/>
+*     <b>Affects:</b> Server<br/>
+*     <br/>
+*     Used with the LastTeam functionality to ensure that the "fake last team" is properly picked up.
+*
+*   \subsection ss_ttini_DrawDistance DrawDistance
+*     \since 4.0
+*     <b>Type:</b> Float<br/>
+*     <b>Default:</b> 300.0<br/>
+*     <b>Affects:</b> Server, Client<br/>
+*     <br/>
+*     Sets the far clipping plane for the main camera as well as the matching values in the netcode.
+*
+*   \subsection ss_ttini_ScriptsLastTeamTime ScriptsLastTeamTime
+*     \since 4.0
+*     <b>Type:</b> Int<br/>
+*     <b>Default:</b> -1<br/>
+*     <b>Affects:</b> Server<br/>
+*     <br/>
+*     Specifies how long the engine should remember the last team a vehicle was on. Used to keep the vehicle teamed to a specific team to preveent someone leaving just as the vehicle is destroyed and costing an attacker the kill points.
+*
+*   \subsection ss_ttini_NukeWeatherDisable NukeWeatherDisable
+*     \since 4.0
+*     <b>Type:</b> Boolean<br/>
+*     <b>Default:</b> false<br/>
+*     <b>Affects:</b> Server<br/>
+*     <br/>
+*     Disables the weather effects during the build up to a nuclear missile strike
+*
+*   \subsection ss_ttini_IonWeatherDisable IonWeatherDisable
+*     \since 4.0
+*     <b>Type:</b> Boolean<br/>
+*     <b>Default:</b> false<br/>
+*     <b>Affects:</b> Server<br/>
+*     <br/>
+*     Disables the weather effects during the build up to an Ion Cannon strike
+*
+*   \subsection ss_ttini_CreditsMultiplier CreditsMultiplier
+*     \since 4.0
+*     <b>Type:</b> Float<br/>
+*     <b>Default:</b> 1.0<br/>
+*     <b>Affects:</b> Server<br/>
+*     <br/>
+*     Sets the number of credits a player earns for each point they score
+*
+*   \subsection ss_ttini_DisableOnFire DisableOnFire
+*     \since 4.0
+*     <b>Type:</b> Boolean<br/>
+*     <b>Default:</b> false<br/>
+*     <b>Affects:</b> Server<br/>
+*     <br/>
+*     If true it allows a player to continue using their weapons whilst on fire (the default value of false sets triggered to false on each frame for primary and secondary fire)
+*
+*   \subsection ss_ttini_StealthShader StealthShader
+*     \since 4.0
+*     <b>Type:</b> String<br/>
+*     <b>Default:</b> <br/>
+*     <b>Affects:</b> Client<br/>
+*     <br/>
+*     Set the name of the shader to use on stealthed objects, up to 63 characters long
+*
+*   \subsection ss_ttini_UndergroundShader UndergroundShader
+*     \since 4.1
+*     <b>Type:</b> String<br/>
+*     <b>Default:</b> <br/>
+*     <b>Affects:</b> Client<br/>
+*     <br/>
+*     Set the name of the shader to use on underground objects, up to 63 characters long
+*
+*   \subsection ss_ttini_UseExtraPTPages UseExtraPTPages
+*     \since 4.0
+*     <b>Type:</b> Boolean<br/>
+*     <b>Default:</b> false<br/>
+*     <b>Affects:</b> Client<br/>
+*     <br/>
+*     Enables the extra purchase terminal pages, also known as secret pages, by default if enabled
+*
+*   \subsection ss_ttini_NewUnpurchaseableLogic NewUnpurchaseableLogic
+*     \since 4.0
+*     <b>Type:</b> Boolean<br/>
+*     <b>Default:</b> false<br/>
+*     <b>Affects:</b> Server<br/>
+*     <br/>
+*     Enables the new logic for determining if vehicle and soldier factories are available for use, which adds support for a disabled state in which the factories are alive but not available for use
+*
+*   \subsection ss_ttini_RefillLimit RefillLimit
+*     \since 4.0
+*     <b>Type:</b> Float<br/>
+*     <b>Default:</b> 0.0<br/>
+*     <b>Affects:</b> Server<br/>
+*     <br/>
+*     Sets the length of time, in seconds, a player must wait after combat before they can use the refill button on a purchase terminal
+*
+*   \subsection ss_ttini_DisableKillMessages DisableKillMessages
+*     \since 4.0
+*     <b>Type:</b> Boolean<br/>
+*     <b>Default:</b> false<br/>
+*     <b>Affects:</b> Server<br/>
+*     <br/>
+*     Disables the "abc killed xyz" text messages when a player kills another player
+*
+*   \subsection ss_ttini_DisableSP DisableSP
+*     \since 4.1
+*     <b>Type:</b> Boolean<br/>
+*     <b>Default:</b> false<br/>
+*     <b>Affects:</b> Client<br/>
+*     <br/>
+*     Hides the Single Player option on the main menu
+*/

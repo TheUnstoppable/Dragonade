@@ -1,0 +1,226 @@
+/*!
+* \page page_cinematics Cinematics
+*
+* The cinematics engine is a lightweight scripting language within the W3D engine for the creation
+* of visual effects and animating objects. It uses simple text files to create a timeline of events
+* and a set of slots to store reference to objects that will be affected by those events
+*
+*
+* \section page_cinematics_fileformat File Format
+*   A cinematic script is typically created using a text file editor such as notepad and saved with
+*   a .txt file extension. Each line of the file defines an event that occurs during the cinematic
+*   and follows the format;
+*
+*     time command, parameter1, parameter2, ..., parameterN
+*
+*   Where the number of parameters depends upon which command is being used. See the \ref page_cinematics_commands
+*   section for a list of available commands and their parameters.
+*
+*   \note
+*     You can add comments to a cinematics file by starting a line with a ;
+*
+*  \section page_cinematics_timing Event Time
+*    The time of each event can either be defined as the number of seconds or the number of frames
+*    since the start of the cinematic. To specify an event time in seconds a positive number should
+*    be used, for example;
+*
+*      1.5 command, parameter1, parameter2, ..., parameterN
+*
+*    Would trigger an event 1.5 seconds into the cinematic. Events that are timed in frames should
+*    be specified as a negative number where the number is the frame index at which the event should
+*    occur. For example;
+*
+*      -45 command, parameter1, parameter2, ..., parameterN
+*
+*    Would trigger an event 45 frames, or 1.5 seconds, into the cinematic as if it were an animation
+*    that runs at a constant 30 frames per second
+*
+*    \note
+*      To trigger an event at the start of a cinematic, such as creating objects and starting any
+*      animations, you should use the value 0 for the event time.
+*
+*
+*
+*
+* \section page_cinematics_slots Slots
+*   Many of the commands in the cinematics system use the concept of slots to refer to actual objects
+*   within the game. There are a total of 40 slots available for using starting from index 0, making
+*   index 39 the highest slot available.
+*
+*   Slots are populated using any of the \ref page_cinematics_commands_create_object,
+*   \ref page_cinematics_commands_create_real_object or \ref page_cinematics_commands_add_object
+*   commands.
+*
+*   \subsection page_cinematics_slots_custom Populating Slots With Customs
+*     You can also add an object into a cinematic slot by sending a custom message to the cinematic
+*     with the message ID 10000 + the number of the slot to be populated. The ID of the object to be
+*     added must be sent as the parameter for the custom message.
+*
+*
+*
+*
+* \section page_cinematics_commands Commands
+*    The following commands are available for use in cinematic scripts. Optional parameters for a
+*    command are enclosed within [square brackets] and do not need to be specified for the command
+*    to work.
+*
+*    \subsection page_cinematics_commands_create_object Create_Object
+*      <b>Parameters:</b> <i>slot, model</i>
+*
+*      Creates a fake cinematic object with the specified model and adds it to the slot. You should
+*      not include the .w3d extension at the end of the model name.
+*
+*
+*    \subsection page_cinematics_commands_create_real_object Create_Real_Object
+*      <b>Parameters:</b> <i>slot, preset, [attachToSlot, attachToBone]</i>
+*
+*      Creates a real instance of the object defined by the specified preset and adds it to the slot.
+*      If <i>attachToSlot</i> and <i>attachToBone</i> are specified, it will attach the created object
+*      to the <i>attachToBone</i> bone on the object currently in the <i>attachToSlot</i> slot.
+*
+*      \warning
+*        Objects created using this command will be added to the dirty cull list in the physics
+*        engine and can cause severe performance deterioration if overused. Avoid using this for any
+*        objects that will persist after the completion of the cinematic where possible by creating
+*        the object outside of the cinematic and attaching it using a custom message or the
+*        \ref page_cinematics_commands_add_object command
+*
+*
+*    \subsection page_cinematics_commands_add_object Add_Object
+*      <b>Parameters:</b> <i>slot, preset</i>
+*
+*      Finds the closest instance of the specified preset and adds it the cinematic slot. Uses the
+*      position of the object the cinematic is attached to as the reference point for distance.
+*
+*
+*    \subsection page_cinematics_commands_create_explosion Create_Exploision
+*      <b>Parameters:</b> <i>explosionPreset, slot, bone</i>
+*
+*      Creates an instance of the specified explosion preset at the named bone on the object which
+*      is currently in the cinematic slot identified in the parameters
+*
+*      \note
+*        The bone name is not optional, if you don't care where the explosion occurs use "origin"
+*        for the <i>bone</i> parameter
+*
+*
+*    \subsection page_cinematics_commands_destroy_object Destroy_Object
+*      <b>Parameters:</b> <i>slot</i>
+*
+*      Destroys the cinematic or real game object which is currently in the specified cinematic slot
+*
+*
+*    \subsection page_cinematics_commands_play_animation Play_Animation
+*      <b>Parameters:</b> <i>slot, animation, [loop, subobject, blended]</i>
+*
+*      Plays the named animation on the object currently in the identified cinematic slot. If the
+*      loop parameter is set to a non zero value it will replay the animation indefinitely until a
+*      new animation is set on the object, otherwise it will play the animation once.
+*
+*      \note
+*        Blended mode only works on soldier objects and defaults to off. To use a blended animation
+*        set the value to 1.
+*
+*
+*    \subsection page_cinematics_commands_play_complete_animation Play_Complete_Animation
+*      <b>Parameters:</b> <i>slot, animation</i>
+*
+*      Plays the named animation on the object currently in the identified cinematic slot once from
+*      start to finish.
+*
+*
+*    \subsection page_cinematics_commands_stop_animation Stop_Animation
+*      <b>Parameters:</b> <i>slot</i>
+*
+*      Stops any current animation on the object in the identified cinematic slot
+*
+*
+*    \subsection page_cinematics_commands_play_audio Play_Audio
+*      <b>Parameters:</b> <i>preset, [slot, bone]</i>
+*
+*      Creates an instance of the specified sound preset. If the optional slot parameter is not
+*      specified this will be a 2D sound which is heard by all players in the game at full volume,
+*      otherwise it is a 3D sound at the location a bone on the the object currently in that slot.
+*
+*      \note
+*        The bone name is not optional if slot is specified, if you don't care where on the object
+*        the sound occurs use "origin" for the <i>bone</i> parameter
+*
+*
+*    \subsection page_cinematics_commands_control_camera Control_Camera
+*      <b>Parameters:</b> <i>slot</i>
+*
+*      \todo Document the effects of this command
+*
+*
+*    \subsection page_cinematics_commands_send_custom Send_Custom
+*      <b>Parameters:</b> <i>\todo Document Parameters</i>
+*
+*      \todo Document Command
+*
+*
+*    \subsection page_cinematics_commands_attach_to_bone Attach_To_Bone
+*      <b>Parameters:</b> <i>\todo Document Parameters</i>
+*
+*      \todo Document Command
+*
+*
+*    \subsection page_cinematics_commands_attach_script Attach_Script
+*      <b>Parameters:</b> <i>\todo Document Parameters</i>
+*
+*      \todo Document Command
+*
+*
+*    \subsection page_cinematics_commands_set_primary Set_Primary
+*      <b>Parameters:</b> <i>\todo Document Parameters</i>
+*
+*      \todo Document Command
+*
+*
+*    \subsection page_cinematics_commands_move_slot Move_Slot
+*      <b>Parameters:</b> <i>\todo Document Parameters</i>
+*
+*      \todo Document Command
+*
+*
+*    \subsection page_cinematics_commands_sniper_control Sniper_Control
+*      <b>Parameters:</b> <i>\todo Document Parameters</i>
+*
+*      \todo Document Command
+*
+*
+*    \subsection page_cinematics_commands_shake_camera Shake_Camera
+*      <b>Parameters:</b> <i>\todo Document Parameters</i>
+*
+*      \todo Document Command
+*
+*
+*    \subsection page_cinematics_commands_enable_shadow Enable_Shadow
+*      <b>Parameters:</b> <i>\todo Document Parameters</i>
+*
+*      \todo Document Command
+*
+*
+*    \subsection page_cinematics_commands_enable_letterbox Enable_Letterbox
+*      <b>Parameters:</b> <i>\todo Document Parameters</i>
+*
+*      \todo Document Command
+*
+*
+*    \subsection page_cinematics_commands_set_screen_fade_color Set_Screen_Fade_Color
+*      <b>Parameters:</b> <i>\todo Document Parameters</i>
+*
+*      \todo Document Command
+*
+*
+*    \subsection page_cinematics_commands_set_screen_fade_opacity Set_Screen_Fade_Opacity
+*      <b>Parameters:</b> <i>\todo Document Parameters</i>
+*
+*      \todo Document Command
+*
+*
+*    \subsection page_cinematics_commands_show_message Show_Message
+*      <b>Parameters:</b> <i>\todo Document Parameters</i>
+*
+*      \todo Document Command
+*/

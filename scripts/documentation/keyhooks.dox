@@ -1,0 +1,111 @@
+/*!
+* \page page_keyhooks Keyhooks
+*
+* The keyhooks system was introduced in version 2.1 of scripts.dll to allow scripts to detect when a
+* player presses a keyboard key and perform an action. A keyhook is defined as a logical key name
+* and a corresponding physical key. The logical key is specified by the script executing on the game
+* server, whilst the corresponding physical key is defined client side. This allows players to
+* customise their key bindings to suit their preferences.
+*
+*
+*
+*
+* \section page_keyhooks_implementation Script Implementation
+*   \todo Document how to hook and release logical keys via a script
+*   \see JFW_Key_Hook_Base
+*
+*
+*
+*
+* \section page_keyhooks_clientconfig Client Configuration
+*   \todo Is this information up to date?
+*
+* The client side configuration is stored in the keys.cfg file in the data folder and contains a
+* list of key definitions. A key definition specifies which physical keyboard key is bound to
+* each logical key name from the game scripts. Each definition is placed on a seperate line and
+* has the following format;
+*
+* <i>logical_key=physical_key</i>
+*
+* For example;
+*
+* <i>Jetpack=Y_Key</i>
+*
+* Would bind the 'Jetpack' logical key to the Y key on the keyboard. Thus, whenever a script binds
+* the the 'Jetpack' key for a player, they can press the Y key to trigger whatever functionality
+* the script provides in its JFW_Key_Hook_Base::KeyHook() function.
+*
+* Players can customise their key hook bindings using the editor built into the Renegade options
+* menu or by manually editing their keys.cfg file. If a logical key is hooked by a script but
+* does not exist in a players keys.cfg file they will be unable to activate the key hook for that
+* script.
+*
+*   \subsection page_keyhooks_clientconfig_physicalkeynames Physical Key Names
+*   The following is a list of the valid physical key names that can be used in the client side key
+*   configuration settings.
+*
+*   <table>
+*     <tr><th>Key Definition</th>            <th>Description</th></tr>
+*     <tr><td>F1_Key-F12_Key</td>            <td>Function keys</td></tr>
+*     <tr><td>0_Key-9_Key</td>               <td>number keys</td></tr>
+*     <tr><td>A_Key-Z_Key</td>               <td>letter keys</td></tr>
+*     <tr><td>Minus_Key</td>                 <td>the -_ key</td></tr>
+*     <tr><td>Equals_Key</td>                <td>the += key</td></tr>
+*     <tr><td>Backspace_Key</td>             <td>the backspace key</td></tr>
+*     <tr><td>Tab_Key</td>                   <td>the tab key</td></tr>
+*     <tr><td>Left_Bracket_Key</td>          <td>the [{ key</td></tr>
+*     <tr><td>Right_Bracket_Key</td>         <td>the ]} key</td></tr>
+*     <tr><td>Enter_Key</td>                 <td>the enter key</td></tr>
+*     <tr><td>Semicolon_Key</td>             <td>the ;: key</td></tr>
+*     <tr><td>Apostrophe_Key</td>            <td>the '" key</td></tr>
+*     <tr><td>Grave_Key</td>                 <td>the `~ key</td></tr>
+*     <tr><td>Backslash_Key</td>             <td>the \| key</td></tr>
+*     <tr><td>Comma_Key</td>                 <td>the ,< key</td></tr>
+*     <tr><td>Period_Key</td>                <td>the .> key</td></tr>
+*     <tr><td>Slash_Key</td>                 <td>the /? key</td></tr>
+*     <tr><td>Space_Bar_Key</td>             <td>the space bar key</td></tr>
+*     <tr><td>Caps_Lock_Key</td>             <td>the caps lock key</td></tr>
+*     <tr><td>Num_Lock_Key</td>              <td>the num lock key</td></tr>
+*     <tr><td>Scroll_Lock_Key</td>           <td>the scroll lock key</td></tr>
+*     <tr><td>Escape_Key</td>                <td>the escape key</td></tr>
+*     <tr><td>Keypad_0_Key-Keypad_9_Key</td> <td>the keypad number keys</td></tr>
+*     <tr><td>Keypad_Minus_Key</td>          <td>the keypad - key</td></tr>
+*     <tr><td>Keypad_Star_Key</td>           <td>the keypad * key</td></tr>
+*     <tr><td>Keypad_Plus_Key</td>           <td>the keypad + key</td></tr>
+*     <tr><td>Keypad_Period_Key</td>         <td>the keypad . key</td></tr>
+*     <tr><td>Keypad_Enter_Key</td>          <td>the keypad enter key</td></tr>
+*     <tr><td>Keypad_Slash_Key</td>          <td>the keypad / key</td></tr>
+*     <tr><td>Home_Key</td>                  <td>the home key</td></tr>
+*     <tr><td>Page_Up_Key</td>               <td>the page up key</td></tr>
+*     <tr><td>End_Key</td>                   <td>the end key</td></tr>
+*     <tr><td>Page_Down_Key</td>             <td>the page down key</td></tr>
+*     <tr><td>Insert_Key</td>                <td>the insert key</td></tr>
+*     <tr><td>Delete_Key</td>                <td>the delete key</td></tr>
+*     <tr><td>Up_Key</td>                    <td>the up key</td></tr>
+*     <tr><td>Down_Key</td>                  <td>the down key</td></tr>
+*     <tr><td>Left_Key</td>                  <td>the left key</td></tr>
+*     <tr><td>Right_Key</td>                 <td>the right key</td></tr>
+*     <tr><td>Sys_Req_Key</td>               <td>the key that says SysRq/Print Screen on it</td></tr>
+*     <tr><td>Control_Key</td>               <td>either control key</td></tr>
+*     <tr><td>Left_Control_Key</td>          <td>the left control key</td></tr>
+*     <tr><td>Right_Control_Key</td>         <td>the right control key</td></tr>
+*     <tr><td>Shift_Key</td>                 <td>either shift key</td></tr>
+*     <tr><td>Left_Shift_Key</td>            <td>the left shift key</td></tr>
+*     <tr><td>Right_Shift_Key</td>           <td>the right shift key</td></tr>
+*     <tr><td>Alt_Key</td>                   <td>either alt key</td></tr>
+*     <tr><td>Left_Alt_Key</td>              <td>the left alt key</td></tr>
+*     <tr><td>Right_Alt_Key</td>             <td>the right alt key</td></tr>
+*     <tr><td>Windows_Key</td>               <td>either windows key</td></tr>
+*     <tr><td>Left_Windows_Key</td>          <td>the left windows key</td></tr>
+*     <tr><td>Right_Windows_Key</td>         <td>the right windows key</td></tr>
+*     <tr><td>App_Menu_Key</td>              <td>the menu key (next to the windows key on most keyboards)</td></tr>
+*     <tr><td>Left_Mouse_Button</td>         <td>the left mouse button</td></tr>
+*     <tr><td>Right_Mouse_Button</td>        <td>the right mouse button</td></tr>
+*     <tr><td>Center_Mouse_Button</td>       <td>the middle mouse button (if you have a mouse wheel, pressing the wheel counts as this)</td></tr>
+*     <tr><td>Left_Side_Mouse_Button</td>    <td>the left side button on mice with 5 buttons</td></tr>
+*     <tr><td>Right_Side_Mouse_Button</td>   <td>the right side button on mice with 5 buttons</td></tr>
+*     <tr><td>Mouse_Wheel_Forward</td>       <td>Forward movement of the mouse wheel</td></tr>
+*     <tr><td>Mouse_Wheel_Backward</td>      <td>Backward movement of the mouse wheel</td></tr>
+*     <tr><td>None_Key</td>                  <td>if set to this, the key is ignored and no physical key is bound to this logical key.</td></tr>
+*   </table>
+*/

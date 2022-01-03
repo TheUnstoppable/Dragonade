@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="02. Headers">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="01. Sources">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="General.h">
+      <Filter>02. Headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="General.cpp">
+      <Filter>01. Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="shared.cpp">
+      <Filter>01. Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\scripts\TranslateDBClass.cpp">
+      <Filter>01. Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\scripts\engine_string.cpp">
+      <Filter>01. Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\scripts\engine_common.cpp">
+      <Filter>01. Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\scripts\HashTemplateKeyClass.cpp">
+      <Filter>01. Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\scripts\ChunkClasses.cpp">
+      <Filter>01. Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\scripts\PersistFactoryClass.cpp">
+      <Filter>01. Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\scripts\TDBCategoryClass.cpp">
+      <Filter>01. Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\scripts\TDBObjClass.cpp">
+      <Filter>01. Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\scripts\PointerRemapClass.cpp">
+      <Filter>01. Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\scripts\multilist.cpp">
+      <Filter>01. Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\scripts\DefinitionMgrClass.cpp">
+      <Filter>01. Sources</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

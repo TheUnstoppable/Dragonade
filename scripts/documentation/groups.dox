@@ -1,0 +1,179 @@
+/*!
+* \defgroup scripts Object Scripts
+*
+* This group contains all of the scripts which can be attached to objects. Additionally some scripts
+* are sorted into one or more subgroups based upon their functionality to make it easier to find a
+* script to accomplish a specific task, such as controlling a base defence.
+*/
+
+  /*!
+  * \defgroup scripts_basedefences Scripts - Base Defences
+  * \ingroup scripts
+  *
+  * This group contains all of the scripts that can be used to create automated base defences. You
+  * should only attach one of these scripts to your base defence preset, using more than one will
+  * cause unpredictable results.
+  */
+
+  /*!
+  * \defgroup scripts_weaponmanagement Scripts - Weapon Management
+  * \ingroup scripts
+  *
+  * The scripts in this group are related to management of the weapons available to an armed game
+  * object, such as a vehicle or infantry unit. Examples of weapon management include granting an
+  * additional weapon, removing weapons and altering the ammo count of a weapon.
+  */
+
+  /*!
+  * \defgroup scripts_teamcontrol Scripts - Team (Base) Control
+  * \ingroup scripts
+  *
+  * Scripts in this group can monitor and/or modify the state of the logical team base, such as
+  * setting the base power state or whether a team can produce vehicles.
+  */
+
+  /*!
+  * \defgroup scripts_weather Scripts - Weather
+  * \ingroup scripts
+  *
+  * Scripts that control weather effects.
+  */
+
+  /*!
+  * \defgroup scripts_customgenerators Scripts - Custom Generators
+  * \ingroup scripts
+  *
+  * Scripts that trigger custom messages to be sent when certain conditions are met, these can be used
+  * as triggers for scripts in the \ref scripts_customconsumers "Custom Consumers" scripts group.
+  */
+
+  /*!
+  * \defgroup scripts_customconsumers Scripts - Custom Consumers
+  * \ingroup scripts
+  *
+  * Scripts that listen for specific custom messages and perform actions when they are recieved. Note
+  * that this does not include all scripts that use customs internally, only those which allow the ID
+  * of the custom(s) they are listening for to be modified in script parameters.
+  */
+
+  /*!
+  * \defgroup scripts_powerups Scripts - Powerups
+  * \ingroup scripts
+  *
+  * Scripts that can be used on powerups
+  */
+
+  /*!
+  * \defgroup scripts_cinematic Scripts - Cinematics
+  * \ingroup scripts
+  *
+  * Scripts related to the use of cinematics
+  */
+
+  /*!
+  * \defgroup scripts_apocrising Scripts - Apocalypse Rising
+  * \ingroup scripts
+  * 
+  * Scripts designed specifically for Apocalypse Rising, a game by Bluehell Productions. These are
+  * subject to change without notice to suit the needs of AR and are therefore not recommended for
+  * use in any other game.
+  */
+
+  /*!
+  * \defgroup scripts_conquest Scripts - Conquest Mode
+  * \ingroup scripts
+  *
+  * A set of standalone scripts that can be used to create a conquest style map whereby teams must
+  * accumulate a specific number of points by achieving various objectives. Alternatively both teams
+  * can start with a set number of points and the first team to reduce the other teams points to zero
+  * wins... basically the same thing in reverse.
+  */
+
+  /*!
+  * \defgroup scripts_radar Scripts - Radar Control
+  * \ingroup scripts
+  *
+  * Scripts that are related to the radar, such as enabling or disabling a teams radar and changing
+  * the radar visibility of an object
+  */
+
+  /*!
+  * \defgroup scripts_dp88BuildingScripts Scripts - danpaul88's Custom Building Scripts
+  * \ingroup scripts
+  *
+  * A set of scripts by danpaul88 to create more interactive buildings, either using actual building
+  * controllers or normal gameobjects. These scripts allow buildings to contain weakpoints, repair
+  * nodes and capture points, all linked to a central controller script for that building.
+  */
+
+  /*!
+  * \defgroup scripts_ai Scripts - AI
+  * \ingroup scripts
+  *
+  * Custom AI scripts for units
+  */
+
+  /*!
+  * \defgroup scripts_sound Scripts - Sound Effects
+  * \ingroup scripts
+  *
+  * Scripts which create sound effects when events occur, such as a turret rotation sound.
+  */
+
+
+
+
+
+
+
+
+/*!
+* \defgroup api Engine API
+*
+* This group contains all of the various engine API commands, which are sorted into subgroups for
+* easy reference.
+*/
+
+    /*!
+    * \defgroup api_translations Engine API - Translations
+    * \ingroup api
+    *
+    * Engine API commands related to the translations database.
+    */
+
+    /*!
+    * \defgroup api_objects Engine API - Object Management
+    * \ingroup api
+    *
+    * Engine API commands related to management of game objects
+    */
+
+        /*!
+        * \defgroup api_objects_find Engine API - Object Find / Search
+        * \ingroup api_objects
+        *
+        * Engine API commands related to finding one or more game objects that meet specific criteria.
+        */
+
+    /*!
+    * \defgroup api_scripts Engine API - Scripts Management
+    * \ingroup api
+    *
+    * Engine API commands related to managing the scripts attached to an object
+    */
+
+    /*!
+    * \defgroup api_teamcontrol Engine API - Team (Base) Control
+    * \ingroup api
+    *
+    * Engine API commands related to controlling and querying the state of the logical team base, such
+    * as checking or setting whether the specified teams base can produce vehicles.
+    */
+
+    /*!
+    * \defgroup api_weapons Engine API - Weapons
+    * \ingroup api
+    *
+    * Engine API commands related to weapons, including managing an objects weapons bag, switching the
+    * selected weapon, checking and altering the number of bullets an object has etc.
+    */

@@ -1,0 +1,71 @@
+keys.cfg is the config file used for the custom key hooks in bandtest.dll 2.1.
+keys.cfg must go into the data folder.
+Each line in the file looks like this
+Jetpack=Y_Key
+The part before the = is the logical key name and is what is used by a script to refer to the key.
+The part after the = is the physical key name and refers to the actual keyboard key tat you press to trigger the particular logical key.
+All the scripts (and other features) that use particular logical keys will specify in the documentation which keys they are listening for.
+To edit keys.cfg you can use the GUI app I wrote (see keycfg.txt for details)
+Or you can edit manually.
+For those editing manually or who want to write their own editor (e.g. as part of a mod setup program), here is the list of valid keys
+F1_Key-F12_Key function keys
+0_Key-9_Key number keys
+A_Key-Z_Key letter keys
+Minus_Key the -_ key
+Equals_Key the += key
+Backspace_Key the backspace key
+Tab_Key key the tab key
+Left_Bracket_Key the [{ key
+Right_Bracket_Key the ]} key
+Enter_Key the enter key
+Semicolon_Key the ;: key
+Apostrophe_Key the '" key
+Grave_Key the `~ key
+Backslash_Key the \| key
+Comma_Key the ,< key
+Period_Key the .> key
+Slash_Key the /? key
+Space_Bar_Key the space bar key
+Caps_Lock_Key the caps lock key
+Num_Lock_Key the num lock key
+Scroll_Lock_Key the scroll lock key
+Escape_Key the escape key
+Keypad_0_Key-Keypad_9_Key the keypad number keys
+Keypad_Minus_Key the keypad - key
+Keypad_Star_Key the keypad * key
+Keypad_Plus_Key the keypad + key
+Keypad_Period_Key the keypad . key
+Keypad_Enter_Key the keypad enter key
+Keypad_Slash_Key the keypad / key
+Home_Key the home key
+Page_Up_Key the page up key
+End_Key the end key
+Page_Down_Key the page down key
+Insert_Key the insert key
+Delete_Key the delete key
+Up_Key the up key
+Down_Key the down key
+Left_Key the left key
+Right_Key the right key
+Sys_Req_Key the key that says SysRq/Print Screen on it
+Control_Key either control key
+Left_Control_Key the left control key
+Right_Control_Key the right control key
+Shift_Key either shift key
+Left_Shift_Key the left shift key
+Right_Shift_Key the right shift key
+Alt_Key either alt key
+Left_Alt_Key the left alt key
+Right_Alt_Key the right alt key
+Windows_Key either windows key
+Left_Windows_Key the left windows key
+Right_Windows_Key the right windows key
+App_Menu_Key the menu key (next to the windows key on most keyboards)
+Left_Mouse_Button the left mouse button
+Right_Mouse_Button the right mouse button
+Center_Mouse_Button the middle mouse button (if you have a mouse wheel, pressing the wheel counts as this)
+Left_Side_Mouse_Button the left side button on mice with 5 buttons
+Right_Side_Mouse_Button the right side button on mice with 5 buttons
+Mouse_Wheel_Forward Forward movement of the mouse wheel
+Mouse_Wheel_Backward Backward movement of the mouse wheel
+None_Key if set to this, the key is ignored and no physical key is bound to this logical key.

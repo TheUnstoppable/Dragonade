@@ -1,0 +1,25 @@
+/*!
+* \page page_tutorial_constructionYard Using a Construction Yard building controller
+* \author jonwil
+* \since 4.1
+*
+* To create a working construction yard, place an appropriate building on your terrain. Then create a building controller of type construction yard.
+*
+* The following settings are specific to construction yard objects:
+* \param RepairRate
+*   The rate to use when repairing buildings, in seconds
+* \param VehicleRepairRate
+*   The rate to use when repairing buildings set up as vehicles, in seconds)
+* \param RepairAmount
+*   The amount to repair
+* \param LowPowerRepairAmount
+*   The amount to repair when the power is down
+* \param RepairWarhead
+*   The warhead to use to do the repairs
+*
+* The way it works is that every RepairRate seconds, it will apply repair damage to all buildings of the correct team that are still alive, using RepairAmount or LowPowerRepairAmount and RepairWarhead.
+* For vehicles it uses VehicleRepairRate and it will repair any vehicles of the correct team that have their Encyclopedia Type set to Building in LevelEdit. (it made sense as a convenient way to tell the construction yard logic what to repair and what not to repair)
+*
+* \note
+*   The construction yard object will not repair itself.
+*/

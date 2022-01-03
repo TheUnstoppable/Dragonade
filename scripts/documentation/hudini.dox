@@ -1,0 +1,102 @@
+/*!
+* \page page_hudini hud.ini
+* \ingroup configuration
+*
+* This configuration file contains UI related settings for game clients.
+*
+* \section s_hudini_general General
+*
+*   \subsection ss_hudini_NodHouseRed NodHouseRed
+*     \since 4.0
+*     <b>Type:</b> Int<br/>
+*     <b>Default:</b> 255<br/>
+*     <br/>
+*     The red component of the RGB value controlling the colour of messages related to team 0 (Nod), must be between 0 and 255
+*
+*   \subsection ss_hudini_NodHouseGreen NodHouseGreen
+*     \since 4.0
+*     <b>Type:</b> Int<br/>
+*     <b>Default:</b> 0<br/>
+*     <br/>
+*     The green component of the RGB value controlling the colour of messages related to team 0 (Nod), must be between 0 and 255
+*
+*   \subsection ss_hudini_NodHouseBlue NodHouseBlue
+*     \since 4.0
+*     <b>Type:</b> Int<br/>
+*     <b>Default:</b> 0<br/>
+*     <br/>
+*     The blue component of the RGB value controlling the colour of messages related to team 0 (Nod), must be between 0 and 255
+*
+*   \subsection ss_hudini_GDIHouseRed GDIHouseRed
+*     \since 4.0
+*     <b>Type:</b> Int<br/>
+*     <b>Default:</b> 255<br/>
+*     <br/>
+*     The red component of the RGB value controlling the colour of messages related to team 1 (GDI), must be between 0 and 255
+*
+*   \subsection ss_hudini_GDIHouseGreen GDIHouseGreen
+*     \since 4.0
+*     <b>Type:</b> Int<br/>
+*     <b>Default:</b> 204<br/>
+*     <br/>
+*     The green component of the RGB value controlling the colour of messages related to team 1 (GDI), must be between 0 and 255
+*
+*   \subsection ss_hudini_GDIHouseBlue GDIHouseBlue
+*     \since 4.0
+*     <b>Type:</b> Int<br/>
+*     <b>Default:</b> 0<br/>
+*     <br/>
+*     The blue component of the RGB value controlling the colour of messages related to team 1 (GDI), must be between 0 and 255
+*
+*   \subsection ss_hudini_PrivateMessageRed PrivateMessageRed
+*     \since 4.0
+*     <b>Type:</b> Int<br/>
+*     <b>Default:</b> 0<br/>
+*     <br/>
+*     The red component of the RGB value controlling the colour of private messages, must be between 0 and 255
+*
+*   \subsection ss_hudini_PrivateMessageGreen PrivateMessageGreen
+*     \since 4.0
+*     <b>Type:</b> Int<br/>
+*     <b>Default:</b> 255<br/>
+*     <br/>
+*     The green component of the RGB value controlling the colour of private messages, must be between 0 and 255
+*     
+*     \note
+*       Prior to 4.2 the default value for this field was 0
+*
+*   \subsection ss_hudini_PrivateMessageBlue PrivateMessageBlue
+*     \since 4.0
+*     <b>Type:</b> Int<br/>
+*     <b>Default:</b> 255<br/>
+*     <br/>
+*     The blue component of the RGB value controlling the colour of private messages, must be between 0 and 255
+*
+*   \subsection ss_hudini_PublicMessageRed PublicMessageRed
+*     \since 4.0
+*     <b>Type:</b> Int<br/>
+*     <b>Default:</b> 255<br/>
+*     <br/>
+*     The red component of the RGB value controlling the colour of public messages, must be between 0 and 255
+*
+*   \subsection ss_hudini_PublicMessageGreen PublicMessageGreen
+*     \since 4.0
+*     <b>Type:</b> Int<br/>
+*     <b>Default:</b> 255<br/>
+*     <br/>
+*     The green component of the RGB value controlling the colour of public messages, must be between 0 and 255
+*
+*   \subsection ss_hudini_PublicMessageBlue PublicMessageBlue
+*     \since 4.0
+*     <b>Type:</b> Int<br/>
+*     <b>Default:</b> 255<br/>
+*     <br/>
+*     The blue component of the RGB value controlling the colour of public messages, must be between 0 and 255
+*
+*   \subsection ss_hudini_ScrollingRadarMap ScrollingRadarMap
+*     \since 4.0
+*     <b>Type:</b> Boolean<br/>
+*     <b>Default:</b> false<br/>
+*     <br/>
+*     Enables a scrolling radar map, which only works when configured server side by an object with the JFW_Change_Radar_Map script attached
+*/
