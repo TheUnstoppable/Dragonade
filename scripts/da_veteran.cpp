@@ -225,7 +225,7 @@ void DAVeteranManagerClass::Init() {
     Register_Event(DAEvent::VEHICLEENTER);
     Register_Event(DAEvent::PLAYERJOIN, INT_MAX);
     Register_Object_Event(DAObjectEvent::DAMAGEDEALT, DAObjectEvent::PLAYER);
-    Register_Object_Event(DAObjectEvent::KILLDEALT, DAObjectEvent::PLAYER);
+    Register_Object_Event(DAObjectEvent::KILLRECEIVED, DAObjectEvent::ALL);
     Register_Object_Event(DAObjectEvent::CREATED, DAObjectEvent::PLAYER);
     Register_Chat_Command((DAECC)&DAVeteranManagerClass::Veteran_Chat_Command, "!veteran|!vet|!vets|!vetinfo|!vi|!vetstatus|!vetstats|!vs|!vetpoints|!vetpoint|!vp|!v|!xp|!exp|VetInfo", 0, DAAccessLevel::NONE, DAChatType::ALL);
 }
@@ -356,20 +356,19 @@ void DAVeteranManagerClass::Damage_Event(DamageableGameObj* Victim, ArmedGameObj
 }
 
 void DAVeteranManagerClass::Kill_Event(DamageableGameObj* Victim, ArmedGameObj* Killer, float Damage, unsigned Warhead, float Scale, DADamageType::Type Type) {
-    if (PTTEAM(Get_Object_Type(Killer)) == Get_Object_Type(Victim)) {
-        float Worth = Get_Worth(Victim);
-        if (Worth > 0.f) {
-        	if (Is_Beacon(GetExplosionObj())) {
-                Give_Veteran_Points(Killer, Worth);
-                Check_Promotions(Killer);
-            } else {
-                DynamicVectorClass<DADamageTableStruct> Damagers;
-                DADamageLog::Get_Damagers_By_Percent_Other_Team(Damagers, Victim, Get_Object_Type(Victim), 0.0f, 0.0f);
-                for (int i = 0; i < Damagers.Count(); i++) {
-                    GameObject* Damager = Damagers[i].Player->Get_GameObj();
-                    Give_Veteran_Points(Damager, Worth * Damagers[i].Damage);
-                    Check_Promotions(Damager);
-                }
+    float Worth = Get_Worth(Victim);
+    if (Worth > 0.f) {
+        if (Killer && Is_Beacon(GetExplosionObj()) && PTTEAM(Get_Object_Type(Victim)) == Get_Object_Type(Killer)) {
+            Give_Veteran_Points(Killer, Worth);
+            Check_Promotions(Killer);
+        }
+        else {
+            DynamicVectorClass<DADamageTableStruct> Damagers;
+            DADamageLog::Get_Damagers_By_Percent_Other_Team(Damagers, Victim, Get_Object_Type(Victim), 0.0f, 0.0f);
+            for (int i = 0; i < Damagers.Count(); i++) {
+                GameObject* Damager = Damagers[i].Player->Get_GameObj();
+                Give_Veteran_Points(Damager, Worth * Damagers[i].Damage);
+                Check_Promotions(Damager);
             }
         }
     }
