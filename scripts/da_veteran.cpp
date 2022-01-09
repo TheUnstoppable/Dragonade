@@ -215,6 +215,10 @@ DAVeteranPlayerDataObserverClass* DAVeteranManagerClass::Get_Player_Data(GameObj
 	}
 }
 
+void DAVeteranManagerClass::Static_Init() {
+	DASettingsManager::Add_Settings("da_veteran.ini");
+}
+
 void DAVeteranManagerClass::Init() {
 	LabelPlayerRank = false;
 	RepairPointsRequiredForPoints = 0.f;

@@ -32,6 +32,7 @@
 #include "da_building.h"
 #include "da_damagelog.h"
 #include "da_cratemanager.h"
+#include "da_veteran.h"
 #include "da_ban.h"
 #include <random>
 
@@ -89,6 +90,7 @@ void DA::Init() {
 	DACrateManager::Static_Init();
 	DABanManager::Init();
 	DAChatCommandManager::Init();
+	DAVeteranManagerClass::Static_Init();
 	DAPluginManager::Init();
 	
 	HINSTANCE Handle = LoadLibrary("da.dll");

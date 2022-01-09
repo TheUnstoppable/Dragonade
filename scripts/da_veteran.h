@@ -129,6 +129,8 @@ protected:
 	DAVeteranPlayerDataObserverClass* Get_Player_Data(GameObject* obj);
 
 public:
+	static void Static_Init();
+
 	DAVeteranLevel* Get_Level_Data(int level);
 	float Get_Worth(StringClass name);
 	float Get_Worth(GameObject* obj);
