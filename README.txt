@@ -26,6 +26,14 @@ Installation:
 
 Update History:
 
+Version 1.10.3 Hotfix #1
+  Changes:
+   - Improvements for kill messages.
+   - Move veteran system configuration to a new file "da_veteran.ini".
+
+  Bug Fixes:
+   - Fix a bug in Veteran System when an object is killed by non-player would not give player veteran points even if player damaged the victim before.
+
 Version 1.10.3
   Additions:
    - Updated to TT 4.7.1.
