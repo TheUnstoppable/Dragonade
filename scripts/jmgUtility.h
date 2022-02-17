@@ -914,6 +914,29 @@ public:
 	enum Status{Removed=-2,NotDefined=-1,Pending,Accomplished,Failed,Hidden};
 	int controllerId;
 	char infantryAttachBone[32];
+	struct ObjectiveVisibleSettingOverride
+	{
+		int objectiveId;
+		char markerModel[16];
+		int markerColor;
+		char attachBone[16];
+		bool overrideTextColor;
+		Vector3 textColor;
+		bool overrideHudColor;
+		Vector3 hudColor;
+		ObjectiveVisibleSettingOverride(int objectiveId,const char *model,int markerColor,const char *attachBone,bool overrideTextColor,Vector3 textColor,bool overrideHudColor,Vector3 hudColor)
+		{
+			this->objectiveId = objectiveId;
+			sprintf(this->markerModel,"%s",model);
+			this->markerColor = markerColor;
+			sprintf(this->attachBone,"%s",attachBone);
+			this->overrideTextColor = overrideTextColor;
+			this->textColor = textColor;
+			this->overrideHudColor = overrideHudColor;
+			this->hudColor = hudColor;
+		}
+	};
+	SList<ObjectiveVisibleSettingOverride> overrideVisibleObjectiveSettings;
 private:
 	struct ObjectiveNode
 	{
@@ -967,15 +990,19 @@ private:
 		objectiveUpdateObjectiveStringNumbered = Get_Translated_String(Get_String_ID_By_Desc("IDS_OBJ2_UPDATED_NUMBERED"));
 		objectiveStringIdsLoaded = true;
 	}
-	void selectMessageAndColor(const char *format,Priority priority)
+	void selectMessageAndColor(int objectiveId,const char *format,Priority priority)
 	{
-		switch (priority)
-		{
-		case Primary: JmgUtility::MessageTeamPlayersAndType(50,255,50,team,format); break;
-		case Secondary: JmgUtility::MessageTeamPlayersAndType(50,150,250,team,format); break;
-		case Tertiary:case Unknown: JmgUtility::MessageTeamPlayersAndType(150,50,150,team,format); break;
-		default: JmgUtility::MessageTeamPlayersAndType(125,150,150,team,format); break;
-		}
+		ObjectiveVisibleSettingOverride *overrideMarker = FindOverrideForObjective(objectiveId);
+		if (overrideMarker && overrideMarker->overrideTextColor)
+			JmgUtility::MessageTeamPlayersAndType((int)overrideMarker->textColor.X,(int)overrideMarker->textColor.Y,(int)overrideMarker->textColor.Z,team,format);
+		else
+			switch (priority)
+			{
+			case Primary: JmgUtility::MessageTeamPlayersAndType(50,255,50,team,format); break;
+			case Secondary: JmgUtility::MessageTeamPlayersAndType(50,150,250,team,format); break;
+			case Tertiary:case Unknown: JmgUtility::MessageTeamPlayersAndType(150,50,150,team,format); break;
+			default: JmgUtility::MessageTeamPlayersAndType(125,150,150,team,format); break;
+			}
 	}
 	void messagePlayerAndColor(GameObject *player,const char *format,Priority priority)
 	{
@@ -1037,11 +1064,11 @@ private:
 		objectiveCounts++;
 		if (status != Hidden && descriptionId)
 		{
-			selectMessageAndColor(formatObjectiveString(objectiveNewString,objectivePrioritieStrings[priority]),priority);
+			selectMessageAndColor(id,formatObjectiveString(objectiveNewString,objectivePrioritieStrings[priority]),priority);
 			if (objectiveNumber)
-				selectMessageAndColor(formatObjectiveString(Get_Translated_String(descriptionId),objectiveNumber),priority);
+				selectMessageAndColor(id,formatObjectiveString(Get_Translated_String(descriptionId),objectiveNumber),priority);
 			else
-				selectMessageAndColor(Get_Translated_String(descriptionId),priority);
+				selectMessageAndColor(id,Get_Translated_String(descriptionId),priority);
 		}
 		return true;
 	}
@@ -1053,13 +1080,21 @@ private:
 			return;
 		Commands->Destroy_Object(marker);
 	}
-	GameObject *Create_Radar_Marker(Vector3 pos, Priority priority,int objectiveId,const char *modelOverride)
+	ObjectiveVisibleSettingOverride *FindOverrideForObjective(int objectiveId)
+	{
+		for (SLNode<ObjectiveVisibleSettingOverride> *node = overrideVisibleObjectiveSettings.Head();node;node = node->Next())
+			if (node->Data() && node->Data()->objectiveId == objectiveId)
+				return node->Data();
+		return NULL;
+	}
+	GameObject *Create_Radar_Marker(Vector3 pos, Priority priority,int objectiveId)
 	{
 		GameObject *radarMarker = Commands->Create_Object("Daves Arrow",pos);
 		Commands->Set_Player_Type(radarMarker,team);
 		Commands->Set_Is_Visible(radarMarker,false);
-		if (modelOverride)
-			Commands->Set_Model(radarMarker,modelOverride);
+		ObjectiveVisibleSettingOverride *overrideMarker = FindOverrideForObjective(objectiveId);
+		if (overrideMarker && _stricmp(overrideMarker->markerModel,""))
+			Commands->Set_Model(radarMarker,overrideMarker->markerModel);
 		else
 			switch (priority)
 			{
@@ -1071,9 +1106,12 @@ private:
 		if (showRadarStars)
 		{
 			Commands->Set_Obj_Radar_Blip_Shape(radarMarker,RADAR_BLIP_SHAPE_OBJECTIVE);
-			Commands->Set_Obj_Radar_Blip_Color(radarMarker,priority == Primary ? RADAR_BLIP_COLOR_PRIMARY_OBJECTIVE : priority == Secondary ? RADAR_BLIP_COLOR_SECONDARY_OBJECTIVE : RADAR_BLIP_COLOR_TERTIARY_OBJECTIVE);
+			if (overrideMarker && overrideMarker->markerColor != -1)
+				Commands->Set_Obj_Radar_Blip_Color(radarMarker,overrideMarker->markerColor);
+			else
+				Commands->Set_Obj_Radar_Blip_Color(radarMarker,priority == Primary ? RADAR_BLIP_COLOR_PRIMARY_OBJECTIVE : priority == Secondary ? RADAR_BLIP_COLOR_SECONDARY_OBJECTIVE : RADAR_BLIP_COLOR_TERTIARY_OBJECTIVE);
 		}
-		Create_Objective_GameObject(radarMarker,objectiveId,priority);
+		Create_Objective_GameObject(radarMarker,objectiveId,priority,overrideMarker);
 		return radarMarker;
 	}
 public:
@@ -1088,6 +1126,7 @@ public:
 		sprintf(this->tertiaryObjectiveModel,"%s",tertiaryObjectiveModel);
 		this->showRadarStars = showRadarStars;
 		objectiveNodeList = NULL;
+		overrideVisibleObjectiveSettings.Remove_All();
 	}
 	~NewObjectiveSystem()
 	{
@@ -1102,19 +1141,23 @@ public:
 		}
 		objectiveNodeList = NULL;
 	}
-	bool Add_Objective(int objectiveId, Priority priority, Status status, unsigned long nameId, char *soundFilename, unsigned long descriptionId,GameObject *blipUnit,const char *modelOverride = NULL,int objectiveNumber = 0)
+	bool Add_Objective(int objectiveId, Priority priority, Status status, unsigned long nameId, char *soundFilename, unsigned long descriptionId,GameObject *blipUnit,int objectiveNumber = 0)
 	{
 		if (!blipUnit)
 			return false;
-		GameObject *radarMarker = Create_Radar_Marker(Commands->Get_Position(blipUnit),priority,objectiveId,modelOverride);
+		GameObject *radarMarker = Create_Radar_Marker(Commands->Get_Position(blipUnit),priority,objectiveId);
 		if (!radarMarker)
 			return false;
-		Commands->Attach_To_Object_Bone(radarMarker,blipUnit,blipUnit->As_SoldierGameObj() ? infantryAttachBone : "origin");
+		ObjectiveVisibleSettingOverride *overrideMarker = FindOverrideForObjective(objectiveId);
+		if (overrideMarker && _stricmp(overrideMarker->attachBone,""))
+			Commands->Attach_To_Object_Bone(radarMarker,blipUnit,overrideMarker->attachBone);
+		else
+			Commands->Attach_To_Object_Bone(radarMarker,blipUnit,blipUnit->As_SoldierGameObj() ? infantryAttachBone : "origin");
 		return addObjective(objectiveId,priority,status,nameId,soundFilename,descriptionId,Commands->Get_ID(radarMarker),objectiveNumber);
 	}
-	bool Add_Objective(int objectiveId, Priority priority, Status status, unsigned long nameId, char *soundFilename, unsigned long descriptionId,Vector3 blipPosition,const char *modelOverride = NULL,int objectiveNumber = 0)
+	bool Add_Objective(int objectiveId, Priority priority, Status status, unsigned long nameId, char *soundFilename, unsigned long descriptionId,Vector3 blipPosition,int objectiveNumber = 0)
 	{
-		GameObject *radarMarker = Create_Radar_Marker(blipPosition,priority,objectiveId,modelOverride);
+		GameObject *radarMarker = Create_Radar_Marker(blipPosition,priority,objectiveId);
 		if (!radarMarker)
 			return false;
 		return addObjective(objectiveId,priority,status,nameId,soundFilename,descriptionId,Commands->Get_ID(radarMarker),objectiveNumber);
@@ -1148,7 +1191,7 @@ public:
 			if (current->id == objectiveId)
 			{
 				Destroy_Radar_Marker(current->radarMarkerId);
-				GameObject *radarMarker = Create_Radar_Marker(Commands->Get_Position(blipUnit),current->priority,objectiveId,modelOverride);
+				GameObject *radarMarker = Create_Radar_Marker(Commands->Get_Position(blipUnit),current->priority,objectiveId);
 				if (!radarMarker)
 					return;
 				Commands->Attach_To_Object_Bone(radarMarker,blipUnit,blipUnit->As_SoldierGameObj() ? infantryAttachBone : "origin");
@@ -1179,7 +1222,7 @@ public:
 			if (current->id == objectiveId)
 			{
 				Destroy_Radar_Marker(current->radarMarkerId);
-				GameObject *radarMarker = Create_Radar_Marker(blipPosition,current->priority,objectiveId,modelOverride);
+				GameObject *radarMarker = Create_Radar_Marker(blipPosition,current->priority,objectiveId);
 				if (!radarMarker)
 					return;
 				current->radarMarkerId = Commands->Get_ID(radarMarker);
@@ -1214,9 +1257,9 @@ public:
 					objectiveCounts--;
 					if (current->status == Pending && current->nameId)
 						if (current->objectiveNumber)
-							selectMessageAndColor(formatObjectiveString(objectiveCancelledStringNumbered,objectivePrioritieStrings[current->priority],current->objectiveNumber),current->priority);
+							selectMessageAndColor(objectiveId,formatObjectiveString(objectiveCancelledStringNumbered,objectivePrioritieStrings[current->priority],current->objectiveNumber),current->priority);
 						else
-							selectMessageAndColor(formatObjectiveString(objectiveCancelledString,objectivePrioritieStrings[current->priority]),current->priority);
+							selectMessageAndColor(objectiveId,formatObjectiveString(objectiveCancelledString,objectivePrioritieStrings[current->priority]),current->priority);
 					Destroy_Radar_Marker(current->radarMarkerId);
 					current->active = false;
 					return true;
@@ -1237,9 +1280,9 @@ public:
 				{
 					if (status != Hidden && current->status != Hidden && current->nameId)
 						if (current->objectiveNumber)
-							selectMessageAndColor(formatObjectiveString(objectiveStatusChangedStringNumbered,objectivePrioritieStrings[current->priority],current->objectiveNumber,objectiveStatusStrings[status]),current->priority);
+							selectMessageAndColor(objectiveId,formatObjectiveString(objectiveStatusChangedStringNumbered,objectivePrioritieStrings[current->priority],current->objectiveNumber,objectiveStatusStrings[status]),current->priority);
 						else
-							selectMessageAndColor(formatObjectiveString(objectiveStatusChangedString,objectivePrioritieStrings[current->priority],objectiveStatusStrings[status]),current->priority);
+							selectMessageAndColor(objectiveId,formatObjectiveString(objectiveStatusChangedString,objectivePrioritieStrings[current->priority],objectiveStatusStrings[status]),current->priority);
 					GameObject *marker = Commands->Find_Object(current->radarMarkerId);
 					if (marker)
 					{
@@ -1280,13 +1323,13 @@ public:
 					{
 						if (current->objectiveNumber)
 						{
-							selectMessageAndColor(formatObjectiveString(objectiveUpdateObjectiveStringNumbered,objectivePrioritieStrings[current->priority],current->objectiveNumber),current->priority);
-							selectMessageAndColor(formatObjectiveString(Get_Translated_String(descriptionStringId),current->objectiveNumber),current->priority);
+							selectMessageAndColor(objectiveId,formatObjectiveString(objectiveUpdateObjectiveStringNumbered,objectivePrioritieStrings[current->priority],current->objectiveNumber),current->priority);
+							selectMessageAndColor(objectiveId,formatObjectiveString(Get_Translated_String(descriptionStringId),current->objectiveNumber),current->priority);
 						}
 						else
 						{
-							selectMessageAndColor(formatObjectiveString(objectiveUpdateObjectiveString,objectivePrioritieStrings[current->priority]),current->priority);
-							selectMessageAndColor(Get_Translated_String(descriptionStringId),current->priority);
+							selectMessageAndColor(objectiveId,formatObjectiveString(objectiveUpdateObjectiveString,objectivePrioritieStrings[current->priority]),current->priority);
+							selectMessageAndColor(objectiveId,Get_Translated_String(descriptionStringId),current->priority);
 						}
 					}
 					return true;
@@ -1353,7 +1396,11 @@ public:
 		{
 			if (current->active && current->status == Pending && current->priority == Priority::Primary && current->nameId)
 			{
-				Set_HUD_Help_Text_Player(obj,current->nameId,Vector3(0,1,0));
+				ObjectiveVisibleSettingOverride *overrideMarker = FindOverrideForObjective(current->id);
+				if (overrideMarker && overrideMarker->overrideHudColor)
+					Set_HUD_Help_Text_Player(obj,current->nameId,Vector3(overrideMarker->hudColor.X/255.0f,overrideMarker->hudColor.Y/255.0f,overrideMarker->hudColor.Z/255.0f));
+				else
+					Set_HUD_Help_Text_Player(obj,current->nameId,Vector3(0,1,0));
 				return;
 			}
 			current = current->next;
@@ -1397,8 +1444,11 @@ public:
 		}
 		return 0;
 	}
-	Vector3 Get_Hud_Help_Text_Color(Priority priority)
+	Vector3 Get_Hud_Help_Text_Color(int objectiveId,Priority priority)
 	{
+		ObjectiveVisibleSettingOverride *overrideMarker = FindOverrideForObjective(objectiveId);
+		if (overrideMarker && overrideMarker->overrideHudColor)
+			return Vector3(overrideMarker->hudColor.X/255.0f,overrideMarker->hudColor.Y/255.0f,overrideMarker->hudColor.Z/255.0f);
 		switch (priority)
 		{
 		case Priority::Primary:
@@ -1411,7 +1461,7 @@ public:
 			return Vector3(1.0f,1.0f,1.0f);
 		}
 	}
-	void Create_Objective_GameObject(GameObject *radarMarker,int objectiveId,int objectivePriority)
+	void Create_Objective_GameObject(GameObject *radarMarker,int objectiveId,int objectivePriority,ObjectiveVisibleSettingOverride *overrideMarker)
 	{
 		GameObject *obj = Commands->Find_Object(controllerId);
 		if (!obj)
@@ -1425,7 +1475,10 @@ public:
 				{
 					GameObject *object = Commands->Create_Object(script->preset,Commands->Get_Position(radarMarker));
 					if (script->attach)
-						Commands->Attach_To_Object_Bone(object,radarMarker,"origin");
+						if (overrideMarker && _stricmp(overrideMarker->attachBone,""))
+							Commands->Attach_To_Object_Bone(object,radarMarker,overrideMarker->attachBone);
+						else
+							Commands->Attach_To_Object_Bone(object,radarMarker,"origin");
 					char params[128];
 					sprintf(params,"%d,%d",Commands->Get_ID(object),Commands->Get_ID(radarMarker));
 					Commands->Attach_Script(obj,"JMG_Utility_Objective_System_Objective_GameObject_Tracker",params);
@@ -1451,6 +1504,16 @@ public:
 				}
 			}
 	}
+	bool Check_If_All_Objectives_Are_Complete(int objectiveIds[],int count)
+	{
+		for (int x = 0;x < count;x++)
+		{
+			if (Get_Objective_Status(objectiveIds[x]) != Status::Accomplished)
+				return false;
+		}
+		return true;
+	}
+	GameObject *GetObjectiveMarker(int objectiveMarkerId,GameObject *sender,int objectiveId);
 };
 
 class ClientNetworkObjectPositionSync
@@ -4234,6 +4297,7 @@ public:
 * \brief Used to remove an objective on custom
 * \Custom - Custom to trigger this script
 * \ObjectiveID - ID of the new objective to remove
+* \OnlyRemovePending - Can only remove an objective if its pending
 * \author jgray
 * \ingroup JmgUtility
 */
@@ -5774,7 +5838,7 @@ public:
 * \WeaponName - Name of the weapon needed to trigger the zone
 * \ID - ID to send the custom to, 0 sends to self, -1 sends to enter
 * \Custom - Custom message to send
-* \Param - Param to send
+* \Param - Param to send, -1 sends the object ID
 * \Delay - Delay to add before sending custom
 * \RemoveWeapon - Should the weapon be removed when entering the zone
 * \TriggerOnce - Allows the script only to trigger the first time the zone is entered
@@ -5857,7 +5921,7 @@ class JMG_Utility_Custom_Send_Translated_String_To_All_Players : public ScriptIm
 
 /*!
 * \brief Creates a powerup at the objects origin when it is destroyed if it has that weapon
-* \WeaponPreset - Weapon that is needed to do the drop
+* \RequiredWeaponPreset - Weapon that is needed to do the drop, if blank always drops
 * \PowerupName - Powerup to create
 * \HeightAdjust - Height to add to the object's origin to create the powerup at
 * \author jgray
@@ -6582,9 +6646,22 @@ class JMG_Utility_Spawn_With_Last_Selected_Gun_Control : public ScriptImpClass {
 	void Destroyed(GameObject *obj);
 	void Detach(GameObject *obj);
 public:
+	struct StringNode
+	{
+		char preset[128];
+		StringNode(const char *preset)
+		{
+			sprintf(this->preset,"%s",preset);
+		}
+	};
 	static bool controllerPlaced;
 	static char playerWeapons[128][256];
 	static char playerNames[128][256];
+	static SList<StringNode> ignoredWeapons;
+	JMG_Utility_Spawn_With_Last_Selected_Gun_Control()
+	{
+		ignoredWeapons.Remove_All();
+	}
 };
 
 /*!
@@ -7971,8 +8048,6 @@ class JMG_Utility_Custom_Send_Cycled_Customs : public ScriptImpClass {
 class JMG_Utility_Killed_Send_Custom_From_Killer : public ScriptImpClass {
 	void Killed(GameObject *obj,GameObject *killer);
 };
-
-
 
 /*!
 * \brief This script makes for a rather cruddy emulation of sound_heard on a dedicated server. The script  
@@ -9624,7 +9699,7 @@ class JMG_Utility_Control_Point_Assault_Mode : public ScriptImpClass {
 	void Created(GameObject *obj);
 	void Timer_Expired(GameObject *obj,int number);
 	void Destroyed(GameObject *obj);
-	void SendCustom(GameObject* obj,int custom,int frontLineGroup);
+	void SendCustom(GameObject* obj,int custom,int thisFrontLineGroup);
 public:
 	static int teamId;
 	static int frontLineGroup;
@@ -9696,6 +9771,7 @@ class JMG_Utility_Control_Point_Select_Spawn_System : public ScriptImpClass {
 	void Custom(GameObject *obj,int message,int param,GameObject *sender);
 	int SelectCpToSpawnFrom(GameObject *obj,int cpId,bool assaultLines);
 	bool MoveToControlledWanderPointForCp(GameObject *obj,int cpId);
+	void DisplaySpawnTime(GameObject *obj);
 };
 
 /*!
@@ -10119,7 +10195,7 @@ class JMG_Utility_Custom_Combination_Lock_Key : public ScriptImpClass {
 * \author jgray
 * \ingroup JmgUtility
 */
-class JMG_Utility_Sync_String_With_Random_NumberPad_Control : public ScriptImpClass {
+class JMG_Utility_Security_System_Sync_String_Random_NumberPad_Control : public ScriptImpClass {
 	char delim;
 	int stringId;
 	void Created(GameObject *obj);
@@ -10704,7 +10780,7 @@ class JMG_Utility_Turret_Spawn_Global_Flag : public ScriptImpClass
 */
 class JMG_Utility_Timer_Death_If_Not_Damaged_Over_Peroid : public ScriptImpClass {
 	char warhead[128];
-	float damage;
+	float giveDamage;
 	int time;
 	int originalTime;
 	void Created(GameObject *obj);
@@ -10929,4 +11005,571 @@ public:
 		currentWeaponId = 0;
 		currentWeapon = NULL;
 	}
+};
+
+/*!
+* \brief Controls if JMG_Utility_Global_Custom_Send_Custom_Flag can send a custom, default flag is -1
+* \Custom - Custom to flip if sending is allowed, the param is what to set the flag to
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Global_Custom_Send_Custom_Flag_Controller : public ScriptImpClass
+{
+	void Created(GameObject *obj);
+public:
+	JMG_Utility_Global_Custom_Send_Custom_Flag_Controller()
+	{
+		globalFlag = -1;
+	}
+	static int globalFlag;
+};
+
+/*!
+* \brief Changes what the global flag is on custom
+* \Custom - Custom to flip if sending is allowed
+* \GlobalFlag - What to set the global flag to
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Global_Custom_Send_Custom_Flag_Custom : public ScriptImpClass
+{
+	int custom;
+	int globalFlag;
+	void Created(GameObject *obj);
+	void Custom(GameObject *obj,int message,int param,GameObject *sender);
+};
+
+/*!
+* \brief Sends a custom if the global flag matches the specified
+* \GlobalFlag - Value needed to match in order to send the custom
+* \Custom - Custom to watch for
+* \ID - ID to send to, 0 sends to self, -1 sends to sender
+* \SendCustom - custom to send
+* \Param - param to send (-1 sends the param that was received)
+* \Delay - delay to add
+* \RandomDelay - Max amount of random delay that can be added to the delay
+* \RandomChance - If non-zero this will be the chance that the custom can send 0.0-1.0, 1 will always send
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Global_Custom_Send_Custom_Flag : public ScriptImpClass
+{
+	int globalFlag;
+	int recieveMessage;
+	int id;
+	int custom;
+	int Param;
+	float delay;
+	float randomDelay;
+	float randomChance;
+	void Created(GameObject *obj);
+	void Custom(GameObject *obj,int message,int param,GameObject *sender);
+};
+/*!
+* \brief AI that will attempt to go to a location as long as a player is near it
+* \GotoObjectId - Object that the AI will chase around the map, overrides location
+* \GotoLocation - Location the vehicle will attempt to move to
+* \MaxPlayerDistance - Furthest the nearest player can be for the unit to continue to be "escorted"
+* \MinAttackRange - How close can a target be before it can no longer be fired upon, if the target is too close the vehicle will attempt to back up to a previous position or return to a wander point/home position if either are available.
+* \ForceFire - Tells the AI to fire weapons even if the turret isn't aimed at the target, useful for vehicles like the MRLS.
+* \VTOLHover - Used for Aircraft, tells the AI how high to fly above its target spots
+* \vsSoldier - Tells the AI what fire mode to use against infantry, -1 means it can't attack them, 2 means auto, 0 is secondary fire, 1 is primary fire.
+* \vsVehicle - Tells the AI what fire mode to use against vehicles, -1 means it can't attack them, 2 means auto, 0 is secondary fire, 1 is primary fire.
+* \vsAircraft - Tells the AI what fire mode to use against aircraft, -1 means it can't attack them, 2 means auto, 0 is secondary fire, 1 is primary fire.
+* \WeaponError - This tells the max weapon error the vehicle can use, if weapon error is -1 it dynamically determines a weapon error to use, this calculation has to do with bullet speed and enemy distance.
+* \OverrideFireMode - If 1 primary is forced, if 2 secondary is forced, otherwise use built in fire modes
+* \OverrideSpeed - If -1 the default speed calculations take place, if anything else the speed value is used
+* \PlayerType - Requires the team of the closest player to match in order for the script to one 0 Nod 1 GDI 2 Any
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_AI_Goto_Location_While_Player_Nearby : public ScriptImpClass {
+	struct JMGVehicleAmmo
+	{
+		bool allowError;
+		float range;
+		float speed;
+		JMGVehicleAmmo()
+		{
+			allowError = false;
+			range = 0.0f;
+			speed = 400.0f;
+		}
+	};
+	Vector3 gotoLocation;
+	int gotoObjectId;
+	float maxPlayerDistance;
+	JMGVehicleAmmo primary;
+	JMGVehicleAmmo secondary;
+	JMGVehicleAction currentAction;
+	JMGVehicleAction lastAction;
+	bool overrideFireMode;
+	bool overridePrimary;
+	int lastSeenCount;
+	int reverseTime;
+	int stuckCount;
+	int useAmmo;
+	int doNotUsePathfind;
+	float lastHealth;
+	float minDistanceSquared;
+	bool moving;
+	bool attacking;
+	int badDestAttempt;
+	Vector3 lastPos;
+	Vector3 homepos;
+	int myteam;
+	bool inRange;
+	bool drivingBackward;
+	float minAttackRange;
+	float definedWeaponError;
+	int forceFire;
+	float vtolHover;
+	int vsSoldier;
+	int vsAircraft;
+	int vsVehicle;
+	float overrideSpeed;
+	int playerType;
+	void Created(GameObject *obj);
+	void Action_Complete(GameObject *obj,int action,ActionCompleteReason reason);
+	void Enemy_Seen(GameObject *obj,GameObject *seen);
+	void Damaged(GameObject *obj,GameObject *damager,float damage);
+	void Timer_Expired(GameObject *obj,int number);
+	void RunAttack(GameObject *obj,GameObject *target);
+	int GetThreatRating(GameObject * obj);
+	GameObject *GetAttackObject(GameObject * obj);
+	GameObject *SelectTarget(GameObject *obj,GameObject *target);
+	GameObject *SetTarget(GameObject *target);
+	GameObject *GetClosest(GameObject *obj,GameObject *new_target,GameObject *old_target);
+	int SelectAmmo(GameObject *target);
+	void StuckCheck(GameObject *obj);
+	void AttackMove(GameObject *obj,GameObject *target,bool gotoObject,Vector3 targetLocation,int fireMode,float weaponError,bool forceUpdate,float arriveDistance);
+	JMGVehicleAmmo DefineAmmo(const AmmoDefinitionClass *ammo);
+};
+/*!
+* \brief Any object this is attached to will not be shot at by JMG_Utility_AI_Goto_Location_While_Player_Nearby
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_AI_Goto_Location_While_Player_Nearby_Ignored : public ScriptImpClass
+{
+	void Created(GameObject *obj);
+};
+
+/*!
+* \brief Creates a powerup at the objects origin when it is killed, then turns the powerup into the parent object and steals its animation, basically it turns the powerup into the parent's corpse
+* \PowerupName - Powerup to create
+* \RequiredWeaponPreset - Weapon that is needed to do the drop, if blank drops anyways drops
+* \Chance - Chance that the drop will occur 
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Killed_Drop_Powerup_Become_Corpse : public ScriptImpClass
+{
+	void Killed(GameObject *obj,GameObject *killer);
+	void Timer_Expired(GameObject *obj,int number);
+};
+
+/*!
+* \brief Sends a custom once all objectives in the required list are complete, (Not instant, only scans 4 times a second)
+* \CompletedObjectives - Id's that need to be complete
+* \Delim - Character to split the list of objectives with
+* \ID - ID to send to, 0 sends to self
+* \SendCustom - custom to send
+* \Param - param to send
+* \Delay - delay to add
+* \RandomDelay - Max amount of random delay that can be added to the delay
+* \RandomChance - If non-zero this will be the chance that the custom can send 0.0-1.0, 1 will always send
+* \Repeat - Can this script fire more than once
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Objective_System_Objectives_Complete_Send_Custom : public ScriptImpClass {
+	int id;
+	int custom;
+	int Param;
+	float delay;
+	float randomDelay;
+	int objectiveIds[128];
+	int objectiveCount;
+	bool repeat;
+	void Created(GameObject *obj);
+	void Timer_Expired(GameObject *obj,int number);
+};
+
+/*!
+* \brief Changes the animation frame as an object is damaged
+* \ (Math is (currentHP/MaxHP)*MaxFrame
+* \Animation - Animation to use
+* \MaxFrame - Length of the animation
+* \Model - Changes the model when attached if not blank
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Damage_Update_Animation_Frame : public ScriptImpClass {
+	char animation[32];
+	float maxFrame;
+	float lastCalculation;
+	void Created(GameObject *obj);
+	void Damaged(GameObject *obj,GameObject *damager,float damage);
+};
+
+/*!
+* \brief Takes model and replaces it with the number slot generated by JMG_Utility_Security_System_Random_NumberPad_Control
+* \KeypadID - ID of the object that has JMG_Utility_Security_System_Random_NumberPad_Control attached
+* \Index - Index in the combo to use, for example if the combo is 34563 and the index is 2 the model this will display will be 4
+* \BaseModel - Base name of the model, index is tacked to the end (EX: If the index is 4 and the model is named BaseNumber_ the result will be BaseNumber_4)
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Security_System_Sync_Model_Random_NumberPad_Control : public ScriptImpClass {
+	void Created(GameObject *obj);
+	void Timer_Expired(GameObject *obj,int number);
+};
+
+/*!
+* \brief This script makes the AI hunt down the nearest object with JMG_Utility_AI_Goto_Target_Script_Target attached, it works for infantry and vehicles
+* \HuntSearchDistance - Distance to scan for players to magically find and move to, -1 means infinite range
+* \HuntSpeed - Speed at which the bot moves once its moving to a player
+* \HuntArriveDistance - Distance at which to arrive from the player
+* \RandomHuntArriveDistance - Random amount to arrive from the player
+* \HuntStealth - Can the bot magically know where invisible players are
+* \AttackSpeed - Speed to move at once an attack is begun
+* \AttackDistance - Distance to arrive from a target when attacking, -1 uses the weapon effective distance
+* \RandomAttackDistance - Random amount to add or subtract from the Attack distance
+* \ReturnHome - Return to the create location when the action completes? (If wanderpoints are enabled this will never be used)
+* \ReturnHomeSpeed - Speed to move at when going home
+* \WanderingAIGroupID - Group of wander points to use when nothing else is going on
+* \WanderSpeed - Speed to move at between the points
+* \CanSeeStealth - Can the AI see stealth targets? 0 = No at all, 1 is within the ranges set in LE globals file, 2 means it can see stealth everywhere, think of stock AI.
+* \ShutdownEngineOnArrival - Used for vehicles, turn on if you have issues with your vehicle rolling away from its move positions after it arrives
+* \AttackCheckBlocked - Defines whether they should check if they can actually hit the player before shooting
+* \MaxSightRangeFromHome - Maximum range the AI can see from its nearest wander point/home location, useful to keep them from wandering off after a trail of enemies, 0 to not use
+* \WanderDistanceOverride - Overrides the default wander arrive distance (1 meter for infantry and 5 for vehicles)
+* \ChangeWanderGroupCustom - If this custom is received the wander group will be set to the param, -1 param to disable the wander group code
+* \ChangeWanderSpeedCustom - If this custom is received the wander speed will be updated to the param/100
+* \ChangeHuntDistanceCustom - If this custom is received the hunt range will be updated to the param/100 (-1 means infinite range)
+* \ChangeHuntSpeedCustom - If this custom is received the hunt speed will be updated to the param/100
+* \ChangeReturnHomeSpeedCustom - If this custom is received the return home speed will be updated to the param/100
+* \ChangeMaxSightFromHomeLocationCustom - If this custom is received the AI won't be able to see targets past the specified range of the param/100, 0 means don't use
+* \ChangeAttackSpeedCustom - If this custom is received the attack speed will be updated to the param/100
+* \ChanceToInvestigateLastSeenLocation - The percent chance (0.0-1.0) of checking out the last spot an enemy/target was seen
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_AI_Goto_Target_Script : public ScriptImpClass {
+	enum aiState{IDLE,HUNTING_STAR,ATTACKING_TARGET,RETURNING_HOME,WANDERING_GROUP,ACTION_BADPATH};
+	struct LastAction
+	{
+		int targetId;
+		Vector3 location;
+		float speed;
+		float distance;
+		bool attack;
+		bool overrideLocation;
+		LastAction()
+		{
+		}
+		LastAction(int targetId,Vector3 location,float speed,float distance,bool attack,bool overrideLocation)
+		{
+			this->targetId = targetId;
+			this->location = location;
+			this->speed = speed;
+			this->distance = distance;
+			this->attack = attack;
+			this->overrideLocation = overrideLocation;
+		}
+		bool operator == (LastAction l)
+		{
+			return (targetId == l.targetId && JmgUtility::SimpleDistance(location,l.location) <= 0.0f && speed == l.speed && distance == l.distance && attack == l.attack && overrideLocation == l.overrideLocation);
+		}
+	};
+	struct ValidLastLocation
+	{
+		bool valid;
+		Vector3 location;
+		ValidLastLocation(bool valid)
+		{
+			this->valid = valid;
+		}
+		ValidLastLocation(int enemyId);
+	};
+	LastAction lastAction;
+	aiState state;
+	Vector3 homeLocation;
+	float maxSightFromHomeLocation;
+	bool huntStealth;
+	int targetId;
+	int lastSeenTime;
+	float weaponRange;
+	float weaponEffectiveRange;
+	int huntingEnemyId;
+	int removeIgnoreTime;
+	int ignoreEnemyId;
+	float huntSearchDistance;
+	float huntArriveDistance;
+	float attackArriveDistance;
+	int stuckTime;
+	int reverseTime;
+	Vector3 lastPosition;
+	bool moveBackward;
+	float wanderDistanceOverride;
+	int wanderingAiGroupId;
+	float wanderSpeed;
+	float huntSpeed;
+	float attackSpeed;
+	float returnHomeSpeed;
+	int changeWanderGroupCustom;
+	int changeWanderSpeedCustom;
+	int changeHuntDistanceCustom;
+	int changeReturnHomeSpeedCustom;
+	int changeHuntSpeedCustom;
+	int changeMaxSightFromHomeLocationCustom;
+	int changeAttackSpeedCustom;
+	void Created(GameObject *obj);
+	void Enemy_Seen(GameObject *obj,GameObject *seen);
+	void Timer_Expired(GameObject *obj,int number);
+	void Custom(GameObject *obj,int message,int param,GameObject *sender);
+	void Action_Complete(GameObject *obj,int action_id,ActionCompleteReason reason);
+	void Damaged(GameObject *obj,GameObject *damager,float damage);
+	void Attack_Move(GameObject *obj,GameObject *target,Vector3 location,float speed,float distance,bool attack,bool overrideLocation);
+	GameObject *findClosestStar(GameObject *obj);
+	void Return_Home(GameObject *obj,ValidLastLocation goNearLastWanderPoint);
+	void Stuck_Check(GameObject *obj,Vector3 targetPos);
+	void Cant_Get_To_target(GameObject *obj);
+	bool GetRandomPosition(Vector3 *position);
+	bool Choose_Target(GameObject *obj,GameObject *target);
+};
+
+/*!
+* \brief Tell objects with JMG_Utility_AI_Goto_Player to ignore this object
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_AI_Goto_Target_Script_Ignore_Object : public ScriptImpClass {
+	void Created(GameObject *obj);
+};
+
+/*!
+* \brief Tell objects with JMG_Utility_AI_Goto_Target_Script that this is a target
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_AI_Goto_Target_Script_Target : public ScriptImpClass {
+	void Created(GameObject *obj);
+};
+
+/*!
+* \brief Sends a custom on a custom if the count of objects with the specified script is less than the count
+* \Custom - Custom to watch for
+* \Script - Script being scanned for
+* \MaxCount - Max objects with the specified script
+* \PlayerAddMaxCount - Each player adds this much to the max count
+* \ID - ID to send to, 0 sends to self, -1 sends to sender
+* \SendCustom - custom to send
+* \Param - param to send (-1 sends the param that was received)
+* \Delay - delay to add
+* \RandomDelay - Max amount of random delay that can be added to the delay
+* \RandomChance - If non-zero this will be the chance that the custom can send 0.0-1.0, 1 will always send
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Custom_Send_Custom_If_Script_Count : public ScriptImpClass {
+	int maxCount;
+	float playerAddMaxCount;
+	char script[256];
+	int recieveMessage;
+	int id;
+	int custom;
+	int Param;
+	float delay;
+	float randomDelay;
+	float randomChance;
+	void Created(GameObject *obj);
+	void Custom(GameObject *obj,int message,int param,GameObject *sender);
+};
+
+/*!
+* \brief Creates the preset from the specified team's vehicle factory on create
+* \PresetName - Vehicle preset to make
+* \Delay - Creation Delay
+* \OwnerID - ID of the object that ends up owning it, -1 makes it this object
+* \TeamID - Team to build for
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Created_Trigger_Create_Vehicle : public ScriptImpClass {
+	void Created(GameObject *obj);
+};
+
+/*!
+* \brief Removes a script and then attaches another script on custom
+* \Custom - Custom that triggers the script
+* \RemoveScript - Script to remove
+* \AttachScript - Script to attach
+* \Params - Params to use for the attached script
+* \Delim - char to use in place of ,
+* \Repeat - Should the script fire more than once
+* \RequiresRemoveScript - If the remove script isn't on the object this script can't fire
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Custom_Remove_And_Attach_Script : public ScriptImpClass
+{
+	int custom;
+	bool repeat;
+	bool requiresRemoveScript;
+	char *params;
+	char *attachScript;
+	char *removeScript;
+	void Created(GameObject *obj);
+	void Custom(GameObject *obj,int message,int param,GameObject *sender);
+};
+
+/*!
+* \brief Makes this unit ignored by JMG_Utility_AI_Guardian_Aircraft
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_AI_Guardian_Aircraft_Ignored : public ScriptImpClass {
+	void Created(GameObject *obj);
+};
+
+/*!
+* \brief Makes this unit ignored by JMG_Utility_AI_Guardian_Infantry
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_AI_Guardian_Infantry_Ignored : public ScriptImpClass {
+	void Created(GameObject *obj);
+};
+
+/*!
+* \brief Makes this unit ignored by JMG_Utility_AI_Guardian_Vehicle
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_AI_Guardian_Vehicle_Ignored : public ScriptImpClass {
+	void Created(GameObject *obj);
+};
+
+/*!
+* \brief Makes this unit ignored by JMG_Utility_AI_Guardian_Generic
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_AI_Guardian_Generic_Ignored : public ScriptImpClass {
+	void Created(GameObject *obj);
+};
+
+/*!
+* \brief This allows the objective system to search through all the game objects to find the object that is needed to be the marker (tell the objective system by using -2 for the marker ID)
+* \ObjectiveID - ID of the objective this belongs to
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Objective_System_Objective_Marker : public ScriptImpClass {
+	void Created(GameObject *obj);
+public:
+	JMG_Utility_Objective_System_Objective_Marker()
+	{
+		objectiveId = -1;
+	}
+	int objectiveId;
+};
+
+/*!
+* \brief Removes a script while if the attached doesn't have a weapon, gives it back when they have the weapon
+* \WeaponName - Name of the weapon to check for
+* \Script - Name of the script to attach
+* \Params - The parameters to use for the script
+* \Delim - The character to use in place of a ',' swapped at script creation
+* \Rate - Rate at which the script scans
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Remove_Script_If_Doesnt_Have_Weapon : public ScriptImpClass {
+	char weaponName[128];
+	char *params;
+	char script[128];
+	float rate;
+	void Created(GameObject *obj);
+	void Timer_Expired(GameObject *obj,int number);
+};
+
+/*!
+* \brief Tells the game that this weapon shouldn't be used with the JMG_Utility_Spawn_With_Last_Selected_Gun system
+* \WeaponPreset - Name of weapon to ignore from the system
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Spawn_With_Last_Selected_Gun_Ignore : public ScriptImpClass {
+	void Created(GameObject *obj);
+	void Timer_Expired(GameObject *obj,int number);
+};
+
+/*!
+* \brief Allows the visible marker, text color, and radar blip color to be overridden for a specific objective
+* \ObjectiveID - ID of the objective to override
+* \MarkerModel - Model to use instead, leave blank if you don't want it to override
+* \MarkerColor - Radar color to make use of, leave -1 if you don't want it to override
+* \AttachBone - Bone to attach to, leave blank if you don't want it to override
+* \OverrideTextColor - 0 means don't override text color, any other number will override
+* \TextColor - Color to use for the objective text, 0-255
+* \OverrideHudColor - 0 means don't override HUD color, any other number will override
+* \HudColor - Color to use for the objective HUD message, 0-255
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Objective_System_Override_Visible_Settings : public ScriptImpClass {
+	void Created(GameObject *obj);
+	void Timer_Expired(GameObject *obj,int number);
+};
+
+/*!
+* \brief Basic creates an object at the bone position when a custom is received
+* \Custom - Custom message needed to trigger the script
+* \Preset - Preset to create
+* \Bone - Bone to create the preset at
+* \MaxDistance - Once the object is created it can be displaced if another object is in its position, this is how far it can be moved
+* \Repeat - Allows the script to run more than once
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Custom_Create_Object_At_Bone : public ScriptImpClass
+{
+	int custom;
+	bool repeat;
+	void Created(GameObject *obj);
+	void Custom(GameObject *obj,int message,int param,GameObject *sender);
+};
+
+/*!
+* \brief Sends the custom message from the itself when its killed by nothing
+* \ID - Id of the object to send the custom to, 0 sends to itself
+* \Message - Custom to send
+* \Param - parameter to send with the custom
+* \Delay - Time amount to wait before sending the custom
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Killed_Send_Custom_When_Killed_By_Nothing : public ScriptImpClass {
+	void Killed(GameObject *obj,GameObject *killer);
+};
+
+/*!
+* \brief Works like JMG_Utility_Killed_Drop_Powerup_Become_Corpse but triggers on custom
+* \Custom - Custom message needed to trigger the script
+* \PowerupName - Powerup to create
+* \Repeat - Allows the script to run more than once
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Custom_Drop_Corpse : public ScriptImpClass
+{
+	int custom;
+	bool repeat;
+	char powerupName[128];
+	void Created(GameObject *obj);
+	void Custom(GameObject *obj,int message,int param,GameObject *sender);
+	void Timer_Expired(GameObject *obj,int number);
 };

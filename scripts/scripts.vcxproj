@@ -144,7 +144,6 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>General.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).$(Configuration).pch</PrecompiledHeaderOutputFile>
-      <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
       <WarningLevel>Level4</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
@@ -319,7 +318,6 @@ copy "$(TargetPath)" "%RenServerPath%\$(TargetFileName)"
     <ClCompile Include="kak.cpp" />
     <ClCompile Include="kamuix.cpp" />
     <ClCompile Include="LoopedAnimationController.cpp" />
-    <ClCompile Include="MasterCan_Scripts.cpp" />
     <ClCompile Include="mdb.cpp" />
     <ClCompile Include="mdbdef.cpp" />
     <ClCompile Include="mdbevf.cpp" />
@@ -355,6 +353,7 @@ copy "$(TargetPath)" "%RenServerPath%\$(TargetFileName)"
     <ClCompile Include="tda.cpp" />
     <ClCompile Include="tfx.cpp" />
     <ClCompile Include="ThreadClass.cpp" />
+    <ClCompile Include="unstoppable.cpp" />
     <ClCompile Include="WeaponManager.cpp" />
     <ClCompile Include="agtfix.cpp" />
     <ClCompile Include="cGameType.cpp" />
@@ -655,6 +654,7 @@ copy "$(TargetPath)" "%RenServerPath%\$(TargetFileName)"
     <ClInclude Include="TransitionInstanceClass.h" />
     <ClInclude Include="Observee.h" />
     <ClInclude Include="TwiddlerClass.h" />
+    <ClInclude Include="unstoppable.h" />
     <ClInclude Include="Vector3i.h" />
     <ClInclude Include="VisTableClass.h" />
     <ClInclude Include="VisTableMgrClass.h" />

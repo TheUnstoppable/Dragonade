@@ -1,5 +1,5 @@
 /*	Renegade Scripts.dll
-	Copyright 2017 Tiberian Technologies
+	Copyright 2013 Tiberian Technologies
 
 	This file is part of the Renegade scripts.dll
 	The Renegade scripts.dll is free software; you can redistribute it and/or modify it under
@@ -532,14 +532,9 @@ void dp88_AR_Deployable_Infantry::Timer_Expired ( GameObject* obj, int number )
     float distance = Commands->Get_Distance(Commands->Get_Position(deployedObject),Commands->Get_Position(obj));
 
     // If more than 3m away, undeploy
-    if ( deployedObject != NULL && distance > 1.5f )
+    if ( !deployedObject || distance > 1.5f )
     {
       Undeploy(obj);
-
-      // Remove script to punish abusers
-      Send_Message_Player(obj, DP88_RGB_ERROR_MSG, StringClass::getFormattedString("Deployment abuse detected, disabling deploy script... (distance from deployment: %.2fm)", distance));
-      RemoveHook();
-      Destroy_Script();
       return;
     }
 

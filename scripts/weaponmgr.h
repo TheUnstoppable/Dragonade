@@ -99,6 +99,7 @@ public:
 	bool			TrackingIgnoreVehicle;
 	bool			TrackingIgnoreSoldier;
 	bool			TrackingIgnoreVTOL;
+	bool			UseLighting;
 
 #if (PARAM_EDITING_ON) || (DDBEDIT) || (W3DVIEWER)
     Vector3 ProjectileExtent;

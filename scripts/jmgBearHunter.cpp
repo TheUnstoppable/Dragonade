@@ -25,7 +25,7 @@
 
 #include "jmgUtility.h"
 #include "jmgBearHunter.h"
-
+//Current Objective 28
 void JMG_Bear_Hunter_Player_Soldier::Created(GameObject *obj)
 {
 	Attach_Script_Once(obj,"JMG_Bear_Hunter_Kill_Score_Tracker","");
@@ -231,15 +231,17 @@ void JMG_Bear_Hunter_Player_Soldier::Timer_Expired(GameObject *obj,int number)
 			case 0:break;
 			case 1:Commands->Set_Model(obj,"c_masterbleat");break;
 			case 2:Commands->Set_Model(obj,"c_knight_deer");break;
-			case 3:Commands->Set_Model(obj,"c_fremen_deer");break;
+			case 3:Commands->Set_Model(obj,"c_bfd_deer");break;
 			case 4:Commands->Set_Model(obj,"c_gz_deer");break;
 			case 5:Commands->Set_Model(obj,"c_apb_deer");break;
 			case 6:Commands->Set_Model(obj,"c_gi_deer");break;
 			case 7:Commands->Set_Model(obj,"c_ia_deer");break;
 			case 8:Commands->Set_Model(obj,"c_cmd_deer");break;
 			case 9:Commands->Set_Model(obj,"c_ren_deer");break;
-			case 10:Commands->Set_Model(obj,"c_hobo_deer");break;
+			case 10:Commands->Set_Model(obj,"c_ecw_deer");break;
 			case 11:Commands->Set_Model(obj,"c_tsr_deer");break;
+			case 12:Commands->Set_Model(obj,"c_okt_deer");break;
+			case 13:Commands->Set_Model(obj,"c_pilgrim_deer");break;
 			}
 		GrantSpecialUnlocks(obj);
 	}
@@ -499,6 +501,7 @@ JMG_Bear_Hunter_Game_Control::JMG_Bear_Hunter_Game_Control()
 int BearHunterVoiceSystem::voiceId[128] = {0};
 void JMG_Bear_Hunter_Game_Control::Created(GameObject *obj)
 {
+	hasReturnedTurkeys = false;
 	bonusObjectiveCount = 0;
 	hasBeenInjured = false;
 	spawnKarma = 0;
@@ -524,6 +527,8 @@ void JMG_Bear_Hunter_Game_Control::Created(GameObject *obj)
 		playerAlive[x] = true;
 		wanderingAiIgnorePlayers[x] = 0;
 		BearHunterVoiceSystem::voiceId[x] = 0;
+		playerReturnedTurkeys[x] = 0;
+		playerReturnedTurkeysDelay[x] = 0;
 	}
 	bossRabitDead = 0;
 	bearTransition = 0;
@@ -855,6 +860,24 @@ void JMG_Bear_Hunter_Game_Control::Timer_Expired(GameObject *obj,int number)
 				}
 			}
 		}
+		for (int x = 1;x < 128;x++)
+		{
+			if (playerReturnedTurkeysDelay[x])
+			{
+				playerReturnedTurkeysDelay[x]--;
+				if (!playerReturnedTurkeysDelay[x])
+				{
+					char turkeyCash[220];
+					sprintf(turkeyCash,"Bear Rug Co: Here is $%.2f for collecting turkeys!",playerReturnedTurkeys[x]*100.0f);
+					BearHunterVoiceSystem::PlayVoice(Get_GameObj(x),"BH100.mp3",turkeyCash);
+					Commands->Give_Money(Get_GameObj(x),playerReturnedTurkeys[x]*100.0f,false);
+					BearHunterScoreSystem::BHScoreNode *node = bearHunterScoreSystem.Get_Current_Player_Score_Node(x);
+					if (node)
+						node->ReturnedTurkey += playerReturnedTurkeys[x];
+					playerReturnedTurkeys[x] = 0;
+				}
+			}
+		}
 		Commands->Start_Timer(obj,this,1.0f,1);
 	}
 	if (number == 2)
@@ -948,6 +971,13 @@ void JMG_Bear_Hunter_Game_Control::Timer_Expired(GameObject *obj,int number)
 				BearHunterVoiceSystem::PlayVoice("BH15.mp3","Bear Rug Co: One last thing, we had a helicopter go down in the swamp to the North West there are 5 surviving engineers that could use an escort back to base; we will of course pay for their safe return.");
 				IncreaseBonusObjectiveCount(15);
 				NewObjectiveSystemControl.Add_Objective(15,NewObjectiveSystem::Bonus,NewObjectiveSystem::Pending,12741,"",12741,bonusObjectiveCount);
+			}
+			if (gameTime == 1690)
+			{
+				turkeysExist = true;
+				GameObject *turkeySpawnControl = Commands->Find_Object(100284);
+				if (turkeySpawnControl)
+					Commands->Send_Custom_Event(turkeySpawnControl,turkeySpawnControl,100284,1,0.0f);
 			}
 			if (gameTime == 1500)
 			{
@@ -1147,6 +1177,33 @@ void JMG_Bear_Hunter_Game_Control::Timer_Expired(GameObject *obj,int number)
 				GameObject *cinematic = Commands->Create_Object("Daves Arrow",Vector3(74.53f,-621.425f,10.0f));
 				Commands->Set_Is_Rendered(cinematic,false);
 				Commands->Attach_Script(cinematic,"Test_Cinematic","medicine_drop.txt");
+			}
+			if (gameTime == 300)
+			{
+				GameObject *turkeySpawnControl = Commands->Find_Object(100284);
+				if (turkeySpawnControl)
+					Commands->Send_Custom_Event(turkeySpawnControl,turkeySpawnControl,100284,0,0.0f);
+			}
+			if (gameTime < 300 && turkeysExist)
+			{
+				turkeysExist = false;
+				for (SLNode<SmartGameObj> *current = GameObjManager::SmartGameObjList.Head();current;current = current->Next())
+				{
+					SmartGameObj* o = current->Data();
+					if (o && Is_Script_Attached(o,"JMG_Bear_Hunter_Turkey") && Commands->Get_Health(o))
+					{
+						Commands->Apply_Damage(o,1.0f,"None",0);
+						turkeysExist = true;
+					}
+				}
+				if (!turkeysExist && NewObjectiveSystemControl.Get_Objective_Status(28) == NewObjectiveSystem::Status::Pending)
+				{
+					BearHunterVoiceSystem::PlayVoice("BH101.mp3","Bear Rug Co: Looks like the turkeys are all gone!");
+					if (hasReturnedTurkeys)
+						NewObjectiveSystemControl.Set_Objective_Status(28,NewObjectiveSystem::Status::Accomplished);
+					else
+						NewObjectiveSystemControl.Set_Objective_Status(28,NewObjectiveSystem::Status::Failed);
+				}
 			}
 			if (gameTime == 240)
 			{
@@ -1965,6 +2022,16 @@ void JMG_Bear_Hunter_Game_Control::Custom(GameObject *obj,int message,int param,
 			Grant_Weapon(player,"Weapon_Milk_Whole",true,500,true);
 			Grant_Weapon(player,"Weapon_Milk_2Percent",true,500,true);
 		}
+	}
+	if (message == 100287)
+	{
+		GameObject *player = Commands->Find_Object(param);
+		if (!player)
+			return;
+		hasReturnedTurkeys = true;
+		int playerId = JmgUtility::JMG_Get_Player_ID(player);
+		playerReturnedTurkeysDelay[playerId] = 2;
+		playerReturnedTurkeys[playerId]++;
 	}
 }
 void JMG_Bear_Hunter_Game_Control::Destroyed(GameObject *obj)
@@ -6051,6 +6118,7 @@ void JMG_Bear_Hunter_Kill_Score_Tracker::Killed(GameObject *obj,GameObject *kill
 		case 1000000036:case 1000000038:case 1000000040:node->KilledMutantCougars++;break;
 		case 1000000249:case 1000000263:case 1000000265:node->KilledCows++;break;
 		case 1000000260:case 1000000267:case 1000000269:node->KilledMice++;break;
+		case 1000000587:case 1000000589:case 1000000591:node->KilledTurkey++;break;
 		default:node->KilledHumanAi++;break;
 		}
 }
@@ -8382,8 +8450,10 @@ bool JMG_Utility_Custom_Teleport_To_Random_Wander_Point::Get_A_Defense_Point(Vec
 bool JMG_Utility_AI_Skittish_Herd_Animal::Get_A_Wander_Point(Vector3 *position,int wanderPointGroup)
 {
 	Rp2SimplePositionSystem::SimplePositionNode *node = NULL;
-	if (wanderPointGroup != -1)
+	if (wanderPointGroup == -1)
 		node = JMG_Wandering_AI_Controller::wanderPoints.GetNearest(*position);
+	else
+		node = JMG_Wandering_AI_Controller::wanderPoints.GetNearestFromGroup(wanderPointGroup,*position);
 	if (!node)
 	{
 		Console_Input("msg JMG_Utility_AI_Skittish_Herd_Animal ERROR: No wander points could be found for that group!");
@@ -8479,6 +8549,20 @@ bool JMG_Utility_AI_Goto_Enemy_Not_Star::GetRandomPosition(Vector3 *position)
 	if (!node)
 	{
 		Console_Input("msg JMG_Utility_AI_Goto_Enemy_Not_Star ERROR: No wander points could be found for that group!");
+		*position = Vector3();
+		return false;
+	}
+	*position = node->position;
+	return true;
+}
+bool JMG_Utility_AI_Goto_Target_Script::GetRandomPosition(Vector3 *position)
+{
+	Rp2SimplePositionSystem::SimplePositionNode *node = NULL;
+	if (wanderingAiGroupId != -1)
+		node = JMG_Wandering_AI_Controller::wanderPoints.GetRandomFromGroup(wanderingAiGroupId);
+	if (!node)
+	{
+		Console_Input("msg JMG_Utility_AI_Goto_Target_Script ERROR: No wander points could be found for that group!");
 		*position = Vector3();
 		return false;
 	}
@@ -9367,6 +9451,13 @@ GameObject *JMG_Wandering_AI_Wander_Point_Follow_Weapon_Or_Obj::FindTargetObject
 	}
 	return NULL;
 }
+void JMG_Bear_Hunter_Turkey::Killed(GameObject *obj,GameObject *killer)
+{
+	if (killer == NULL || !Commands->Is_A_Star(killer) || NewObjectiveSystemControl.Get_Objective_Status(28) != NewObjectiveSystem::NotDefined)
+		return;
+	BearHunterVoiceSystem::PlayVoice("BH102.mp3","Bear Rug Co: Looks like you found some turkeys, bring them to the processing plant for market price.");
+	NewObjectiveSystemControl.Add_Objective(28,NewObjectiveSystem::Bonus,NewObjectiveSystem::Pending,12864,"",12864);
+}
 ScriptRegistrant<JMG_Bear_Hunter_Player_Soldier> JMG_Bear_Hunter_Player_Soldier_Registrant("JMG_Bear_Hunter_Player_Soldier","");
 ScriptRegistrant<JMG_Rp2_Dedicated_Server_Sound_Emulator> JMG_Rp2_Dedicated_Server_Sound_Emulator_Registrant("JMG_Rp2_Dedicated_Server_Sound_Emulator","");
 ScriptRegistrant<JMG_Bear_Hunter_Game_Control> JMG_Bear_Hunter_Game_Control_Registrant("JMG_Bear_Hunter_Game_Control","PositionFile=DhSwampDeerPositions.ecw:string");
@@ -9469,4 +9560,4 @@ ScriptRegistrant<JMG_Bear_Hunter_Milk_Drink> JMG_Bear_Hunter_Milk_Drink_Registra
 ScriptRegistrant<JMG_Bear_Hunter_AI_Guardian_Generic> JMG_Bear_Hunter_AI_Guardian_Generic_Registrant("JMG_Bear_Hunter_AI_Guardian_Generic","WanderingAIGroupID:int,WanderSpeed=1.0:float,FireRange=-1.0:float,FaceTarget=1:int,CheckBlocked=1:int,ArriveDistance=1.0:float,FlightHeight=0.0:float,TurnOffEngineOnArrival=1:int,UseSecondaryAttack=0:int,StealthModeOverride=0:int");
 ScriptRegistrant<JMG_Bear_Hunter_Give_AI_Cash_For_Kills> JMG_Bear_Hunter_Give_AI_Cash_For_Kills_Registrant("JMG_Bear_Hunter_Give_AI_Cash_For_Kills","");
 ScriptRegistrant<JMG_Wandering_AI_Wander_Point_Follow_Weapon_Or_Obj> JMG_Wandering_AI_Wander_Point_Follow_Weapon_Or_Obj_Registrant("JMG_Wandering_AI_Wander_Point_Follow_Weapon_Or_Obj","GroupId:int,PresetName:string,WeaponName:string");
- 
+ScriptRegistrant<JMG_Bear_Hunter_Turkey> JMG_Bear_Hunter_Turkey_Registrant("JMG_Bear_Hunter_Turkey","");

@@ -547,9 +547,6 @@
     <ClCompile Include="DBVehicleBypass.cpp">
       <Filter>Scripts</Filter>
     </ClCompile>
-    <ClCompile Include="MasterCan_Scripts.cpp">
-      <Filter>Scripts</Filter>
-    </ClCompile>
     <ClCompile Include="DefaultConnectionAcceptanceFilter.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -567,6 +564,9 @@
     </ClCompile>
     <ClCompile Include="da_veteran.cpp">
       <Filter>DA Game Features</Filter>
+    </ClCompile>
+    <ClCompile Include="unstoppable.cpp">
+      <Filter>Scripts</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1652,6 +1652,9 @@
     </ClInclude>
     <ClInclude Include="da_veteran.h">
       <Filter>DA Game Features</Filter>
+    </ClInclude>
+    <ClInclude Include="unstoppable.h">
+      <Filter>Scripts</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

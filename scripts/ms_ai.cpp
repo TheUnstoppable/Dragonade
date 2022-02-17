@@ -55,6 +55,8 @@ int Radio_Message_Type::DEFEND_THE_HARVESTER;
 int Radio_Message_Type::DEFEND_THAT_STRUCTURE;
 
 
+#define BOT_VERY_LONG_WEAPON_RANGE 160
+
 
 /*------------------------
 Branch differences to eliminate false diff positives
@@ -337,6 +339,44 @@ float Calculate_Weapon_DPS(WeaponClass* weapon, float damage)
 	int clipSize = weapon->Get_Definition()->ClipSize();
 	// If clip size is infinite (-1), don't consider reload times into calculation
 	return (clipSize * damage) / ((clipSize / weapon->PrimaryAmmoDefinition->RateOfFire) + (clipSize != -1 ? weapon->Get_Definition()->ReloadTime() + weapon->PrimaryAmmoDefinition->ChargeTime() : 0));
+}
+
+// -------------------------------------------------------------------------------------------------
+
+void Calculate_Ammo_Preferences(const AmmoDefinitionClass* ammo, int& maxAttackRange, int& preferredAttackRange)
+{
+	maxAttackRange = ammo ? (int)ammo->Range() : maxAttackRange;
+	preferredAttackRange = maxAttackRange / 2 + 1;
+
+	// Make sure it's not zero or bigger than max 
+	if (preferredAttackRange == 0 || preferredAttackRange > maxAttackRange)
+		preferredAttackRange = maxAttackRange;
+	// Long range units: snipers/artilleries, should not try to come as close
+	if (maxAttackRange >= BOT_VERY_LONG_WEAPON_RANGE)
+		preferredAttackRange = maxAttackRange - 10;
+}
+
+// -------------------------------------------------------------------------------------------------
+
+void Get_Equipped_Weapon_Range_Preferences(GameObject* obj, int& maxAttackRange, int& preferredAttackRange, int& maxAttackRangeSecondary, int& preferredAttackRangeSecondary)
+{
+	if (obj->As_PhysicalGameObj() && obj->As_PhysicalGameObj()->As_ArmedGameObj())
+	{
+		auto armedObj = obj->As_PhysicalGameObj()->As_ArmedGameObj();
+		if (auto weapon = armedObj->Get_Weapon())
+		{
+			Calculate_Ammo_Preferences(weapon->PrimaryAmmoDefinition, maxAttackRange, preferredAttackRange);
+			if (weapon->SecondaryAmmoDefinition)
+			{
+				Calculate_Ammo_Preferences(weapon->SecondaryAmmoDefinition, maxAttackRangeSecondary, preferredAttackRangeSecondary);
+			}
+			else
+			{
+				maxAttackRangeSecondary = maxAttackRange;
+				preferredAttackRangeSecondary = preferredAttackRange;
+			}
+		}
+	}
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -2292,13 +2332,16 @@ class MS_AI_Behaviour : public dp88_AI_Tank_Offensive, public Pathfind_Help_Impl
 				}
 			}
 			// COPIED ORIGINAL FUNCTION, ADDED REACHABLE CHECK
-			else if (!needsRotating && (m_bMovingToTarget || pathfindFailCount > 4) && !isTargetFlying)
+			else if (!needsRotating && (m_bMovingToTarget || pathfindFailCount > 4) && (isVTOL || !isTargetFlying))
 			{
 				// COPIED ORIGINAL FUNCTION, MODIFIED FROM HERE
 				// Choose random position around the position between me and target within preferred range
 				// Get current distance and wanted distance to get the required ratio
-				float ratio = preferredRange / currentDistance2;
-				Vector3 pos = Lerp(targetPos, Commands->Get_Position(obj), ratio);
+				const float ratio = preferredRange / currentDistance2;
+
+				// Lerped position of fliers will be in the air, out of pathfind grid, correct this
+				Vector3 pos = isVTOL && isTurretRotationLimited ? (targetPos + (Vector3(objPos.X, objPos.Y, targetPos.Z) - targetPos).Normalized() * (float)preferredRange) : Lerp(targetPos, objPos, ratio);
+
 				// If building target type, make sure this pos is not something stupid unreachable (BAD_DEST when big vehicles get a position inside a building interior for example)
 				if (targetType == BUILDING)
 				{
@@ -2307,10 +2350,12 @@ class MS_AI_Behaviour : public dp88_AI_Tank_Offensive, public Pathfind_Help_Impl
 				}
 				else
 				{
+					float teleportZCorrection = obj->As_VehicleGameObj() ? obj->As_VehicleGameObj()->Peek_Model()->Get_Bounding_Box().Extent.Z * 2 : 0;
 					if (canSquishTarget) {
 						params.Set_Movement(target, 1.0f, 0);
 					}
-					else if (!Get_Random_Pathfind_Spot(pos, (preferredRange / 2 - 2.0f), &pos) || !Can_Move_To(obj, pos) || preferredRange == 0 || isTurretRotationLimited || pathfindFailCount > 4)
+					// Pathfind spot check: VTOL vs flying target does not need this check, flying units are rarely within the grid (and only VTOLs can reach this code if target is flying)
+					else if ((!Get_Random_Pathfind_Spot(pos, (preferredRange / 2 - 2.0f), &pos) && !isTargetFlying) || !Can_Move_To(obj, pos + Vector3(0, 0, teleportZCorrection)) || preferredRange == 0 || pathfindFailCount > 4)
 					{
 						params.Set_Movement(targetPos, 1.0f, abs((float)preferredRange - 1.5f), moveCrouched);
 					}
@@ -2321,7 +2366,7 @@ class MS_AI_Behaviour : public dp88_AI_Tank_Offensive, public Pathfind_Help_Impl
 			}
 			// COPIED ORIGINAL FUNCTION, MODIFIED FROM HERE
 			// "Turn towards" enemy if turret cannot turn on the enemy by moving closer to target
-			else if (needsRotating && !isTargetFlying)
+			else if (needsRotating && (isVTOL || !isTargetFlying))
 			{
 				targetPos = Commands->Get_Position(target);
 
@@ -2367,7 +2412,7 @@ class MS_AI_Behaviour : public dp88_AI_Tank_Offensive, public Pathfind_Help_Impl
 		if (isVTOL)
 		{
 			params.MovePathfind = false;
-			params.MoveLocation.Z += flyingHeight;
+			params.MoveLocation.Z += bPersueTarget ? (targetType == FLYING ? 5 : 15) : flyingHeight;
 			auto helperPos = objPos;
 			helperPos.Z -= 15;
 			if (isBomber && Vector3::Distance(helperPos, Commands->Get_Position(target)) <= maxRange)
@@ -2853,7 +2898,7 @@ class MS_AI_Behaviour : public dp88_AI_Tank_Offensive, public Pathfind_Help_Impl
 							// Expecting most vehicles to be square-ish sized, epic long vehicles will be problematic here.
 							primary_maxRange += (int)(obj_box.Extent.X / 2 + obj_box.Extent.Y / 2) / 2;
 						}
-						m_primary_prefRange = primary_maxRange < 120 ? (int)(primary_maxRange / 2) : primary_maxRange - 10;
+						m_primary_prefRange = primary_maxRange < BOT_VERY_LONG_WEAPON_RANGE ? (int)(primary_maxRange / 2) : primary_maxRange - 10;
 						if (primary_minRange > m_primary_prefRange)
 							primary_minRange = m_primary_prefRange - 1;
 						if (primary_minRange < 0)
@@ -3678,12 +3723,12 @@ REGISTER_SCRIPT(MS_AI_Behaviour,
 	"Weapon_VTOL=1:int,"
 	"Priority_Building=3.0:float,"
 	"Weapon_Building=1:int,"
-	"Max_Attack_Range=150:int,"
+	"Max_Attack_Range=-1:int,"
 	"Min_Attack_Range=0:int,"
-	"Preferred_Attack_Range=60:int,"
-	"Max_Attack_Range_Secondary=150:int,"
+	"Preferred_Attack_Range=-1:int,"
+	"Max_Attack_Range_Secondary=-1:int,"
 	"Min_Attack_Range_Secondary=0:int,"
-	"Preferred_Attack_Range_Secondary=60:int,"
+	"Preferred_Attack_Range_Secondary=-1:int,"
 	"Modifier_Distance=0.25:float,"
 	"Modifier_Target_Damage=0.1:float,"
 	"Modifier_Target_Value=0.05:float,"
@@ -3718,6 +3763,62 @@ class MS_AI_Preferences : public ScriptImpClass
 			Commands->Send_Custom_Event(obj, killer, CUSTOM_AI_ENEMY_KILLED, 0, 0.0f);
 		}
 	}
+
+public:
+	StringClass Get_Range_Corrected_Parameters(GameObject* obj)
+	{
+		// Developer: copy weapon preset for range, no override (-1)
+		if (Get_Int_Parameter("Max_Attack_Range") == -1 || Get_Int_Parameter("Preferred_Attack_Range") == -1 ||
+			Get_Int_Parameter("Max_Attack_Range_Secondary") == -1 || Get_Int_Parameter("Preferred_Attack_Range_Secondary") == -1)
+		{
+			int maxAttackRange = 0;
+			int preferredAttackRange = 0;
+			int maxAttackRangeSecondary = 0;
+			int preferredAttackRangeSecondary = 0;
+			Get_Equipped_Weapon_Range_Preferences(obj, maxAttackRange, preferredAttackRange, maxAttackRangeSecondary, preferredAttackRangeSecondary);
+
+			StringClass buffer;
+			int count = Get_Parameter_Count();
+			int i = 0;
+			while ((i < count))
+			{
+				if (i > 0)
+				{
+					buffer += ",";
+				}
+				if (i == Get_Parameter_Index("Max_Attack_Range") && Get_Int_Parameter("Max_Attack_Range") == -1)
+				{
+					buffer.Format("%s,%d", buffer.Peek_Buffer(), maxAttackRange);
+				}
+				else if (i == Get_Parameter_Index("Preferred_Attack_Range") && Get_Int_Parameter("Preferred_Attack_Range") == -1)
+				{
+					buffer.Format("%s,%d", buffer.Peek_Buffer(), preferredAttackRange);
+				}
+				else if (i == Get_Parameter_Index("Max_Attack_Range_Secondary") && Get_Int_Parameter("Max_Attack_Range_Secondary") == -1)
+				{
+					buffer.Format("%s,%d", buffer.Peek_Buffer(), maxAttackRangeSecondary);
+				}
+				else if (i == Get_Parameter_Index("Preferred_Attack_Range_Secondary") && Get_Int_Parameter("Preferred_Attack_Range_Secondary") == -1)
+				{
+					buffer.Format("%s,%d", buffer.Peek_Buffer(), preferredAttackRangeSecondary);
+				}
+				else
+				{
+					const char* param = Get_Parameter(i);
+					buffer += param;
+				}
+				i++;
+			}
+
+			return buffer;
+		}
+		else
+		{
+			char str[256];
+			Get_Parameters_String(str, 256);
+			return str;
+		}
+	}
 };
 REGISTER_SCRIPT(MS_AI_Preferences,
 	"Priority_Infantry=1.0:float,"
@@ -3731,12 +3832,12 @@ REGISTER_SCRIPT(MS_AI_Preferences,
 	"Weapon_VTOL=1:int,"
 	"Priority_Building=3.0:float,"
 	"Weapon_Building=1:int,"
-	"Max_Attack_Range=150:int,"
+	"Max_Attack_Range=-1:int,"
 	"Min_Attack_Range=0:int,"
-	"Preferred_Attack_Range=60:int,"
-	"Max_Attack_Range_Secondary=150:int,"
+	"Preferred_Attack_Range=-1:int,"
+	"Max_Attack_Range_Secondary=-1:int,"
 	"Min_Attack_Range_Secondary=0:int,"
-	"Preferred_Attack_Range_Secondary=60:int,"
+	"Preferred_Attack_Range_Secondary=-1:int,"
 	"Modifier_Distance=0.25:float,"
 	"Modifier_Target_Damage=0.1:float,"
 	"Modifier_Target_Value=0.05:float,"
@@ -4000,6 +4101,10 @@ class MS_AI_Pathfind_Helper : public ScriptImpClass
 			ActionParamsStruct params;
 			params.Set_Basic(this, 95, ACTION_AI_GET_AROUND_REVERSE);
 			params.Set_Movement(getAroundReversePos, 1.0f, 1.0f);
+
+			if (Get_Vehicle_Mode(obj) == VEHICLE_TYPE_FLYING)
+				params.MovePathfind = false;
+
 			params.MoveBackup = true;
 			Handle_Movement_Action(obj, params);
 		}
@@ -7060,21 +7165,9 @@ class MS_AI_Player_Controller : public ScriptImpClass
 		{
 			int maxAttackRange = 0;
 			int preferredAttackRange = 0;
-			if (activateOnObj->As_PhysicalGameObj() && activateOnObj->As_PhysicalGameObj()->As_ArmedGameObj())
-			{
-				auto armedObj = activateOnObj->As_PhysicalGameObj()->As_ArmedGameObj();
-				if (auto weapon = armedObj->Get_Weapon())
-				{
-					maxAttackRange = (int)(weapon->PrimaryAmmoDefinition ? weapon->PrimaryAmmoDefinition->Range() : maxAttackRange);
-					preferredAttackRange = (int)(weapon->PrimaryAmmoDefinition ? weapon->PrimaryAmmoDefinition->EffectiveRange(): preferredAttackRange);
-					// Make sure it's not zero or bigger than max 
-					if (preferredAttackRange == 0 || preferredAttackRange > maxAttackRange)
-						preferredAttackRange = maxAttackRange;
-					// Long range units: snipers/artilleries, should not try to come as close
-					if (maxAttackRange >= 120)
-						preferredAttackRange = maxAttackRange - 10;
-				}
-			}
+			int maxAttackRangeSecondary = 0;
+			int preferredAttackRangeSecondary = 0;
+			Get_Equipped_Weapon_Range_Preferences(activateOnObj, maxAttackRange, preferredAttackRange, maxAttackRangeSecondary, preferredAttackRangeSecondary);
 
 			// Get default parameters
 			DynamicVectorClass<ScriptParameter> parameters;
@@ -7106,6 +7199,20 @@ class MS_AI_Player_Controller : public ScriptImpClass
 					else
 						behaviourScriptParams.Format("%s,%s", behaviourScriptParams.Peek_Buffer(), parameter.value.Peek_Buffer());
 				}
+				else if (strcmp(parameter.name, "Max_Attack_Range_Secondary") == 0)
+				{
+					if (maxAttackRangeSecondary)
+						behaviourScriptParams.Format("%s,%d", behaviourScriptParams.Peek_Buffer(), maxAttackRangeSecondary);
+					else
+						behaviourScriptParams.Format("%s,%s", behaviourScriptParams.Peek_Buffer(), parameter.value.Peek_Buffer());
+				}
+				else if (strcmp(parameter.name, "Preferred_Attack_Range_Secondary") == 0)
+				{
+					if (preferredAttackRangeSecondary)
+						behaviourScriptParams.Format("%s,%d", behaviourScriptParams.Peek_Buffer(), preferredAttackRangeSecondary);
+					else
+						behaviourScriptParams.Format("%s,%s", behaviourScriptParams.Peek_Buffer(), parameter.value.Peek_Buffer());
+				}
 				// Use 0 values for engineering units, they should never actively engage enemies, but run to repair instead
 				else if ((strcmp(parameter.name, "Priority_Light_Vehicle") == 0 || strcmp(parameter.name, "Priority_Heavy_Vehicle") == 0 || strcmp(parameter.name, "Priority_VTOL") == 0) && objectiveType == dp88_AI_Objective::TYPE_ENGINEERING)
 				{
@@ -7121,9 +7228,7 @@ class MS_AI_Player_Controller : public ScriptImpClass
 		}
 		else
 		{
-			char str[256];
-			preferencesScript->Get_Parameters_String(str, 256);
-			behaviourScriptParams.Format("%s", str);
+			behaviourScriptParams = preferencesScript->Get_Range_Corrected_Parameters(activateOnObj);
 		}
 
 		behaviourScriptParams.Format("%s,%d", behaviourScriptParams.Peek_Buffer(), objectiveType);

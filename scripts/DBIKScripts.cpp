@@ -1320,8 +1320,8 @@ void DB_Turret_Spawn::Killed(GameObject *obj,GameObject *killer)
 	GameObject *turret = Commands->Find_Object(turretId);
 	if (turret)
 	{
-		Commands->Set_Health(turret, 0);
-		Commands->Set_Shield_Strength(turret, 0);
+		Commands->Set_Health(turret,0);
+		Commands->Set_Shield_Strength(turret,0);
 		Commands->Apply_Damage(obj, 100.00, "BlamoKiller", killer);
 	}
 }
@@ -1809,7 +1809,7 @@ void DB_Set_PT_Slot::Created(GameObject *obj)
 		}
 
 
-	
+
 		PurchaseSettingsDefClass *PT = PurchaseSettingsDefClass::Find_Definition((PurchaseSettingsDefClass::TYPE)Type,(PurchaseSettingsDefClass::TEAM)Team);
 		if(PT)
 		{
@@ -1931,6 +1931,15 @@ ScriptRegistrant<DB_Replace_When_Repaired> DB_Replace_When_Repaired_Registrant("
 
 void DB_Force_Fire::Created(GameObject *obj)
 {
+	float startDelay = Get_Float_Parameter("StartDelay");
+	if(!startDelay)
+		Start_Attack(obj);
+	else
+		Commands->Start_Timer(obj,this,startDelay,2);
+}
+
+void DB_Force_Fire::Start_Attack(GameObject *obj)
+{
 	if(obj && obj->As_SmartGameObj())
 	{
 		ActionParamsStruct action;
@@ -1951,6 +1960,8 @@ void DB_Force_Fire::Timer_Expired(GameObject *obj, int number)
 {
 	if(number == 1)
 		Commands->Action_Reset(obj,101);
+	else if(number == 2)
+		Start_Attack(obj);
 }
 
 void DB_Force_Fire::Detach(GameObject *obj)
@@ -1961,5 +1972,4 @@ void DB_Force_Fire::Detach(GameObject *obj)
 	}
 }
 
-ScriptRegistrant<DB_Force_Fire>DB_Force_Fire_Registrant("DB_Force_Fire","UseSecondaryFire=0:int,ResetTime=0:float");
-
+ScriptRegistrant<DB_Force_Fire>DB_Force_Fire_Registrant("DB_Force_Fire","UseSecondaryFire=0:int,ResetTime=0:float,StartDelay=0:float");

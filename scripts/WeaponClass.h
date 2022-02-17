@@ -155,6 +155,7 @@ public:
 	//new
 	SCRIPTS_API float	Get_Targeting_Range(void);
 	bool				Tilt_Gun_While_Reloading(){return tiltGunWhileReloading && Definition->DoTiltWhileReloading;}
+	float				Get_Charge_Time();
 private:
 	void				Fire_C4( const AmmoDefinitionClass *ammo_def );
 	bool				Fire_Beacon( const AmmoDefinitionClass *ammo_def );

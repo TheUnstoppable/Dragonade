@@ -1,4 +1,5 @@
 #include "General.h"
+#include "engine.h"
 #include "engine_tt.h"
 #include "engine_def.h"
 #include "VehicleGameObjDef.h"
@@ -18,14 +19,7 @@
 #include "MoveablePhysClass.h"
 #include "DB_General.h"
 
-#include "engine_tdb.h"
-#include "engine_obj.h"
-#include "engine_script.h"
-#include "engine_player.h"
-#include "engine_phys.h"
-#include "engine_game.h"
-#include "engine_obj2.h"
-#include "engine_dmg.h"
+
 
 class DB_Captureable_Silo : public ScriptImpClass {
 	bool Play_Damage;
@@ -1200,38 +1194,64 @@ class DB_Beacon_fix2 : public ScriptImpClass {
 		if(beacon && beacon->As_PhysicalGameObj()->As_BeaconGameObj())
 		{
 			int IsNuke = beacon->As_PhysicalGameObj()->As_BeaconGameObj()->Get_Definition().Is_Nuke();
-			if(DetTime>52)
+			if(DetTime>72)
 			{
 				Commands->Start_Timer(obj,this,DetTime-(float)67,3575);  // countdown initiated
 				if(IsNuke)
 				{
-					if(DetTime>62)
-					{
-						Commands->Start_Timer(obj,this,DetTime-(float)52.5,3585);  // Nuclear Strike in 50 seconds
-						if(DetTime>72)
-						{
-							Commands->Start_Timer(obj,this,DetTime-(float)62.5,3583);  // Nuclear Strike in 60 seconds
-						}
-					}
+					Commands->Start_Timer(obj,this,DetTime-(float)62.5,3583);  // Nuclear Strike in 60 seconds
+					Commands->Start_Timer(obj,this,DetTime-(float)52.5,3585);  // Nuclear Strike in 50 seconds
 					Commands->Start_Timer(obj,this,DetTime-(float)42.5,3587);  // Nuclear Strike in 40 seconds
 					Commands->Start_Timer(obj,this,DetTime-(float)32.5,3589);  // Nuclear Strike in 30 seconds
 				}
 				else 
 				{
-					if(DetTime>62)
-					{
-						Commands->Start_Timer(obj,this,DetTime-(float)52.5,3586);  // Nuclear Strike in 50 seconds
-						if(DetTime>72)
-						{
-							Commands->Start_Timer(obj,this,DetTime-(float)62.5,3584);  // Nuclear Strike in 60 seconds
-						}
-					}
+					Commands->Start_Timer(obj,this,DetTime-(float)62.5,3584);  // Nuclear Strike in 60 seconds
+					Commands->Start_Timer(obj,this,DetTime-(float)52.5,3586);  // Nuclear Strike in 50 seconds
 					Commands->Start_Timer(obj,this,DetTime-(float)42.5,3588);  // Ion Cannon Strike in 40 seconds
 					Commands->Start_Timer(obj,this,DetTime-(float)32.5,3590);  // Ion Cannon Strike in 30 seconds
 				}
-				Commands->Start_Timer(obj,this,DetTime-25,3579);
-				Commands->Start_Timer(obj,this,DetTime-20,3580);
-				Commands->Start_Timer(obj,this,DetTime-15,3581);
+				Commands->Start_Timer(obj,this,DetTime-25,3579); // 25
+				Commands->Start_Timer(obj,this,DetTime-20,3580); // 20
+				Commands->Start_Timer(obj,this,DetTime-15,3581); // 15
+			}
+
+			else if(DetTime>62)
+			{
+				Commands->Start_Timer(obj,this,DetTime-(float)57,3575);  // countdown initiated
+				if(IsNuke)
+				{
+					Commands->Start_Timer(obj,this,DetTime-(float)52.5,3585);  // Nuclear Strike in 50 seconds
+					Commands->Start_Timer(obj,this,DetTime-(float)42.5,3587);  // Nuclear Strike in 40 seconds
+					Commands->Start_Timer(obj,this,DetTime-(float)32.5,3589);  // Nuclear Strike in 30 seconds
+				}
+				else 
+				{
+					Commands->Start_Timer(obj,this,DetTime-(float)52.5,3586);  // Nuclear Strike in 50 seconds
+					Commands->Start_Timer(obj,this,DetTime-(float)42.5,3588);  // Ion Cannon Strike in 40 seconds
+					Commands->Start_Timer(obj,this,DetTime-(float)32.5,3590);  // Ion Cannon Strike in 30 seconds
+				}
+				Commands->Start_Timer(obj,this,DetTime-25,3579); // 25
+				Commands->Start_Timer(obj,this,DetTime-20,3580); // 20
+				Commands->Start_Timer(obj,this,DetTime-15,3581); // 15
+			}
+
+			else if(DetTime>52)
+			{
+				Commands->Start_Timer(obj,this,DetTime-(float)47,3575);  // countdown initiated
+				if(IsNuke)
+				{
+					Commands->Start_Timer(obj,this,DetTime-(float)42.5,3587);  // Nuclear Strike in 40 seconds
+					Commands->Start_Timer(obj,this,DetTime-(float)32.5,3589);  // Nuclear Strike in 30 seconds
+				}
+				else 
+				{
+					Commands->Start_Timer(obj,this,DetTime-(float)42.5,3588);  // Ion Cannon Strike in 40 seconds
+					Commands->Start_Timer(obj,this,DetTime-(float)32.5,3590);  // Ion Cannon Strike in 30 seconds
+				}
+				Commands->Start_Timer(obj,this,DetTime-25,3579); // 25
+				Commands->Start_Timer(obj,this,DetTime-20,3580); // 20
+				Commands->Start_Timer(obj,this,DetTime-15,3581); // 15
 			}
 
 			else if(DetTime>25)
@@ -1340,7 +1360,7 @@ class DB_Beacon_fix2 : public ScriptImpClass {
 		{
 			//Console_Input("msg Beacon will detonate in 60 Seconds");
 			Create_2D_WAV_Sound_Team_Dialog("mxxdsgn_dsgn0023i1evan_snd.wav",0);
-			Create_2D_WAV_Sound_Team_Dialog("mxxdsgn_dsgn0024i1evag_snd.wav",1);
+			Create_2D_WAV_Sound_Team_Dialog("evagion60.wav",1);
 		}
 
 		if(number==3585)
@@ -1354,7 +1374,7 @@ class DB_Beacon_fix2 : public ScriptImpClass {
 		{
 			//Console_Input("msg Beacon will detonate in 50 Seconds");
 			Create_2D_WAV_Sound_Team_Dialog("mxxdsgn_dsgn0022i1evan_snd.wav",0);
-			Create_2D_WAV_Sound_Team_Dialog("mxxdsgn_dsgn0023i1evag_snd.wav",1);
+			Create_2D_WAV_Sound_Team_Dialog("evagion50.wav",1);
 		}
 
 		if(number==3587)
@@ -1368,7 +1388,7 @@ class DB_Beacon_fix2 : public ScriptImpClass {
 		{
 			//Console_Input("msg Beacon will detonate in 40 Seconds");
 			Create_2D_WAV_Sound_Team_Dialog("mxxdsgn_dsgn0021i1evan_snd.wav",0);
-			Create_2D_WAV_Sound_Team_Dialog("mxxdsgn_dsgn0022i1evag_snd.wav",1);
+			Create_2D_WAV_Sound_Team_Dialog("evagion40.wav",1);
 		}
 
 		if(number==3589)
@@ -1382,7 +1402,7 @@ class DB_Beacon_fix2 : public ScriptImpClass {
 		{
 			//Console_Input("msg Beacon will detonate in 30 Seconds");
 			Create_2D_WAV_Sound_Team_Dialog("mxxdsgn_dsgn0020i1evan_snd.wav",0);
-			Create_2D_WAV_Sound_Team_Dialog("mxxdsgn_dsgn0021i1evag_snd.wav",1);
+			Create_2D_WAV_Sound_Team_Dialog("evagion30.wav",1);
 		}
 	}
 
@@ -1527,4 +1547,4 @@ ScriptRegistrant<Nod_SamSite_DeathSound> Nod_SamSite_DeathSound_Registrant("Nod_
 ScriptRegistrant<DB_Power_Plant_fix> DB_Power_Plant_fix_Registrant("DB_Power_Plant_fix", "");
 ScriptRegistrant<DB_Beacon_fix> DB_Beacon_fix_Registrant("DB_Beacon_fix", "");
 ScriptRegistrant<DB_Beacon_fix2> DB_Beacon_fix2_Registrant("DB_Beacon_fix2", "BeaconID=0:int,DetTime:0:float");
-ScriptRegistrant<DB_Enter_Teleport_Random> DB_Enter_Teleport_Random_Registrant("DB_Enter_Teleport_Random", "Object_ID1=1:int,Object_ID2=1:int,Object_ID3=1:int,Object_ID4=1:int,Object_ID5=1:int");
+ScriptRegistrant<DB_Enter_Teleport_Random> DB_Enter_Teleport_Random_Registrant("DB_Enter_Teleport_Random","Object_ID1=1:int,Object_ID2=1:int,Object_ID3=1:int,Object_ID4=1:int,Object_ID5=1:int");

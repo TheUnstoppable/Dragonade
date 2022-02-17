@@ -49,6 +49,14 @@ unsigned int SCRIPTS_API Get_Cost(int def_id)
 	if (!cost)
 	{
 		cost = Get_Team_Cost(def_id,1);
+		if (!cost)
+		{
+			cost = Get_Team_Cost(def_id, 2);
+			if (!cost)
+			{
+				cost = Get_Team_Cost(def_id, 3);
+			}
+		}
 	}
 	return cost;
 }

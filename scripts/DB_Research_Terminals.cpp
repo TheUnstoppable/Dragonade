@@ -19,6 +19,7 @@
 #include "GameObjManager.h"
 #include "DB_Research_Terminals.h"
 #include "DB_General.h"
+#include "dp88_custom_timer_defines.h"
               
 #include "SoldierGameObjDef.h"
 #include "PowerupGameObjDef.h"
@@ -841,6 +842,11 @@ void DB_DeployableTank_Upgradeable::Created(GameObject *obj)
 	}
 }
 
+void DB_DeployableTank_Upgradeable::KeyHook()
+{
+	Commands->Send_Custom_Event(Owner(),Owner(),923572385,0,0);
+}
+
 void DB_DeployableTank_Upgradeable::Custom(GameObject *obj,int type,int param,GameObject *sender)
 {
 	if (!Upgraded &&  type == Research_Technology::UPGRADE_INFANTRY_ARMOR_CUSTOM && param==UpgradeID)
@@ -979,6 +985,7 @@ void DB_DeployableTank_Upgradeable::Animation_Complete(GameObject *obj,const cha
 		Commands->Enable_Vehicle_Transitions(obj,true);
 		Commands->Enable_Innate_Conversations(obj,true);
 		Commands->Send_Custom_Event(obj,obj,DEPLOY_COMPLETE_CUSTOM,0,0);
+		Commands->Send_Custom_Event(obj,obj,CUSTOM_DEPLOY_STATE_CHANGED,1,0);
 		return;
 	}
 	//tank redeploy
@@ -997,6 +1004,7 @@ void DB_DeployableTank_Upgradeable::Animation_Complete(GameObject *obj,const cha
 		Commands->Enable_Vehicle_Transitions(obj,true);
 		Commands->Enable_Engine(obj,true);
 		Commands->Send_Custom_Event(obj,obj,UNDEPLOY_COMPLETE_CUSTOM,0,0);
+		Commands->Send_Custom_Event(obj,obj,CUSTOM_DEPLOY_STATE_CHANGED,0,0);
 		return;
 	}
 }

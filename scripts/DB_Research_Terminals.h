@@ -163,13 +163,14 @@ class DB_Tiberium_Deposit : public ScriptImpClass
 	void Entered(GameObject *obj, GameObject *enterer);
 };
 
-class DB_DeployableTank_Upgradeable : public ScriptImpClass {
+class DB_DeployableTank_Upgradeable : public JFW_Key_Hook_Base {
 	int UpgradeID;
 	bool Upgraded;
 	int PilotID,mode;
 	StringClass model;
 	void Created(GameObject *obj);
 	void Animation_Complete(GameObject *obj,const char *animation_name);
+	void KeyHook();
 	void Custom(GameObject *obj,int type,int param,GameObject *sender);
 	void Destroyed(GameObject *obj);
 	public: void Register_Auto_Save_Variables();

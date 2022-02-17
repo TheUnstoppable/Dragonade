@@ -195,7 +195,7 @@ JMG_Metroid_Game_Control::JMG_Metroid_Game_Control()
 void JMG_Metroid_Game_Control::Created(GameObject *obj)
 {
 	JMG_Metroid_Game_Control::gameRemainingTime = 0;
-	MetroidObjectiveSystemControl.Add_Objective(1,NewObjectiveSystem::Primary,NewObjectiveSystem::Pending,12781,"",12781,Commands->Get_Position(Commands->Find_Object(100126)),"null");
+	MetroidObjectiveSystemControl.Add_Objective(1,NewObjectiveSystem::Primary,NewObjectiveSystem::Pending,12781,"",12781,Commands->Get_Position(Commands->Find_Object(100126)));
 	MetroidRoomObjectives.Add_Objective(1,NewObjectiveSystem::Primary,NewObjectiveSystem::Pending,0,"",0,Commands->Get_Position(Commands->Find_Object(100126)));
 	JMG_Metroid_Game_Control::currentBriefingId = 12766;
 	for (int x = 1;x < 128;x++)
