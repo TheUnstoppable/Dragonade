@@ -1,4 +1,4 @@
-Dragonade 1.10.3
+Dragonade 1.10.4
 Created by Whitedragon and Black-Cell.net
 
 Special thanks to:
@@ -25,6 +25,10 @@ Installation:
 
 
 Update History:
+
+Version 1.10.4
+  Additions:
+   - Updated to TT 4.7.2.
 
 Version 1.10.3 Hotfix #1
   Changes:
