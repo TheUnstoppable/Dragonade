@@ -409,10 +409,9 @@ void DAVeteranPlayerDataObserverClass::Init() {
 	DAPlayer->Set_PowerUp_Discount(Get_Player_Level()->PurchaseDiscount);
 	
 	if (Get_Owner()->Get_GameObj()) {
-		IsInVehicle = Get_Owner()->Get_GameObj()->Get_Vehicle() != 0;
 		SoldierOriginalHealth = Commands->Get_Max_Health(Get_Owner()->Get_GameObj());
 		SoldierOriginalArmor = Commands->Get_Max_Shield_Strength(Get_Owner()->Get_GameObj());
-		if (IsInVehicle) {
+		if (Is_In_Vehicle()) {
 			VehicleOriginalHealth = Commands->Get_Max_Health(Get_Owner()->Get_GameObj()->Get_Vehicle());
 			VehicleOriginalArmor = Commands->Get_Max_Shield_Strength(Get_Owner()->Get_GameObj()->Get_Vehicle());
 		}
@@ -434,7 +433,6 @@ void DAVeteranPlayerDataObserverClass::Created() {
 
 void DAVeteranPlayerDataObserverClass::Vehicle_Enter(VehicleGameObj* Vehicle, int Seat) {
 	if (Seat == 0) {
-		IsInVehicle = true;
 		VehicleOriginalHealth = Commands->Get_Max_Health(Vehicle);
 		VehicleOriginalArmor = Commands->Get_Max_Shield_Strength(Vehicle);
 
@@ -454,7 +452,6 @@ void DAVeteranPlayerDataObserverClass::Vehicle_Enter(VehicleGameObj* Vehicle, in
 
 void DAVeteranPlayerDataObserverClass::Vehicle_Exit(VehicleGameObj* Vehicle, int Seat) {
 	if (Seat == 0) {
-		IsInVehicle = false;
 		//Scale health and armor
 		Commands->Set_Health(Vehicle, (Commands->Get_Health(Vehicle) * VehicleOriginalHealth) / Commands->Get_Max_Health(Vehicle));
 		Commands->Set_Shield_Strength(Vehicle, (Commands->Get_Shield_Strength(Vehicle) * VehicleOriginalArmor) / Commands->Get_Max_Shield_Strength(Vehicle));
@@ -472,8 +469,8 @@ void DAVeteranPlayerDataObserverClass::Vehicle_Exit(VehicleGameObj* Vehicle, int
 void DAVeteranPlayerDataObserverClass::Timer_Expired(int Number, unsigned int Data) {
 	if (Number == 123123) {
 		DAVeteranLevel* Level = Get_Player_Level();
-		if ((IsInVehicle ? Level->VehicleRegen : Level->InfantryRegen) > 0.f) {
-			if (IsInVehicle) {
+		if ((Is_In_Vehicle() ? Level->VehicleRegen : Level->InfantryRegen) > 0.f) {
+			if (Is_In_Vehicle()) {
 				if (VehicleGameObj* Vehicle = Get_Owner()->Get_GameObj()->Get_Vehicle()) {
 					Commands->Apply_Damage(Vehicle, -Level->VehicleRegen, "None", 0);
 				}
@@ -482,7 +479,7 @@ void DAVeteranPlayerDataObserverClass::Timer_Expired(int Number, unsigned int Da
 					Commands->Apply_Damage(Get_Owner()->Get_GameObj(), -Level->InfantryRegen, "None", 0);
 				}
 			}
-			Start_Timer(123123, IsInVehicle ? Level->VehicleRegenInterval : Level->InfantryRegenInterval, false, 0);
+			Start_Timer(123123, Is_In_Vehicle() ? Level->VehicleRegenInterval : Level->InfantryRegenInterval, false, 0);
 		}
 	}
 }
@@ -499,7 +496,7 @@ void DAVeteranPlayerDataObserverClass::Custom(GameObject* Sender, int Type, int 
 			// Scale health and armor
 			Commands->Set_Health(Soldier, (Commands->Get_Health(Soldier) * Commands->Get_Max_Health(Soldier)) / SoldierOriginalHealth);
 			Commands->Set_Shield_Strength(Soldier, (Commands->Get_Shield_Strength(Soldier) * Commands->Get_Max_Shield_Strength(Soldier)) / SoldierOriginalArmor);
-			if (IsInVehicle) {
+			if (Is_In_Vehicle()) {
 				VehicleGameObj* Vehicle = Soldier->Get_Vehicle();
 				Set_Max_Health_Without_Healing(Vehicle, VehicleOriginalHealth * HALF(Get_Player_Level()->VehicleHealthIncrease));
 				Set_Max_Shield_Strength_Without_Healing(Vehicle, VehicleOriginalArmor * HALF(Get_Player_Level()->VehicleHealthIncrease));
@@ -510,7 +507,7 @@ void DAVeteranPlayerDataObserverClass::Custom(GameObject* Sender, int Type, int 
 			}
 			Custom(Sender, Type, 2);
 		} else if (Param == 2) { // Reset timer.
-			if (IsInVehicle) {
+			if (Is_In_Vehicle()) {
 				if (Get_Player_Level()->VehicleRegen > 0.f) {
 					Stop_Timer(123123);
 					Start_Timer(123123, Get_Player_Level()->VehicleRegenInterval, false, 0);
@@ -531,7 +528,7 @@ void DAVeteranPlayerDataObserverClass::Custom(GameObject* Sender, int Type, int 
 			Set_Max_Health_Without_Healing(Soldier, SoldierOriginalHealth);
 			Set_Max_Shield_Strength_Without_Healing(Soldier, SoldierOriginalArmor);
 		} else if (Param == 4) { // Restore back the old health & armor of vehicle.
-			if (IsInVehicle) {
+			if (Is_In_Vehicle()) {
 				VehicleGameObj* Vehicle = Get_Owner()->Get_GameObj()->Get_Vehicle();
 
 				//Scale health and armor

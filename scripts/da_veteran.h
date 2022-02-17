@@ -108,7 +108,10 @@ private:
 	float SoldierOriginalArmor;
 	float VehicleOriginalHealth;
 	float VehicleOriginalArmor;
-	bool IsInVehicle;
+	
+	inline bool Is_In_Vehicle() {
+		return Get_Owner() && Get_Owner()->Get_GameObj() && Get_Owner()->Get_GameObj()->Get_Vehicle() && Get_Owner()->Get_GameObj()->Get_Vehicle()->Get_Driver() == Get_Owner()->Get_GameObj();
+	}
 };
 
 
