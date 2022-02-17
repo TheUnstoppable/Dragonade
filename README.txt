@@ -30,6 +30,9 @@ Version 1.10.4
   Additions:
    - Updated to TT 4.7.2.
 
+  Bug Fixes:
+   - Fix a bug in Veteran System when the vehicle that player is currently in gets destroyed confuses Veteran System, causing a crash.
+
 Version 1.10.3 Hotfix #1
   Changes:
    - Improvements for kill messages.
