@@ -404,6 +404,16 @@ bool SCRIPTSAPI Set_Script_Commands(ScriptCommandsClass* commands)
 	Set_Time_Scale = (sts)Address(tt,"Set_Time_Scale");
 	Set_Subobject_Animation_Player = (ssap)Address(tt,"Set_Subobject_Animation_Player");
 	Write_File_Async = (wfa)Address(tt, "Write_File_Async");
+	AddDialogHook = (adh)Address(tt, "AddDialogHook");
+	RemoveDialogHook = (rdh)Address(tt, "RemoveDialogHook");
+	Create_Menu_Dialog = (cmd)Address(tt, "Create_Menu_Dialog");
+	Create_Popup_Dialog = (cpd)Address(tt, "Create_Popup_Dialog");
+	Find_Dialog = (idlg)Address(tt, "Find_Dialog");
+	Show_Dialog = (dlg)Address(tt, "Show_Dialog");
+	Hide_Dialog = (dlg)Address(tt, "Hide_Dialog");
+	Delete_Dialog = (dlg)Address(tt, "Delete_Dialog");
+	Display_HUD_Weapon_Grant_Player = (dhwg)Address(tt, "Display_HUD_Weapon_Grant_Player");
+	Display_HUD_Ammo_Grant_Player = (dhwg)Address(tt, "Display_HUD_Ammo_Grant_Player");
 
 	DA::Init();
 

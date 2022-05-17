@@ -11573,3 +11573,45 @@ class JMG_Utility_Custom_Drop_Corpse : public ScriptImpClass
 	void Custom(GameObject *obj,int message,int param,GameObject *sender);
 	void Timer_Expired(GameObject *obj,int number);
 };
+
+/*!
+* \brief Sends a random custom on a custom, each time the custom is received a custom is sent and removed from the list, error message will be thrown when list is empty
+* \Custom - Custom to watch for
+* \ID - ID to send to, 0 sends to self, -1 sends to sender
+* \SendCustoms - list of customs that can be sent at random, the delim separates them
+* \Delim - special character used to separate the list IE: @ = 1@3@54545@3
+* \Param - param to send (-1 sends the param that was received)
+* \Delay - delay to add
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Custom_Send_Shuffled_Customs : public ScriptImpClass {
+	int recieveMessage;
+	int id;
+	SList<int> customs;
+	int Param;
+	float delay;
+	void Created(GameObject *obj);
+	void Custom(GameObject *obj,int message,int param,GameObject *sender);
+};
+
+/*!
+* \brief Sends a random custom to a random id on a custom, each time the custom is received a custom and id is sent to and removed from the lists, error message will be thrown when the lists are empty
+* \Custom - Custom to watch for
+* \IDs - list of IDs that can be sent at random, the delim separates them
+* \SendCustoms - list of customs that can be sent at random, the delim separates them
+* \Delim - special character used to separate the list IE: @ = 1@3@54545@3
+* \Param - param to send (-1 sends the param that was received)
+* \Delay - delay to add
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Custom_Send_Shuffled_Customs_And_Ids : public ScriptImpClass {
+	int recieveMessage;
+	SList<int> ids;
+	SList<int> customs;
+	int Param;
+	float delay;
+	void Created(GameObject *obj);
+	void Custom(GameObject *obj,int message,int param,GameObject *sender);
+};

@@ -20,6 +20,7 @@
 #include "SList.h"
 #include "cPlayer.h"
 #include "PurchaseSettingsDefClass.h"
+#include "ScriptedDialogClass.h"
 class ConnectionAcceptanceFilter;
 class WideStringClass;
 class cScTextObj;
@@ -222,6 +223,13 @@ typedef int (*ssa) (GameObject *obj,const char *animation,bool looping,const cha
 typedef void (*sts) (float scale);
 typedef int (*ssap) (GameObject *player,GameObject *obj,const char *animation,bool looping,const char *subobject,float startFrame,float endFrame,bool blended);
 typedef int (*wfa) (const char *_FileName, const char *_Text);
+typedef int (*adh) (DialogHook h);
+typedef void (*rdh) (int pos);
+typedef ScriptedMenuDialogClass* (*cmd) (int target);
+typedef ScriptedPopupDialogClass* (*cpd) (int target);
+typedef ScriptedDialogClass* (*idlg) (int id);
+typedef void (*dlg) (ScriptedDialogClass* dialog);
+typedef void (*dhwg) (GameObject* obj, int weapon, int rounds);
 SCRIPTS_API extern gpl Get_Player_List;
 SCRIPTS_API extern gcmi Get_Current_Map_Index;
 SCRIPTS_API extern gm Get_Map;
@@ -444,6 +452,16 @@ SCRIPTS_API extern ssa Set_Subobject_Animation;
 SCRIPTS_API extern sts Set_Time_Scale;
 SCRIPTS_API extern ssap Set_Subobject_Animation_Player;
 SCRIPTS_API extern wfa Write_File_Async;
+SCRIPTS_API extern adh AddDialogHook;
+SCRIPTS_API extern rdh RemoveDialogHook;
+SCRIPTS_API extern cmd Create_Menu_Dialog;
+SCRIPTS_API extern cpd Create_Popup_Dialog;
+SCRIPTS_API extern idlg Find_Dialog;
+SCRIPTS_API extern dlg Show_Dialog;
+SCRIPTS_API extern dlg Hide_Dialog;
+SCRIPTS_API extern dlg Delete_Dialog;
+SCRIPTS_API extern dhwg Display_HUD_Weapon_Grant_Player;
+SCRIPTS_API extern dhwg Display_HUD_Ammo_Grant_Player;
 
 class SCRIPTS_API JFW_Key_Hook_Base : public ScriptImpClass {
 public:

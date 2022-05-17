@@ -27,6 +27,7 @@
 #include "engine_tdb.h"
 #include "engine_dmg.h"
 #include "engine_phys.h"
+#include "engine_dialog.h"
 #ifndef TT
 #include "engine_script.h"
 #include "engine_tt.h"

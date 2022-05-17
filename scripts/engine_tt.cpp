@@ -40,6 +40,7 @@
 #include "TeamPurchaseSettingsDefClass.h"
 #include "PurchaseSettingsDefClass.h"
 #include "PowerUpGameObjDef.h"
+#include "ScriptedControls.h"
 class WideStringClass;
 
 
@@ -264,6 +265,16 @@ SCRIPTS_API ssa Set_Subobject_Animation;
 SCRIPTS_API sts Set_Time_Scale;
 SCRIPTS_API ssap Set_Subobject_Animation_Player;
 SCRIPTS_API wfa Write_File_Async;
+SCRIPTS_API adh AddDialogHook;
+SCRIPTS_API rdh RemoveDialogHook;
+SCRIPTS_API cmd Create_Menu_Dialog;
+SCRIPTS_API cpd Create_Popup_Dialog;
+SCRIPTS_API idlg Find_Dialog;
+SCRIPTS_API dlg Show_Dialog;
+SCRIPTS_API dlg Hide_Dialog;
+SCRIPTS_API dlg Delete_Dialog;
+SCRIPTS_API dhwg Display_HUD_Weapon_Grant_Player;
+SCRIPTS_API dhwg Display_HUD_Ammo_Grant_Player;
 
 SCRIPTS_API bool Can_Team_Build_Vehicle(int Team)
 {

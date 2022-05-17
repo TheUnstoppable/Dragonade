@@ -31,6 +31,13 @@ enum AnnouncementEnum
 	ANNOUNCE_TEAM,
 	ANNOUNCE_PRIVATE,
 };
+enum DialogMessageType
+{
+	MESSAGE_TYPE_DIALOG_SHOW,
+	MESSAGE_TYPE_DIALOG_CLOSE,
+	MESSAGE_TYPE_CONTROL_MOUSE_CLICK,
+	MESSAGE_TYPE_CONTROL_VALUE_CHANGE
+};
 typedef bool (*ChatHook) (int PlayerID,TextMessageEnum Type,const wchar_t *Message,int recieverID);
 typedef bool (*HostHook) (int PlayerID,TextMessageEnum Type,const char *Message);
 typedef void (*ObjectCreateHook) (void *data,GameObject *obj);
@@ -44,6 +51,7 @@ typedef bool (*RefillHook) (GameObject *purchaser);
 typedef bool (*RadioHook) (int PlayerType, int PlayerID, int AnnouncementID, int IconID, AnnouncementEnum AnnouncementType);
 typedef bool (*StockDamageHook) (PhysicalGameObj* damager, PhysicalGameObj* target, float damage, uint warheadId);
 typedef bool (*TtDamageHook) (PhysicalGameObj* damager, PhysicalGameObj* target, const AmmoDefinitionClass* ammo, const char* bone);
+typedef void (*DialogHook) (int PlayerID, int DialogID, int ControlID, DialogMessageType MessageType);
 
 struct ObjectCreateHookStruct {
 	ObjectCreateHook hook;

@@ -568,6 +568,9 @@
     <ClCompile Include="unstoppable.cpp">
       <Filter>Scripts</Filter>
     </ClCompile>
+    <ClCompile Include="engine_dialog.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AABoxClass.h">
@@ -1655,6 +1658,18 @@
     </ClInclude>
     <ClInclude Include="unstoppable.h">
       <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_dialog.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptedControlClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptedControls.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptedDialogClass.h">
+      <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

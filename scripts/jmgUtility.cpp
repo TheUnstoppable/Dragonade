@@ -16604,7 +16604,7 @@ void JMG_Utility_Objective_System_Objectives_Complete_Send_Custom::Created(GameO
 	int count = 0;
 	sprintf(delim,"%s",Get_Parameter("Delim"));
 	char *token = strtok(completedObjectives, delim);
-	while( token != NULL )
+	while(token != NULL)
 	{
 		objectiveIds[count] = atoi(token);
 		token = strtok(NULL,delim);
@@ -17328,6 +17328,116 @@ void JMG_Utility_Custom_Drop_Corpse::Timer_Expired(GameObject *obj,int number)
 			Destroy_Script();
 	}
 }
+void JMG_Utility_Custom_Send_Shuffled_Customs::Created(GameObject *obj)
+{
+	recieveMessage = Get_Int_Parameter("Custom");
+	id = Get_Int_Parameter("ID");
+	Param = Get_Int_Parameter("Param");
+	delay = Get_Float_Parameter("Delay");
+	char sendCustomsStr[256];
+	sprintf(sendCustomsStr,"%s",Get_Parameter("SendCustoms"));
+	char delim[2];
+	sprintf(delim,"%s",Get_Parameter("Delim"));
+	char *token = strtok(sendCustomsStr, delim);
+	while(token != NULL)
+	{
+		customs.Add_Tail(new int(atoi(token)));
+		token = strtok(NULL,delim);
+	}
+}
+void JMG_Utility_Custom_Send_Shuffled_Customs::Custom(GameObject *obj,int message,int param,GameObject *sender)
+{
+	if (message == recieveMessage)
+	{
+		if (customs.Get_Count() <= 0)
+		{
+			Console_Input("msg JMG_Utility_Custom_Send_Shuffled_Customs ERROR: All customs have already been sent!");
+			Destroy_Script();
+			return;
+		}
+		int random = customs.Get_Count() > 0 ? Commands->Get_Random_Int(0,customs.Get_Count()) : customs.Get_Count();
+		int randomCustom = -1;
+		for (SLNode<int> *current = customs.Head();current;current = current->Next())
+		{
+			if (!random)
+			{
+				randomCustom = *current->Data();
+				customs.Remove(current->Data());
+				break;
+			}
+			random--;
+		}
+		GameObject *object = id ? (id == -1 ? sender : Commands->Find_Object(id)) : obj;
+ 		Commands->Send_Custom_Event(obj,object,randomCustom,Param == -1 ? param : Param,delay);
+	}
+}
+void JMG_Utility_Custom_Send_Shuffled_Customs_And_Ids::Created(GameObject *obj)
+{
+	recieveMessage = Get_Int_Parameter("Custom");
+	Param = Get_Int_Parameter("Param");
+	delay = Get_Float_Parameter("Delay");
+	char sendCustomsStr[256];
+	sprintf(sendCustomsStr,"%s",Get_Parameter("SendCustoms"));
+	char delim[2];
+	sprintf(delim,"%s",Get_Parameter("Delim"));
+	char *token = strtok(sendCustomsStr, delim);
+	while(token != NULL)
+	{
+		customs.Add_Tail(new int(atoi(token)));
+		token = strtok(NULL,delim);
+	}
+	char sendIdsStr[256];
+	sprintf(sendIdsStr,"%s",Get_Parameter("IDs"));
+	token = strtok(sendIdsStr, delim);
+	while(token != NULL)
+	{
+		ids.Add_Tail(new int(atoi(token)));
+		token = strtok(NULL,delim);
+	}
+	if (customs.Get_Count() != ids.Get_Count())
+	{
+		Console_Input("msg JMG_Utility_Custom_Send_Shuffled_Customs_And_Ids ERROR: IDs and Customs must have the same count!");
+		Destroy_Script();
+		return;
+	}
+}
+void JMG_Utility_Custom_Send_Shuffled_Customs_And_Ids::Custom(GameObject *obj,int message,int param,GameObject *sender)
+{
+	if (message == recieveMessage)
+	{
+		if (customs.Get_Count() <= 0)
+		{
+			Console_Input("msg JMG_Utility_Custom_Send_Shuffled_Customs_And_Ids ERROR: All customs/IDs have already been sent!");
+			Destroy_Script();
+			return;
+		}
+		int random = customs.Get_Count() > 0 ? Commands->Get_Random_Int(0,customs.Get_Count()) : customs.Get_Count();
+		int randomCustom = -1;
+		for (SLNode<int> *current = customs.Head();current;current = current->Next())
+		{
+			if (!random)
+			{
+				randomCustom = *current->Data();
+				customs.Remove(current->Data());
+				break;
+			}
+			random--;
+		}
+		random = ids.Get_Count() > 0 ? Commands->Get_Random_Int(0,ids.Get_Count()) : ids.Get_Count();
+		int randomId = -1;
+		for (SLNode<int> *current = ids.Head();current;current = current->Next())
+		{
+			if (!random)
+			{
+				randomId = *current->Data();
+				ids.Remove(current->Data());
+				break;
+			}
+			random--;
+		}
+ 		Commands->Send_Custom_Event(obj,Commands->Find_Object(randomId),randomCustom,Param == -1 ? param : Param,delay);
+	}
+}
 ScriptRegistrant<JMG_Utility_Check_If_Script_Is_In_Library> JMG_Utility_Check_If_Script_Is_In_Library_Registrant("JMG_Utility_Check_If_Script_Is_In_Library","ScriptName:string,CppName:string");
 ScriptRegistrant<JMG_Send_Custom_When_Custom_Sequence_Matched> JMG_Send_Custom_When_Custom_Sequence_Matched_Registrant("JMG_Send_Custom_When_Custom_Sequence_Matched","Success_Custom=0:int,Correct_Step_Custom=0:int,Partial_Failure_Custom=0:int,Failure_Custom=0:int,Send_To_ID=0:int,Custom_0=0:int,Custom_1=0:int,Custom_2=0:int,Custom_3=0:int,Custom_4=0:int,Custom_5=0:int,Custom_6=0:int,Custom_7=0:int,Custom_8=0:int,Custom_9=0:int,Disable_On_Success=1:int,Disable_On_Failure=0:int,Starts_Enabled=1:int,Enable_Custom=0:int,Correct_Step_Saftey=0:int,Failure_Saftey=1:int,Max_Failures=1:int");
 ScriptRegistrant<JMG_Utility_Change_Model_On_Timer> JMG_Utility_Change_Model_On_Timer_Registrant("JMG_Utility_Change_Model_On_Timer","Model=null:string,Time=0:float");
@@ -17740,3 +17850,5 @@ ScriptRegistrant<JMG_Utility_Objective_System_Override_Visible_Settings> JMG_Uti
 ScriptRegistrant<JMG_Utility_Custom_Create_Object_At_Bone> JMG_Utility_Custom_Create_Object_At_Bone_Registrant("JMG_Utility_Custom_Create_Object_At_Bone","Custom:int,Preset:string,Bone:string,MaxDistance=1.5:float,Repeat=0:int");
 ScriptRegistrant<JMG_Utility_Killed_Send_Custom_When_Killed_By_Nothing> JMG_Utility_Killed_Send_Custom_When_Killed_By_Nothing_Registrant("JMG_Utility_Killed_Send_Custom_When_Killed_By_Nothing","ID:int,Custom:int,Param:int,Delay:float");
 ScriptRegistrant<JMG_Utility_Custom_Drop_Corpse> JMG_Utility_Custom_Drop_Corpse_Registrant("JMG_Utility_Custom_Drop_Corpse","Custom:int,PowerupName:string,Repeat=0:int");
+ScriptRegistrant<JMG_Utility_Custom_Send_Shuffled_Customs> JMG_Utility_Custom_Send_Shuffled_Customs_Registrant("JMG_Utility_Custom_Send_Shuffled_Customs","Custom:int,ID=0:int,SendCustoms:string,Delim=@:string,Param:int,Delay=0.0:float");
+ScriptRegistrant<JMG_Utility_Custom_Send_Shuffled_Customs_And_Ids> JMG_Utility_Custom_Send_Shuffled_Customs_And_Ids_Registrant("JMG_Utility_Custom_Send_Shuffled_Customs_And_Ids","Custom:int,IDs=0:string,SendCustoms:string,Delim=@:string,Param:int,Delay=0.0:float");

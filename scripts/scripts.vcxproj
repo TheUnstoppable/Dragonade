@@ -275,6 +275,7 @@ copy "$(TargetPath)" "%RenServerPath%\$(TargetFileName)"
     <ClCompile Include="engine_common.cpp" />
     <ClCompile Include="engine_da.cpp" />
     <ClCompile Include="engine_def.cpp" />
+    <ClCompile Include="engine_dialog.cpp" />
     <ClCompile Include="engine_dmg.cpp" />
     <ClCompile Include="engine_game.cpp" />
     <ClCompile Include="engine_io.cpp" />
@@ -509,6 +510,7 @@ copy "$(TargetPath)" "%RenServerPath%\$(TargetFileName)"
     <ClInclude Include="engine_common.h" />
     <ClInclude Include="engine_da.h" />
     <ClInclude Include="engine_def.h" />
+    <ClInclude Include="engine_dialog.h" />
     <ClInclude Include="engine_dmg.h" />
     <ClInclude Include="engine_game.h" />
     <ClInclude Include="engine_io.h" />
@@ -619,6 +621,9 @@ copy "$(TargetPath)" "%RenServerPath%\$(TargetFileName)"
     <ClInclude Include="SceneClass.h" />
     <ClInclude Include="ScriptableGameObj.h" />
     <ClInclude Include="ScriptableGameObjDef.h" />
+    <ClInclude Include="ScriptedControlClass.h" />
+    <ClInclude Include="ScriptedControls.h" />
+    <ClInclude Include="ScriptedDialogClass.h" />
     <ClInclude Include="scripts.h" />
     <ClInclude Include="ScriptZoneGameObj.h" />
     <ClInclude Include="ScriptZoneGameObjDef.h" />

@@ -849,3 +849,42 @@ public:
 	void Created(GameObject* obj);
 	void Custom(GameObject* obj, int type, int param, GameObject* sender);
 };
+
+/*!
+ * \brief Set Bot Tag
+ * \author Unstoppable
+ * \ingroup UnstoppableScripts
+ *
+ * Sets the bot tag of attached soldier object, then detaches.
+ */
+class UP_Set_Bot_Tag : public ScriptImpClass
+{
+public:
+	void Created(GameObject* obj);
+};
+
+/*!
+ * \brief Set Bot Tag Multiple Lines
+ * \author Unstoppable
+ * \ingroup UnstoppableScripts
+ *
+ * Sets the bot tag of attached soldier object with multiple lines, then detaches.
+ */
+class UP_Set_Bot_Tag_MultiLine : public ScriptImpClass
+{
+public:
+	void Created(GameObject* obj);
+};
+
+/*!
+ * \brief Remove Bot Tag
+ * \author Unstoppable
+ * \ingroup UnstoppableScripts
+ *
+ * Removes the bot tag of attached soldier object, then detaches.
+ */
+class UP_Remove_Bot_Tag : public ScriptImpClass
+{
+public:
+	void Created(GameObject* obj);
+};

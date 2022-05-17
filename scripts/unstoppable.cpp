@@ -14,7 +14,6 @@
 #include "engine.h"
 #include "engine_common.h"
 #include "engine_def.h"
-#include "engine_game.h"
 #include "engine_player.h"
 #include "engine_tt.h"
 #include "engine_script.h"
@@ -1343,5 +1342,49 @@ void UP_Disable_Weapon_For_Driver::Custom(GameObject* obj, int type, int param, 
 }
 
 ScriptRegistrant<UP_Disable_Weapon_For_Driver> UP_Disable_Weapon_For_Driver_Registrant("UP_Disable_Weapon_For_Driver", "");
+
+/******************************************************************************************************/
+
+void UP_Set_Bot_Tag::Created(GameObject* obj)
+{
+	if (obj->As_SoldierGameObj())
+	{
+		obj->As_SoldierGameObj()->Set_Bot_Tag(Get_Parameter("Tag"));
+	}
+
+	Destroy_Script();
+}
+
+ScriptRegistrant<UP_Set_Bot_Tag> UP_Set_Bot_Tag_Registrant("UP_Set_Bot_Tag", "Tag:string");
+
+/******************************************************************************************************/
+
+void UP_Set_Bot_Tag_MultiLine::Created(GameObject* obj)
+{
+	if (obj->As_SoldierGameObj())
+	{
+		StringClass tag;
+		tag.Format("%s\n%s\n%s\n%s\n%s", Get_Parameter("Tag1"), Get_Parameter("Tag2"), Get_Parameter("Tag3"), Get_Parameter("Tag4"), Get_Parameter("Tag5"));
+		obj->As_SoldierGameObj()->Set_Bot_Tag(tag);
+	}
+
+	Destroy_Script();
+}
+
+ScriptRegistrant<UP_Set_Bot_Tag_MultiLine> UP_Set_Bot_Tag_MultiLine_Registrant("UP_Set_Bot_Tag_MultiLine", "Tag1:string,Tag2:string,Tag3:string,Tag4:string,Tag5:string");
+
+/******************************************************************************************************/
+
+void UP_Remove_Bot_Tag::Created(GameObject* obj)
+{
+	if (obj->As_SoldierGameObj())
+	{
+		obj->As_SoldierGameObj()->Set_Bot_Tag("\0");
+	}
+
+	Destroy_Script();
+}
+
+ScriptRegistrant<UP_Remove_Bot_Tag> UP_Remove_Bot_Tag_Registrant("UP_Remove_Bot_Tag", "");
 
 /******************************************************************************************************/
