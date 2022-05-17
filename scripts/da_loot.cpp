@@ -141,6 +141,23 @@ void DALootPowerUpClass::PowerUp_Grant(cPlayer *Player) {
 	if (!HUD.Is_Empty()) {
 		DA::Private_HUD_Message(Player, COLORGREEN, "%s", HUD);
 	}
+
+	if (Pow->GrantWeapon && Pow->GrantWeaponID) {
+		if (!Has_Weapon(Player->Get_GameObj(), Get_Definition_Name(Pow->GrantWeaponID))) {
+			Display_HUD_Weapon_Grant_Player(Player->Get_GameObj(), Pow->GrantWeaponID, Pow->GrantWeaponRounds);
+		}
+		else if (!Player->Get_GameObj()->Get_Weapon_Bag()->Peek_Weapon(Pow->GrantWeaponID)->Is_Ammo_Maxed()) {
+			Display_HUD_Ammo_Grant_Player(Player->Get_GameObj(), Pow->GrantWeaponID, Pow->GrantWeaponRounds);
+		}
+	}
+	else if (Pow->GrantWeaponClips) {
+		for (int i = 0; i < Player->Get_GameObj()->Get_Weapon_Bag()->Get_Count(); ++i) {
+			WeaponClass* Weapon = Player->Get_GameObj()->Get_Weapon_Bag()->Peek_Weapon(i);
+			if (Weapon && Weapon->Get_Definition()->CanReceiveGenericCnCAmmo) {
+				Display_HUD_Ammo_Grant_Player(Player->Get_GameObj(), Pow->GrantWeaponID, Weapon->Get_Definition()->ClipSize * Pow->GrantWeaponRounds);
+			}
+		}
+	}
 }
 
 //Timeout and clear damagers list.
