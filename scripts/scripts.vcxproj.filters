@@ -568,6 +568,9 @@
     <ClCompile Include="unstoppable.cpp">
       <Filter>Scripts</Filter>
     </ClCompile>
+    <ClCompile Include="da_killstreaks.cpp">
+      <Filter>DA Game Features</Filter>
+    </ClCompile>
     <ClCompile Include="engine_dialog.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -1658,6 +1661,9 @@
     </ClInclude>
     <ClInclude Include="unstoppable.h">
       <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="da_killstreaks.h">
+      <Filter>DA Game Features</Filter>
     </ClInclude>
     <ClInclude Include="engine_dialog.h">
       <Filter>Engine</Filter>

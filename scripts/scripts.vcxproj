@@ -218,6 +218,7 @@ copy "$(TargetPath)" "%RenServerPath%\$(TargetFileName)"
     <ClCompile Include="da_donate.cpp" />
     <ClCompile Include="da_genericcrates.cpp" />
     <ClCompile Include="da_infantrycrates.cpp" />
+    <ClCompile Include="da_killstreaks.cpp" />
     <ClCompile Include="da_loot.cpp" />
     <ClCompile Include="da_event.cpp" />
     <ClCompile Include="da_game.cpp" />
@@ -443,6 +444,7 @@ copy "$(TargetPath)" "%RenServerPath%\$(TargetFileName)"
     <ClInclude Include="da_disable.h" />
     <ClInclude Include="da_domination.h" />
     <ClInclude Include="da_donate.h" />
+    <ClInclude Include="da_killstreaks.h" />
     <ClInclude Include="da_loot.h" />
     <ClInclude Include="da_event.h" />
     <ClInclude Include="da_game.h" />
