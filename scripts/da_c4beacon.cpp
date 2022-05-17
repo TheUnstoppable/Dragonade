@@ -124,7 +124,15 @@ void DAC4BeaconManager::C4_Detonate_Event(C4GameObj *C4) {
 void DAC4BeaconManager::Poke_Event(cPlayer *Player,PhysicalGameObj *obj) {
 	if (obj->As_BeaconGameObj()) {
 		if (((BeaconGameObj*)obj)->Get_Owner()) {
-			DA::Page_Player(Player,"The owner of this beacon is %ls.",((BeaconGameObj*)obj)->Get_Owner()->Get_Player()->Get_Name());
+			if (((BeaconGameObj*)obj)->Get_Owner()->Get_Player()) {
+				DA::Page_Player(Player,"The owner of this beacon is %ls.",((BeaconGameObj*)obj)->Get_Owner()->Get_Player()->Get_Name());
+			}
+			else if (((BeaconGameObj*)obj)->Get_Owner()->Get_Bot_Tag()) {
+				DA::Page_Player(Player,"The owner of this beacon is %ls.",((BeaconGameObj*)obj)->Get_Owner()->Get_Bot_Tag());
+			}
+			else {
+				DA::Page_Player(Player,"The owner of this beacon is %s.",a_or_an_Prepend(DATranslationManager::Translate(((BeaconGameObj*)obj)->Get_Owner())));
+			}
 		}
 		else {
 			DA::Page_Player(Player,"This beacon has no owner.");
@@ -132,7 +140,15 @@ void DAC4BeaconManager::Poke_Event(cPlayer *Player,PhysicalGameObj *obj) {
 	}
 	else {
 		if (((C4GameObj*)obj)->Get_Owner()) {
-			DA::Page_Player(Player,"The owner of this C4 is %ls.",((C4GameObj*)obj)->Get_Owner()->Get_Player()->Get_Name());
+			if (((C4GameObj*)obj)->Get_Owner()->Get_Player()) {
+				DA::Page_Player(Player,"The owner of this C4 is %ls.",((C4GameObj*)obj)->Get_Owner()->Get_Player()->Get_Name());
+			}
+			else if (((C4GameObj*)obj)->Get_Owner()->Get_Bot_Tag()) {
+				DA::Page_Player(Player,"The owner of this C4 is %ls.",((C4GameObj*)obj)->Get_Owner()->Get_Bot_Tag());
+			}
+			else {
+				DA::Page_Player(Player,"The owner of this C4 is %s.",a_or_an_Prepend(DATranslationManager::Translate(((C4GameObj*)obj)->Get_Owner())));
+			}
 		}
 		else {
 			DA::Page_Player(Player,"This C4 has no owner.");
