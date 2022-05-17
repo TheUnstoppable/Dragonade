@@ -1,4 +1,4 @@
-Dragonade 1.10.4
+Dragonade 1.10.5
 Created by Whitedragon and Black-Cell.net
 
 Special thanks to:
@@ -25,6 +25,17 @@ Installation:
 
 
 Update History:
+
+Version 1.10.5
+  Additions:
+   - Updated to TT 4.7.3.
+   - Added Kill Streaks game feature.
+   - Added dialog event.
+
+  Changes:
+   - Game data now updates after server title changes to display it correctly in Discord Rich Presence.
+   - When a C4/Beacon is poked, display bot tag or preset translation if it's owner is not a player.
+   - Display weapon/ammo grants in HUD when a backpack is picked up.
 
 Version 1.10.4
   Additions:
