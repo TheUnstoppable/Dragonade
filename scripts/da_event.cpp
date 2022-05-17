@@ -634,6 +634,21 @@ bool DAEventManager::Request_Vehicle_Event(VehicleFactoryGameObj *Factory,unsign
 	return true;
 }
 
+void DAEventManager::Dialog_Event(int PlayerID, int DialogID, int ControlID, DialogMessageType MessageType) {
+	cPlayer *Player = Find_Player(PlayerID);
+	if (Player) {
+		ScriptedDialogClass *Dialog = Find_Dialog(DialogID);
+		if (Dialog) {
+			ScriptedControlClass* Control = Dialog->Find_Control(ControlID);
+			if (Control) {
+				for (int i = 0; i < Events[DAEvent::DIALOG].Count(); i++) {
+					Events[DAEvent::DIALOG][i]->Base->Dialog_Event(Player, MessageType, Dialog, Control);
+				}
+			}
+		}
+	}
+}
+
 
 
 void DAEventManager::Object_Created_Event(void *Data,GameObject *obj) {
@@ -886,6 +901,7 @@ void DAEventManager::Init() {
 	AddVehiclePurchaseHook((PurchaseHook)Vehicle_Purchase_Request_Event,0);
 	AddPowerupPurchaseHook((PurchaseHook)PowerUp_Purchase_Request_Event,0);
 	AddThinkHook(Think);
+	AddDialogHook(Dialog_Event);
 	AddRefillHook((RefillHook)Refill_Event);
 	AddRadioHook(Radio_Event);
 	AddStockDamageHook(Stock_Client_Damage_Request_Event);

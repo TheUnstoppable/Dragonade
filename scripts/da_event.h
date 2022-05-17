@@ -15,7 +15,7 @@
 #define INCLUDE_DAEVENT
 
 #include "scripts.h"
-#include "engine_ttdef.h"
+#include "engine.h"
 #include "BaseControllerClass.h"
 #include "PhysicalGameObj.h"
 #include "SimpleGameObj.h"
@@ -123,6 +123,7 @@ namespace DAEvent {
 		VEHICLEFLIP,
 		REQUESTVEHICLE,
 		THINK,
+		DIALOG,
 		MAX
 	};
 };
@@ -316,6 +317,7 @@ public:
 	static void Soldier_Re_Init_Event(SoldierGameObj *Soldier,const SoldierGameObjDef *SoldierDef);
 	static bool Request_Vehicle_Event(VehicleFactoryGameObj *Factory,unsigned int Vehicle,SoldierGameObj *Owner,float Delay);
 	static void Think();
+	static void Dialog_Event(int PlayerID, int DialogID, int ControlID, DialogMessageType MessageType);
 
 	static void Object_Created_Event(void *Data,GameObject *obj);
 	static bool Stock_Client_Damage_Request_Event(PhysicalGameObj *Damager,PhysicalGameObj *Target,float Damage, uint Warhead);
@@ -463,6 +465,7 @@ public:
 	virtual bool Vehicle_Flip_Event(VehicleGameObj *Vehicle) { return true; }
 	virtual bool Request_Vehicle_Event(VehicleFactoryGameObj *Factory,const VehicleGameObjDef *Vehicle,cPlayer *Player,float Delay,SoldierGameObj *Owner) { return true; }
 	virtual void Think() { }
+	virtual void Dialog_Event(cPlayer *Player, DialogMessageType Type, ScriptedDialogClass* Dialog, ScriptedControlClass* Control) { }
 	
 	virtual void Object_Created_Event(GameObject *obj) { }
 	virtual bool Stock_Client_Damage_Request_Event(DamageableGameObj *Victim,ArmedGameObj *Damager,float Damage,uint Warhead) { return true; }
