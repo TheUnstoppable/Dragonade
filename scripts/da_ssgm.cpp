@@ -137,6 +137,7 @@ void DASSGMPluginManager::Init() {
 	Instance.Register_Event(DAEvent::VEHICLEPURCHASEREQUEST);
 	Instance.Register_Event(DAEvent::POWERUPPURCHASEREQUEST);
 	Instance.Register_Event(DAEvent::THINK);
+	Instance.Register_Event(DAEvent::DIALOG);
 	Instance.Register_Object_Event(DAObjectEvent::CREATED,DAObjectEvent::ALL);
 	Instance.Register_Object_Event(DAObjectEvent::STOCKCLIENTDAMAGEREQUEST,DAObjectEvent::ALL);
 	Instance.Register_Object_Event(DAObjectEvent::TTCLIENTDAMAGEREQUEST,DAObjectEvent::ALL);
@@ -257,6 +258,12 @@ bool DASSGMPluginManager::TT_Client_Damage_Request_Event(DamageableGameObj *Vict
 void DASSGMPluginManager::Think() {
 	for (int i = Events[EVENT_THINK_HOOK].Count()-1;i >= 0;i--) {
 		Events[EVENT_THINK_HOOK][i]->OnThink();
+	}
+}
+
+void DASSGMPluginManager::Dialog_Event(cPlayer* Player, DialogMessageType Type, ScriptedDialogClass* Dialog, ScriptedControlClass* Control) {
+	for (int i = Events[EVENT_DIALOG_HOOK].Count() - 1; i >= 0; i--) {
+		Events[EVENT_DIALOG_HOOK][i]->OnDialog(Player->Get_Id(), Dialog->Get_Dialog_ID(), Control->Get_Control_ID(), Type);
 	}
 }
 

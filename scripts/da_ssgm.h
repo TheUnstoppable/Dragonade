@@ -50,6 +50,7 @@ enum EventType {
 	EVENT_STOCK_DAMAGE_HOOK,
 	EVENT_TT_DAMAGE_HOOK,
 	EVENT_PRE_LOAD_LEVEL_HOOK,
+	EVENT_DIALOG_HOOK,
 	EVENT_COUNT
 };
 
@@ -76,6 +77,7 @@ public:
 	virtual bool OnStockDamage(PhysicalGameObj* damager, PhysicalGameObj* target, float damage, uint warheadId) { return true; }
 	virtual bool OnTtDamage(PhysicalGameObj* damager, PhysicalGameObj* target, const AmmoDefinitionClass* ammo, const char* bone) { return true; }
 	virtual void OnPreLoadLevel() { };
+	virtual void OnDialog(int PlayerID, int DialogID, int ControlID, DialogMessageType MessageType) { };
 };
 
 class DASSGMPluginManager : public DAEventClass {
@@ -99,6 +101,7 @@ private:
 	virtual bool Stock_Client_Damage_Request_Event(DamageableGameObj *Victim,ArmedGameObj *Damager,float Damage, uint Warhead);
 	virtual bool TT_Client_Damage_Request_Event(DamageableGameObj *Victim,ArmedGameObj *Damager,const AmmoDefinitionClass *Ammo,const char *Bone);
 	virtual void Think();
+	virtual void Dialog_Event(cPlayer* Player, DialogMessageType Type, ScriptedDialogClass* Dialog, ScriptedControlClass* Control);
 	virtual void Object_Created_Event(GameObject *obj);
 
 	static DynamicVectorClass<ConsoleOutputHook> ConsoleOutputHooks;
