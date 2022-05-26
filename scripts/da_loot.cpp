@@ -23,6 +23,7 @@
 #include "da_gameobjobservers.h"
 #include "WeaponBagClass.h"
 #include "WeaponClass.h"
+#include "WeaponManager.h"
 
 void DALootPlayerDataClass::Add_Weapon(WeaponClass *Weapon) {
 	if (Locker.ID(Weapon->Get_Definition()) == -1) {
@@ -142,12 +143,16 @@ void DALootPowerUpClass::PowerUp_Grant(cPlayer *Player) {
 		DA::Private_HUD_Message(Player, COLORGREEN, "%s", HUD);
 	}
 
-	if (Pow->GrantWeapon && Pow->GrantWeaponID) {
-		if (!Has_Weapon(Player->Get_GameObj(), Get_Definition_Name(Pow->GrantWeaponID))) {
-			Display_HUD_Weapon_Grant_Player(Player->Get_GameObj(), Pow->GrantWeaponID, Pow->GrantWeaponRounds);
-		}
-		else if (!Player->Get_GameObj()->Get_Weapon_Bag()->Peek_Weapon(Pow->GrantWeaponID)->Is_Ammo_Maxed()) {
-			Display_HUD_Ammo_Grant_Player(Player->Get_GameObj(), Pow->GrantWeaponID, Pow->GrantWeaponRounds);
+	if (Pow->GrantWeaponID != 0) {
+		const WeaponDefinitionClass* Def = WeaponManager::Find_Weapon_Definition(Pow->GrantWeaponID);
+		if (Def) {
+			WeaponClass* Weapon = Player->Get_GameObj()->Get_Weapon_Bag()->Find_Weapon(Def);
+			if (Pow->GrantWeapon && (!Weapon || (Weapon && !Weapon->Does_Weapon_Exist()))) {
+				Display_HUD_Weapon_Grant_Player(Player->Get_GameObj(), Pow->GrantWeaponID, Pow->GrantWeaponRounds);
+			}
+			else if (Weapon && !Weapon->Is_Ammo_Maxed()) {
+				Display_HUD_Ammo_Grant_Player(Player->Get_GameObj(), Pow->GrantWeaponID, Pow->GrantWeaponRounds);
+			}
 		}
 	}
 	else if (Pow->GrantWeaponClips) {
@@ -244,6 +249,7 @@ void DALootBackpackClass::PowerUp_Grant(cPlayer *Player) {
 			if (!PickedUp) {
 				DA::Private_HUD_Message(Player, COLORGREEN, "%s",DATranslationManager::Translate(Weapons[i].Weapon));
 			}
+			Display_HUD_Weapon_Grant_Player(Player->Get_GameObj(), Weapons[i].Weapon->Get_ID(), Weapons[i].Rounds);
 			Weapons.Delete(i);
 			PickedUp = true;
 			if (i == IconIndex) {
