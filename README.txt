@@ -26,6 +26,14 @@ Installation:
 
 Update History:
 
+Version 1.10.5 Hotfix #1
+  Changes:
+   - Add HUD weapon grant display to Backpacks.
+
+  Bug Fixes:
+   - Fix a crash occurring when a weapon power-up is granted to a player created by Dragonade Loot System.
+   - Fix BlockFakeBeacons not working properly.
+
 Version 1.10.5
   Additions:
    - Updated to TT 4.7.3.
