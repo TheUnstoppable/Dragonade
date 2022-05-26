@@ -48,14 +48,14 @@ void DAC4BeaconManager::Object_Created_Event(GameObject *obj) {
 			bool Ped = Beacon->Is_In_Enemy_Base();
 			ExplosionDefinitionClass *Explosion = (ExplosionDefinitionClass*)Find_Definition(Beacon->Get_Definition().ExplosionObjDef);
 			if (Explosion) {
-				float Distance = 0.0f;
-				float FakeDistance = 0.0f;
+				float Distance = FLT_MAX;
+				float FakeDistance = FLT_MAX;
 				Building->Find_Closest_Poly(Beacon->Get_Position(),&Distance);
 				PhysicalGameObj *FakeBuilding = Get_Closest_Fake_Building(Beacon->Get_Position(),!Beacon->Get_Player_Type());
 				if (FakeBuilding) {
 					FakeDistance = Commands->Get_Distance(FakeBuilding->Get_Position(),Beacon->Get_Position());
 				}
-				if (BlockFakeBeacons && (!The_Cnc_Game()->BeaconPlacementEndsGame || !Ped) && Distance > Explosion->DamageRadius*Explosion->DamageRadius && FakeDistance > Explosion->DamageRadius) {
+				if (BlockFakeBeacons && (!The_Cnc_Game()->BeaconPlacementEndsGame || !Ped) && !(WWMath::Sqrt(Distance) <= Explosion->DamageRadius || FakeDistance <= Explosion->DamageRadius)) {
 					WeaponClass *Weapon = Beacon->Get_Owner()->Get_Weapon_Bag()->Find_Weapon(Beacon->Get_WeaponDef());
 					if (Weapon) { //Refund the ammo used to plant this beacon.
 						Weapon->Set_Clip_Rounds(Weapon->Get_Clip_Rounds()+Weapon->PrimaryAmmoDefinition->SprayBulletCost);
