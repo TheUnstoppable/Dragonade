@@ -133,7 +133,7 @@ void DAC4BeaconManager::Poke_Event(cPlayer *Player,PhysicalGameObj *obj) {
 			if (((BeaconGameObj*)obj)->Get_Owner()->Get_Player()) {
 				DA::Page_Player(Player,"The owner of this beacon is %ls.",((BeaconGameObj*)obj)->Get_Owner()->Get_Player()->Get_Name());
 			}
-			else if (Is_Smart_Bot(obj)) {
+			else if (Is_Smart_Bot(((BeaconGameObj*)obj)->Get_Owner())) {
 				DA::Page_Player(Player,"The owner of this beacon is %ls.",((BeaconGameObj*)obj)->Get_Owner()->Get_Bot_Tag());
 			}
 			else {
@@ -149,7 +149,7 @@ void DAC4BeaconManager::Poke_Event(cPlayer *Player,PhysicalGameObj *obj) {
 			if (((C4GameObj*)obj)->Get_Owner()->Get_Player()) {
 				DA::Page_Player(Player,"The owner of this C4 is %ls.",((C4GameObj*)obj)->Get_Owner()->Get_Player()->Get_Name());
 			}
-			else if (Is_Smart_Bot(obj)) {
+			else if (Is_Smart_Bot(((C4GameObj*)obj)->Get_Owner())) {
 				DA::Page_Player(Player,"The owner of this C4 is %ls.",((C4GameObj*)obj)->Get_Owner()->Get_Bot_Tag());
 			}
 			else {
