@@ -80,9 +80,9 @@ void DAC4BeaconManager::Beacon_Deploy_Event(BeaconGameObj *Beacon) {
 			BuildingGameObj *Building = Get_Closest_Building(Beacon->Get_Position(),!Beacon->Get_Player_Type());
 			if (Building) {
 				ExplosionDefinitionClass *Explosion = (ExplosionDefinitionClass*)Find_Definition(Beacon->Get_Definition().ExplosionObjDef);
-				float Distance = 0.0f;
+				float Distance = FLT_MAX;
 				Building->Find_Closest_Poly(Beacon->Get_Position(),&Distance);
-				if (Distance <= Explosion->DamageRadius*Explosion->DamageRadius) {
+				if (WWMath::Sqrt(Distance) <= Explosion->DamageRadius) {
 					DA::Team_Player_Message(Beacon->Get_Owner(),"Defend my beacon at the %s!",DATranslationManager::Translate(Building));
 				}
 				else {
