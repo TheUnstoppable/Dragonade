@@ -50,44 +50,44 @@ void DAKillStreaksGameFeatureClass::Timer_Expired(int Number, unsigned int Data)
 }
 
 void DAKillStreaksGameFeatureClass::Kill_Event(DamageableGameObj* Victim, ArmedGameObj* Killer, float Damage, unsigned int Warhead, float Scale, DADamageType::Type Type) {
-	if (Commands->Is_A_Star(Killer)) {
-		DAKillStreaksPlayerDataClass* Data = 0;
-		if (Killer->As_VehicleGameObj()) {
-			if (SoldierGameObj* Gunner = ((VehicleGameObj*)Killer)->Get_Gunner()) {
-				Data = Get_Player_Data(Gunner);
-			}
-			else if (SoldierGameObj* Driver = ((VehicleGameObj*)Killer)->Get_Driver()) {
-				Data = Get_Player_Data(Driver);
-			}
+	if (Killer == Victim) {
+		return;
+	}
+	if (!Commands->Is_A_Star(Killer)) {
+		return;
+	}
+	DAKillStreaksPlayerDataClass* Data = 0;
+	if (Killer->As_VehicleGameObj()) {
+		if (SoldierGameObj* Gunner = ((VehicleGameObj*)Killer)->Get_Gunner()) {
+			Data = Get_Player_Data(Gunner);
 		}
-		else if (Killer->As_SoldierGameObj()) {
-			Data = Get_Player_Data(Killer);
-		}
-
-		if (Data) {
-			int streakCount = Data->Increment_Streak();
-
-			for (SLNode<DAKillStreak>* z = Streaks.Head(); z; z = z->Next()) {
-				DAKillStreak* streak = z->Data();
-				if (streak->Count == streakCount) {
-					StringClass string(streak->Message);
-					string.Replace("{PLAYER}", StringClass(Data->Get_Name()));
-					DA::Create_2D_Sound(streak->Sound);
-					DA::Color_Message(streak->Red, streak->Green, streak->Blue, string);
-					break;
-				}
-			}
-
-			if (KillRestartsTimer) {
-				Stop_Timer(121, Data->Get_ID());
-				Start_Timer(121, StreakResetTime, false, Data->Get_ID());
-			}
-			else if (!Is_Timer(121, Data->Get_ID())) {
-				Start_Timer(121, StreakResetTime, false, Data->Get_ID());
-			}
+		else if (SoldierGameObj* Driver = ((VehicleGameObj*)Killer)->Get_Driver()) {
+			Data = Get_Player_Data(Driver);
 		}
 	}
-	
+	else if (Killer->As_SoldierGameObj()) {
+		Data = Get_Player_Data(Killer);
+	}
+	if (Data) {
+		int streakCount = Data->Increment_Streak();
+		for (SLNode<DAKillStreak>* z = Streaks.Head(); z; z = z->Next()) {
+			DAKillStreak* streak = z->Data();
+			if (streak->Count == streakCount) {
+				StringClass string(streak->Message);
+				string.Replace("{PLAYER}", StringClass(Data->Get_Name()));
+				DA::Create_2D_Sound(streak->Sound);
+				DA::Color_Message(streak->Red, streak->Green, streak->Blue, string);
+				break;
+			}
+		}
+		if (KillRestartsTimer) {
+			Stop_Timer(121, Data->Get_ID());
+			Start_Timer(121, StreakResetTime, false, Data->Get_ID());
+		}
+		else if (!Is_Timer(121, Data->Get_ID())) {
+			Start_Timer(121, StreakResetTime, false, Data->Get_ID());
+		}
+	}
 	if (DeathResetsStreak) {
 		DAKillStreaksPlayerDataClass* Data = Get_Player_Data(Victim);
 		Data->Reset_Streak();
