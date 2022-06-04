@@ -151,6 +151,7 @@ public:
 	bool C4_Detonate_Request(C4GameObj *C4);
 	void C4_Detonate(C4GameObj *C4);
 	void Change_Character(const SoldierGameObjDef *Soldier);
+	void Dialog_Message(DialogMessageType Type, ScriptedDialogClass* Dialog, ScriptedControlClass* Control);
 
 	void Created();
 	void Destroyed();
@@ -323,6 +324,7 @@ public:
 	virtual bool C4_Detonate_Request(C4GameObj *C4) { return true; } //Called when the player tries to trigger a proximity C4.
 	virtual void C4_Detonate(C4GameObj *C4) { } //Called when the player triggers a proximity C4.
 	virtual void Change_Character(const SoldierGameObjDef *Soldier) { } //Called before the player changes characters.
+	virtual void Dialog_Message(DialogMessageType Type, ScriptedDialogClass* Dialog, ScriptedControlClass* Control) { } //Called on a dialog notification from client.
 
 	virtual void Created() { } //Called when the player changes to a new gameobject.
 	virtual void Destroyed() { } //Called when the player's gameobject is destroyed.
@@ -486,6 +488,7 @@ private:
 	virtual void C4_Detonate_Event(C4GameObj *C4,SmartGameObj *Triggerer);
 	virtual void Change_Character_Event(cPlayer *Player,const SoldierGameObjDef *Soldier);
 	virtual void Think();
+	virtual void Dialog_Event(cPlayer* Player, DialogMessageType Type, ScriptedDialogClass* Dialog, ScriptedControlClass* Control);
 	
 	virtual void Object_Created_Event(GameObject *obj);
 	virtual void Object_Destroyed_Event(GameObject *obj);
