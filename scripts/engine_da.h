@@ -23,6 +23,7 @@
 #include "BuildingGameObj.h"
 #include "SmartGameObj.h"
 #include "SoldierGameObj.h"
+#include "VehicleGameObj.h"
 #include "SoldierGameObjDef.h"
 #include "PowerupGameObjDef.h"
 #include "weaponmgr.h"
@@ -160,6 +161,9 @@ inline bool Is_DecorationPhys(GameObject *obj) {
 }
 inline bool Is_Player(GameObject *obj) {
 	return (obj && obj->As_SoldierGameObj() && ((SoldierGameObj*)obj)->Get_Player_Data());
+}
+inline bool Is_Smart_Bot(GameObject* obj) {
+	return (obj && ((obj->As_SoldierGameObj() && wcslen(((SoldierGameObj*)obj)->Get_Bot_Tag()) > 0) || (obj->As_VehicleGameObj() && ((VehicleGameObj*)obj)->Get_Driver() && wcslen(((VehicleGameObj*)obj)->Get_Driver()->Get_Bot_Tag()) > 0)));
 }
 
 DA_API bool Is_Stealth_Enabled2(GameObject *obj);
