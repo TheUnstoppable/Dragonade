@@ -501,7 +501,7 @@ void DABuildingManager::Kill_Event(DamageableGameObj *Victim,ArmedGameObj *Kille
 	}
 	DALogManager::Write_Log("_BUILDINGKILL","%s",Message);
 	DALogManager::Write_Log("_BUILDING","%s destroyed.",DATranslationManager::Translate_With_Team_Name(Victim));
-	if (((BuildingGameObj*)Victim)->As_PowerPlantGameObj()) {
+	if (Is_Base_Powered(Get_Object_Type(Victim))) {
 		DALogManager::Write_Log("_BUILDING","%ls Base Power is off-line.",Get_Wide_Team_Name(Victim->Get_Player_Type()));
 	}
 }
