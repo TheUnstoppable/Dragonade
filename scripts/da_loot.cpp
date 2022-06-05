@@ -142,27 +142,6 @@ void DALootPowerUpClass::PowerUp_Grant(cPlayer *Player) {
 	if (!HUD.Is_Empty()) {
 		DA::Private_HUD_Message(Player, COLORGREEN, "%s", HUD);
 	}
-
-	if (Pow->GrantWeaponID != 0) {
-		const WeaponDefinitionClass* Def = WeaponManager::Find_Weapon_Definition(Pow->GrantWeaponID);
-		if (Def) {
-			WeaponClass* Weapon = Player->Get_GameObj()->Get_Weapon_Bag()->Find_Weapon(Def);
-			if (Pow->GrantWeapon && (!Weapon || (Weapon && !Weapon->Does_Weapon_Exist()))) {
-				Display_HUD_Weapon_Grant_Player(Player->Get_GameObj(), Pow->GrantWeaponID, Pow->GrantWeaponRounds);
-			}
-			else if (Weapon && !Weapon->Is_Ammo_Maxed()) {
-				Display_HUD_Ammo_Grant_Player(Player->Get_GameObj(), Pow->GrantWeaponID, Pow->GrantWeaponRounds);
-			}
-		}
-	}
-	else if (Pow->GrantWeaponClips) {
-		for (int i = 0; i < Player->Get_GameObj()->Get_Weapon_Bag()->Get_Count(); ++i) {
-			WeaponClass* Weapon = Player->Get_GameObj()->Get_Weapon_Bag()->Peek_Weapon(i);
-			if (Weapon && Weapon->Get_Definition()->CanReceiveGenericCnCAmmo) {
-				Display_HUD_Ammo_Grant_Player(Player->Get_GameObj(), Pow->GrantWeaponID, Weapon->Get_Definition()->ClipSize * Pow->GrantWeaponRounds);
-			}
-		}
-	}
 }
 
 //Timeout and clear damagers list.
