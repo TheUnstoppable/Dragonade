@@ -26,6 +26,23 @@ Installation:
 
 Update History:
 
+Version 1.10.5 Hotfix #2
+  Additions:
+   - Added Is_Smart_Bot DA engine function.
+
+  Changes:
+   - Add C4/Beacon detonate and disarm messages for smart bots.
+   - Improve smart bot detection in kill messages and C4/Beacon pokes.
+   - Add Dialog event in Player Observer.
+   - Armor, health, weapon and keycard powerup pickups are now displayed in HUD.
+   - Remove HUD grant display from DA's Loot PowerUps as this is now handled by Dragonade's core.
+   - Private chats now trigger plugin events.
+
+  Bug Fixes:
+   - Fix when a vehicle with 0-seat and VehicleType not set to Turret crashes server when it kills a vehicle.
+   - Fix base power off-line messages to log server when there are more than 1 Power Plants in the map.
+   - Fix so kill streak won't increment when player suicides.
+
 Version 1.10.5 Hotfix #1
   Changes:
    - Add HUD weapon grant display to Backpacks.
