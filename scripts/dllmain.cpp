@@ -414,6 +414,17 @@ bool SCRIPTSAPI Set_Script_Commands(ScriptCommandsClass* commands)
 	Delete_Dialog = (dlg)Address(tt, "Delete_Dialog");
 	Display_HUD_Weapon_Grant_Player = (dhwg)Address(tt, "Display_HUD_Weapon_Grant_Player");
 	Display_HUD_Ammo_Grant_Player = (dhwg)Address(tt, "Display_HUD_Ammo_Grant_Player");
+	Get_Repository_URL = (gru)Address(tt, "Get_Repository_URL");
+	Set_Repository_URL = (sru)Address(tt, "Set_Repository_URL");
+	Get_Screenshot_URL = (gru)Address(tt, "Get_Screenshot_URL");
+	Set_Screenshot_URL = (sru)Address(tt, "Set_Screenshot_URL");
+	Take_Screenshot = (tss)Address(tt, "Take_Screenshot");
+	Is_In_Pathfind_Sector = (iips)Address(tt, "Is_In_Pathfind_Sector");
+	Set_Gravity_Multiplier = (sgm)Address(tt, "Set_Gravity_Multiplier");
+	Is_Gameplay_Allowed = (iga)Address(tt, "Is_Gameplay_Allowed");
+	Set_Gameplay_Allowed = (sga)Address(tt, "Set_Gameplay_Allowed");
+	Print_Client_Console = (pcc)Address(tt, "Print_Client_Console");
+	Print_Client_Console_Player = (pccp)Address(tt, "Print_Client_Console_Player");
 
 	DA::Init();
 

@@ -53,8 +53,9 @@ void Nod_Obelisk_CnC::Create_Weapon(GameObject* ObeliskObj) {
 	// Create the Obelisk weapon
 	GameObject* WeaponObj = Commands->Create_Object("Nod_Obelisk", WeaponPos);
 	if (WeaponObj) {
-		WeaponID = Commands->Get_ID(WeaponObj);
+		Set_Object_Type(WeaponObj, Get_Object_Type(ObeliskObj));
 		Commands->Attach_Script(WeaponObj, "Obelisk_Weapon_CnC", "");
+		WeaponID = Commands->Get_ID(WeaponObj);
 	}
 }
 
@@ -85,7 +86,7 @@ bool Obelisk_Weapon_CnC::IsValidEnemy(GameObject* WeaponObj, GameObject* EnemyOb
 	// TODO: Make switch for obby kills neutral?
 	// NEUTRAL:  if (Commands->Get_Player_Type(EnemyObj) == Commands->Get_Player_Type(WeaponObj)) return false;
 	// GDI-ONLY: if (Commands->Get_Player_Type(EnemyObj) == 1) return false;
-	if (Commands->Get_Player_Type(EnemyObj) != 1) return false;
+	if (Commands->Get_Player_Type(EnemyObj) != (Get_Object_Type(WeaponObj) ? 0 : 1)) return false;
 	if (Commands->Get_Health(EnemyObj) <= 0) return false;
 	if (!Commands->Is_Object_Visible(WeaponObj, EnemyObj)) return false;
 	if (Is_Harvester(EnemyObj)) return false;

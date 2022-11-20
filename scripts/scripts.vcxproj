@@ -582,6 +582,7 @@ copy "$(TargetPath)" "%RenServerPath%\$(TargetFileName)"
     <ClInclude Include="obboxclass.h" />
     <ClInclude Include="ObjectLibraryManager.h" />
     <ClInclude Include="ObserverImpClass.h" />
+    <ClInclude Include="ODESystemClass.h" />
     <ClInclude Include="OffenseObjectClass.h" />
     <ClInclude Include="Parameter.h" />
     <ClInclude Include="Persist.h" />
@@ -589,6 +590,7 @@ copy "$(TargetPath)" "%RenServerPath%\$(TargetFileName)"
     <ClInclude Include="PhysDefClass.h" />
     <ClInclude Include="PhysicalGameObj.h" />
     <ClInclude Include="PhysicalGameObjDef.h" />
+    <ClInclude Include="PhysicsConstants.h" />
     <ClInclude Include="PhysicsSceneClass.h" />
     <ClInclude Include="physinttest.h" />
     <ClInclude Include="PhysObserverClass.h" />
@@ -615,6 +617,7 @@ copy "$(TargetPath)" "%RenServerPath%\$(TargetFileName)"
     <ClInclude Include="RepairBayGameObj.h" />
     <ClInclude Include="RepairBayGameObjDef.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="RigidBodyClass.h" />
     <ClInclude Include="SamSiteGameObj.h" />
     <ClInclude Include="SamSiteGameObjDef.h" />
     <ClInclude Include="SaveLoadSubSystemClass.h" />

@@ -53,8 +53,8 @@ public:
 	void Set_Ladder_Points(int amount);
 	void Set_Rung(int amount);
 	void Set_Is_Active(bool active);
-	void Set_Name(const WideStringClass& name);
-	void Set_Id(uint32 id);
+	void SCRIPTS_API Set_Name(const WideStringClass& name);
+	void SCRIPTS_API Set_Id(uint32 id);
 	//void Set_Wol_ClanID(uint32 wolClanId); //DA
 	void Set_Wol_Rank(sint32 wolRank);
 	void Set_Is_In_Game(bool);

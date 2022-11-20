@@ -2309,6 +2309,8 @@ class JMG_Security_Camera_Behavior : public ScriptImpClass {
 	float cameraAngles[5];
 	float CameraFacingUpdateTime;
 	float idleZAimAngleModifier;
+	float minDistanceSquared;
+	bool canOnlySeeTargetScript;
 	void Created(GameObject *obj);
 	void Enemy_Seen(GameObject *obj,GameObject *seen);
 	void Timer_Expired(GameObject *obj,int number);
@@ -3692,7 +3694,6 @@ class JMG_Bear_Hunter_Give_AI_Cash_For_Kills : public ScriptImpClass {
 	void Killed(GameObject *obj,GameObject *killer);
 };
 
-
 /*!
 * \brief Makes a wander point follow an object on the map
 * \GroupId - ID of the group the point belongs to
@@ -3713,4 +3714,13 @@ class JMG_Wandering_AI_Wander_Point_Follow_Weapon_Or_Obj : public ScriptImpClass
 
 class JMG_Bear_Hunter_Turkey : public ScriptImpClass {
 	void Killed(GameObject *obj,GameObject *killer);
+};
+
+/*!
+* \If the security camera script has CanOnlyTargetCameraTargets set this script is needed for a target to be visible
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Security_Camera_Behavior_Target : public ScriptImpClass {
+	void Created(GameObject *obj);
 };

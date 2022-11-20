@@ -1613,7 +1613,10 @@ public:
 				{
 					GameObject *syncObject = Commands->Find_Object(syncControl.lastSyncNode[x]->id);
 					if (syncObject)
+					{
 						Force_Position_Update_Player(player,syncObject);
+						Force_Orientation_Update_Player(player,syncObject);
+					}
 				}
 				syncControl.lastSyncNode[x] = syncControl.lastSyncNode[x]->next;
 			}
@@ -6148,6 +6151,7 @@ class JMG_Utility_Destroy_Objects_In_ID_Range_On_Killed : public ScriptImpClass
 * \Message - Custom to send
 * \Param - parameter to send with the custom
 * \Repeat - 1 to make it trigger again
+* \EnableCustom - If non-zero the timer won't start until it receives a custom with a param of non 0, if it receives a custom with a param of 0 it will be disabled again
 * \author jgray
 * \ingroup JmgUtility
 */
@@ -6157,8 +6161,10 @@ class JMG_Utility_Timer_Custom : public ScriptImpClass {
 	int param;
 	bool repeat;
 	float time;
+	int enableCustom;
 	void Created(GameObject *obj);
 	void Timer_Expired(GameObject *obj,int number);
+	void Custom(GameObject *obj,int message,int param,GameObject *sender);
 };
 
 /*!
@@ -6524,6 +6530,7 @@ class JMG_Utility_Custom_Enable_Spawners_In_Range_Modular : public ScriptImpClas
 * \Explosion - Explosion to create 
 * \Bone - Bone to create the explosion at
 * \Owner - Who own's the explosion (-1 = sender, 0 = self, positive numbers = id of object)
+* \Alive - If the owner must be alive to create the explosion
 * \author jgray
 * \ingroup JmgUtility
 */
@@ -6532,6 +6539,7 @@ class JMG_Utility_Custom_Create_Explosion_At_Bone : public ScriptImpClass {
 	char bone[32];
 	int owner;
 	int custom;
+	bool alive;
 	void Created(GameObject *obj);
 	void Custom(GameObject *obj,int message,int param,GameObject *sender);
 };
@@ -6894,7 +6902,7 @@ class JMG_Utility_Damaged_Create_Object_When_Shield_Zero : public ScriptImpClass
 * \Min_Spawn_Radius - The min size of the radius to spawn in, non-zero makes a torus basically
 * \Max_Spawn_Radius - The max size of the radius to spawn in.
 * \Initial_Spawn_Height - Adds this much to the Z axis on object creation.
-* \Spawn_Limit - How many times can objects be spawned before being disabled, -1 means no limit.
+* \Max_Total_Spawned - How many times can objects be spawned before being disabled, -1 means no limit.
 * \Spawn_Location - Location in which to spawn the objects, -1 -1 ? (Last value is the height of which to start casting the ray from, -1 makes it the current position)
 * \X_Multiplier - Multiply how the circle is shaped on the X coordinates, default is 1.0.
 * \Y_Multiplier - Multiply how the circle is shaped on the Y coordinates, default is 1.0.
@@ -6902,7 +6910,7 @@ class JMG_Utility_Damaged_Create_Object_When_Shield_Zero : public ScriptImpClass
 * \Collision_Retry_Attempts - How many times will the script "bump" the object if the collision is blocked.
 * \Collision_Add_Height - Amount of height to add each time if blocked.
 * \Initial_Spawn - Setting the value to -1 will spawn the Spawn_At_A_Time on create, any 0 or above will make the objects slowly spawn in at the spawn rate.
-* \Script_ID - Set the id for this script, -1 uses default (only use this if you're going to need to manually add spawned objects to this spawner).
+* \Spawned_Object_Script_ID - Set the id for this script, -1 uses default (only use this if you're going to need to manually add spawned objects to this spawner).
 * \Point_Must_Be_In_Pathfind - Requires the created point to be in the pathfind field, if its outside of the field the point will not be created.
 * \Manual_Facing - If true random facing will not be used, first it will attempt to use Face_Location and if that's all 0's Face_Direction
 * \Face_Location - If anything besides 0,0,0 all objects created will attempt to face the point
@@ -6936,12 +6944,12 @@ private:
 	bool enabled;
 	float minDistanceBetweenObjects;
 	int spawnGroupId;
-	int scriptId;
+	int spawnedObjectScriptID;
 	int spawnedObjects;
 	enum SpawnFailureTypes{SPAWN_BLOCKED, SUCCESS, LIMIT_REACHED, SPAWN_CODE_ERROR};
 	Vector3 spawnLocation;
 	int spawnAtATime;
-	int spawnLimit;
+	int maxTotalSpawned;
 	float minRadius;
 	float maxRadius;
 	float xMultiplier;
@@ -6965,6 +6973,7 @@ private:
 	Vector3 raycastRange;
 	int attachScriptsGroupId;
 	float playersAddToSpawnAtATime;
+	int lastPlayerCount;
 	void Created(GameObject *obj);
 	void Timer_Expired(GameObject *obj,int number);
 	void Custom(GameObject *obj,int message,int param,GameObject *sender);
@@ -7150,12 +7159,14 @@ class JMG_Utility_Send_Custom_Player_Count_Matches_Preset_Count : public ScriptI
 * \brief Moves an object when a custom is received, works on zones
 * \Custom - Custom to trigger on
 * \Position - Spot to place object
+* \ID - ID of the object to use, if 0 use itself
 * \author jgray
 * \ingroup JmgUtility
 */
 class JMG_Utility_Custom_Set_Position : public ScriptImpClass {
 	int custom;
 	Vector3 position;
+	int id;
 	void Created(GameObject *obj);
 	void Custom(GameObject *obj,int message,int param,GameObject *sender);
 };
@@ -9460,6 +9471,12 @@ class JMG_Utility_Custom_Set_Soldier_Speed : public ScriptImpClass {
 * \NeutralDefenseMultiplier - Effect a neutral soldier has on an owned CP
 * \NeutralCaptureMultiplier - Effect a neutral solider has on an enemy CP
 * \NeutralUnoccupiedMultiplier - How neutral is modified when no soldiers are guarding it
+* \CustomID - ID of the object customs will be sent to on captures and losses
+* \TeamMemberCaptureCustom - Any team members in the zone of the control point will send this custom to the specified ID on capture
+* \TeamMembmerLostCustom - Any team members in the zone of the control point will send this custom to the specified ID on loss
+* \TeamMemberNeutralize - When the control point is lost all people in range that are not of the losing team will send this to the specified ID
+* \TeamCaptureCustom - When this control point is captured it will send this custom to the specified ID
+* \TeamLostCustom -  When this control point is lost it will send this custom to the specified ID
 * \author jgray
 * \ingroup JmgUtility
 */
@@ -9482,7 +9499,13 @@ public:
 		char lockedModel[16];
 		char lockedAnim[32];
 		float lockedAnimLen;
-		ControlPointTeamData(int teamId,const char *teamName,int playerType,int radarBlipColor,const char *pointModel,const char *defaultAnimation,float animationLength,const char *captureSound,const char *lostSound,const char *lockedModel,const char *lockedAnim,float lockedAnimLen,int defenseMultiplier,int captureMultiplier,int unoccupiedMultiplier)
+		int customId;
+		int teamMemberCaptureCustom;
+		int teamMembmerLostCustom;
+		int teamCaptureCustom;
+		int teamLostCustom;
+		int teamMemberNeutralize;
+		ControlPointTeamData(int teamId,const char *teamName,int playerType,int radarBlipColor,const char *pointModel,const char *defaultAnimation,float animationLength,const char *captureSound,const char *lostSound,const char *lockedModel,const char *lockedAnim,float lockedAnimLen,int defenseMultiplier,int captureMultiplier,int unoccupiedMultiplier,int customId,int teamMemberCaptureCustom,int teamMembmerLostCustom,int teamCaptureCustom,int teamLostCustom,int teamMemberNeutralize)
 		{
 			this->teamId = teamId;
 			sprintf(this->teamName,"%s",teamName);
@@ -9499,6 +9522,12 @@ public:
 			sprintf(this->lockedModel,"%s",lockedModel);
 			sprintf(this->lockedAnim,"%s",lockedAnim);
 			this->lockedAnimLen = lockedAnimLen;
+			this->customId = customId;
+			this->teamMemberCaptureCustom = teamMemberCaptureCustom;
+			this->teamMembmerLostCustom = teamMembmerLostCustom;
+			this->teamCaptureCustom = teamCaptureCustom;
+			this->teamLostCustom = teamLostCustom;
+			this->teamMemberNeutralize = teamMemberNeutralize;
 		}
 	};
 	static SList<ControlPointTeamData> controlPointTeamData;
@@ -9535,6 +9564,12 @@ public:
 * \DefenseMultiplier - Effect this team's soldiers has on controlled CP's
 * \CaptureMultiplier - Effect this team's soldiers has on an enemy CP
 * \UnoccupiedMultiplier - Rate at which owned CP's regenerate when no one is around
+* \CustomID - ID of the object customs will be sent to on captures and losses
+* \TeamMemberCaptureCustom - Any team members in the zone of the control point will send this custom to the specified ID on capture
+* \TeamMembmerLostCustom - Any team members in the zone of the control point will send this custom to the specified ID on loss
+* \TeamMemberNeutralize - When the control point is lost all people in range that are not of the losing team will send this to the specified ID
+* \TeamCaptureCustom - When this control point is captured it will send this custom to the specified ID
+* \TeamLostCustom -  When this control point is lost it will send this custom to the specified ID
 * \author jgray
 * \ingroup JmgUtility
 */
@@ -9620,6 +9655,8 @@ private:
 	void UpdateTeam(int teamId);
 	void TriggerAssaultLinesUpdate();
 	void UpdateControllerWanderPoints();
+	void SendCustomToAllInRange(GameObject *obj,int id,int teamId,int custom);
+	void SendNeutralizeToAllInRange(GameObject *obj,int teamId);
 public:
 	char controlPointName[128];
 	int cpGroupId;
@@ -10485,6 +10522,9 @@ public:
 * \AttackCheckBlocked - Defines whether they should check if they can actually hit the player before shooting
 * \CanSeeStealth - Can the AI see stealth targets? 0 = No at all, 1 is within the ranges set in LE globals file, 2 means it can see stealth everywhere, think of stock AI.
 * \ShutdownEngineOnArrival - Used for vehicles, turn on if you have issues with your vehicle rolling away from its move positions after it arrives
+* \ChangeDefendSpeedCustom - If this custom is received the defense speed will be updated to the param/100
+* \ChangeCaptureSpeedCustom - If this custom is received the capture speed will be updated to the param/100
+* \ChangeAttackSpeedCustom - If this custom is received the attack speed will be updated to the param/100
 * \author jgray
 * \ingroup JmgUtility
 */
@@ -10554,6 +10594,9 @@ class JMG_Utility_AI_Control_Point : public ScriptImpClass {
 	bool attackCheckBlocked;
 	int canSeeStealth;
 	bool shutdownEngineOnArrival;
+	int changeDefendSpeedCustom;
+	int changeCaptureSpeedCustom;
+	int changeAttackSpeedCustom;
 	void Created(GameObject *obj);
 	void Enemy_Seen(GameObject *obj,GameObject *seen);
 	void Timer_Expired(GameObject *obj,int number);
@@ -10566,6 +10609,12 @@ class JMG_Utility_AI_Control_Point : public ScriptImpClass {
 	Rp2SimplePositionSystem::SimplePositionNode *Get_Capture_Point();
 	Rp2SimplePositionSystem::SimplePositionNode *Get_Defense_Point(GameObject *obj);
 	void TriggerAttack(GameObject *obj,GameObject *target);
+	void Custom(GameObject *obj,int message,int param,GameObject *sender);
+public:
+	JMG_Utility_AI_Control_Point()
+	{
+		lastWanderPoint = NULL;
+	}
 };
 
 
@@ -11614,4 +11663,439 @@ class JMG_Utility_Custom_Send_Shuffled_Customs_And_Ids : public ScriptImpClass {
 	float delay;
 	void Created(GameObject *obj);
 	void Custom(GameObject *obj,int message,int param,GameObject *sender);
+};
+
+/*!
+* \brief When the custom is received all players on the map will attempt to enter the vehicle until it is full
+* \Custom - Custom to watch for
+* \ForceOutOfVehicles - Whether players already in other vehicles can be forced out of it first, the script will then attempt to put them in 1/10th of a second later
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Custom_Force_All_Players_Into_Vehicle : public ScriptImpClass {
+	int custom;
+	bool forceOutOfOtherVehicles;
+	float delay;
+	enum SuccessState{SUCCESS,RETRY,ALREADY_IN,FAILED,VEHICLE_FULL,STUCK_IN_ANOTHER_VEHICLE};
+	void Created(GameObject *obj);
+	void Custom(GameObject *obj,int message,int param,GameObject *sender);
+	SuccessState ForceIntoVehicle(GameObject *obj,GameObject *target);
+};
+
+/*!
+* \brief Forces all occupants out of the vehicle (taking as many attempts as needed 10 times a second) once finally empty the vehicle will lock.
+* \ Script destroys itself once the action is complete.
+* \Custom - Custom to watch for
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Custom_Force_Occupants_Out_And_Lock : public ScriptImpClass {
+	int custom;
+	void Created(GameObject *obj);
+	void Custom(GameObject *obj,int message,int param,GameObject *sender);
+	void Timer_Expired(GameObject *obj,int number);
+};
+
+/*!
+* \brief Sends a custom if the number of occupants in a vehicle is less than or equal to the value specified
+* \Custom - Custom to watch for
+* \OccupantCount - Number of occupants required to be greater than or equal to not to send the custom
+* \ID - ID to send to, 0 sends to self, -1 sends to sender
+* \SendCustom - custom to send
+* \Param - param to send (-1 sends the param that was received)
+* \Delay - delay to add
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Custom_Send_Custom_If_Occupant_LorE : public ScriptImpClass {
+	int occupants;
+	int recieveMessage;
+	int id;
+	int custom;
+	int Param;
+	float delay;
+	bool repeat;
+	void Created(GameObject *obj);
+	void Custom(GameObject *obj,int message,int param,GameObject *sender);
+};
+
+/*!
+* \brief Sends a custom if the number of occupants in a vehicle is greater than or equal to the value specified
+* \Custom - Custom to watch for
+* \OccupantCount - Number of occupants required to be greater than or equal to not to send the custom
+* \ID - ID to send to, 0 sends to self, -1 sends to sender
+* \SendCustom - custom to send
+* \Param - param to send (-1 sends the param that was received)
+* \Delay - delay to add
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Custom_Send_Custom_If_Occupant_GorE : public ScriptImpClass {
+	int occupants;
+	int recieveMessage;
+	int id;
+	int custom;
+	int Param;
+	float delay;
+	bool repeat;
+	void Created(GameObject *obj);
+	void Custom(GameObject *obj,int message,int param,GameObject *sender);
+};
+
+/*!
+* \brief Spawns objects randomly in a circle using ray casts to find the ground around the location specified can have scripts attached to the spawned object with JMG_Utility_Basic_Spawner_Attach_Script
+* \Spawn_Preset - Preset to create (can be a twiddler).
+* \WanderingPointGroupID - Group of points to teleport to
+* \SafeTeleportDistance - How far can infantry be moved if the spot is blocked
+* \Spawn_Rate - Rate at which to spawn more objectSpawn_Locations (also used to respawn when an object is killed).
+* \Random_Spawn_Rate - Random amount to add or subtract from the spawn time.
+* \Spawn_At_A_Time - Number of instances of the spawned object can exist at once, for example in a traditional spawner only 1 can exist at a time.
+* \Max_Total_Spawned - How many times can objects be spawned before being disabled, -1 means no limit.
+* \Initial_Spawn - Setting the value to -1 will spawn the Spawn_At_A_Time on create, any 0 or above will make the objects slowly spawn in at the spawn rate.
+* \Spawned_Object_Script_ID - Set the id for this script, -1 uses default (only use this if you're going to need to manually add spawned objects to this spawner).
+* \Point_Must_Be_In_Pathfind - Requires the created point to be in the pathfind field, if its outside of the field the point will not be created.
+* \Spawn_Group_ID - The spawn group id which these objects belong to, if -1 or 0 the distance will be checked against all spawn groups (-1 adds the objects to a group, 0 does not)
+* \ if the value is above 0 the objects will only be checked against other objects with the same value.
+* \Starts_Disabled - If set to 1 the script won't be able to spawn objects until an Enable_Disable_Custom with a param of 1 is received
+* \Enable_Disable_Custom - Custom used to enable or disable the spawners, if the param is 0 it will be disabled, 1 will attempt to spawn the max, anything else just enables the spawn code
+* \Attach_Scripts_Group_ID - Defines what scripts should be attached with JMG_Utility_Basic_Spawner_Attach_Script (-1 attachs all scripts on the spawn controller that can be attached)
+* \PlayersAddToSpawnAtATime - Each player in game adds to the max number of things this can spawn at a time
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Basic_Spawner_Wander_Point : public ScriptImpClass {
+public:
+	struct SpawnObjectNode
+	{
+		int groupId;
+		ReferencerClass obj;
+		SpawnObjectNode(GameObject *obj,int spawnGroupId)
+		{
+			this->obj = obj;
+			this->groupId = spawnGroupId;
+		}
+	};
+	static SList<SpawnObjectNode> spawnObjectNodeList;
+private:
+	bool enabled;
+	int spawnGroupId;
+	int spawnedObjectScriptID;
+	int spawnedObjects;
+	enum SpawnFailureTypes{SPAWN_BLOCKED, SUCCESS, LIMIT_REACHED, SPAWN_CODE_ERROR};
+	int spawnAtATime;
+	int maxTotalSpawned;
+	float rate;
+	float randomRate;
+	char preset[128];
+	int spawnCount;
+	int changeSpawnCapCustom;
+	int enableDisableCustom;
+	int initialSpawn;
+	int attachScriptsGroupId;
+	float playersAddToSpawnAtATime;
+	int wanderPointGroup;
+	float safeTeleportDistance;
+	int lastPlayerCount;
+	void Created(GameObject *obj);
+	void Timer_Expired(GameObject *obj,int number);
+	void Custom(GameObject *obj,int message,int param,GameObject *sender);
+	SpawnFailureTypes AttemptSpawn(GameObject *obj);
+	void Initial_Spawn(GameObject *obj);
+	int GetPlayerLimitModifier();
+	bool Grab_Teleport_Spot(GameObject *spawnedObject,int attempts);
+	bool Get_A_Defense_Point(Vector3 *position,float *facing);
+};
+
+/*!
+* \brief Controls if JMG_Utility_Global_CSC_With_Global_Param can send a custom, default param is -1
+* \Custom - Custom to flip if sending is allowed, the param is what to set the flag to
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Global_CSC_With_Global_Param_Controller : public ScriptImpClass
+{
+	void Created(GameObject *obj);
+public:
+	JMG_Utility_Global_CSC_With_Global_Param_Controller()
+	{
+		globalParam = -1;
+	}
+	static int globalParam;
+};
+
+/*!
+* \brief Changes what the global param is on custom
+* \Custom - Custom to flip if sending is allowed
+* \GlobalFlag - What to set the global flag to
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Global_CSC_With_Global_Param_Update_Custom : public ScriptImpClass
+{
+	int custom;
+	int globalParam;
+	void Created(GameObject *obj);
+	void Custom(GameObject *obj,int message,int param,GameObject *sender);
+};
+
+/*!
+* \brief Sends a custom with the global param
+* \Custom - Custom to watch for
+* \ID - ID to send to, 0 sends to self, -1 sends to sender
+* \SendCustom - custom to send
+* \Delay - delay to add
+* \RandomDelay - Max amount of random delay that can be added to the delay
+* \RandomChance - If non-zero this will be the chance that the custom can send 0.0-1.0, 1 will always send
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Global_CSC_With_Global_Param : public ScriptImpClass
+{
+	int recieveMessage;
+	int id;
+	int custom;
+	float delay;
+	float randomDelay;
+	float randomChance;
+	void Created(GameObject *obj);
+	void Custom(GameObject *obj,int message,int param,GameObject *sender);
+};
+
+/*!
+* \brief Controller is required for the global armor scaled system for all objects on the map that have the object script
+* \Scale - Default scale for the armor when the object spawns into the game, multiplied by 0.01
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Global_Armor_Scaled_Controller : public ScriptImpClass {
+	void Created(GameObject *obj);
+public:
+	static float scale;
+};
+
+/*!
+* \brief When a custom is received it will update the scale amount for the scale system
+* \Custom - Custom needed to trigger the update
+* \Scale - New scale for the armor, value is multiplied by 0.01, -1 uses the param
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Global_Armor_Scaled_Custom : public ScriptImpClass {
+	int custom;
+	float scale;
+	void Created(GameObject *obj);
+	void Custom(GameObject *obj,int message,int param,GameObject *sender);
+};
+
+/*!
+* \brief When the object is created it will scale the objects armor specified by the controller
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Global_Armor_Scaled_Object : public ScriptImpClass {
+	void Created(GameObject *obj);
+};
+
+/*!
+* \brief Controller is required for the global health scaled system for all objects on the map that have the object script
+* \Scale - Default scale for the health when the object spawns into the game, multiplied by 0.01
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Global_Health_Scaled_Controller : public ScriptImpClass {
+	void Created(GameObject *obj);
+public:
+	static float scale;
+};
+
+/*!
+* \brief When a custom is received it will update the scale amount for the scale system
+* \Custom - Custom needed to trigger the update
+* \Scale - New scale for the health, value is multiplied by 0.01, -1 uses the param
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Global_Health_Scaled_Custom : public ScriptImpClass {
+	int custom;
+	float scale;
+	void Created(GameObject *obj);
+	void Custom(GameObject *obj,int message,int param,GameObject *sender);
+};
+
+/*!
+* \brief When the object is created it will scale the objects health specified by the controller
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Global_Health_Scaled_Object : public ScriptImpClass {
+	void Created(GameObject *obj);
+};
+
+/*!
+* \brief Controller is required for the global speed system for all infantry on the map that have the object script
+* \Speed - Default speed for infantry when they spawn
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Global_Infantry_Speed_Controller : public ScriptImpClass {
+	void Created(GameObject *obj);
+public:
+	static float speed;
+};
+
+/*!
+* \brief When a custom is received it will update the speed amount for the speed system
+* \Custom - Custom needed to trigger the update
+* \Speed - New speed for all global infantry objects created after the script is triggered
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Global_Infantry_Speed_Custom : public ScriptImpClass {
+	int custom;
+	float speed;
+	void Created(GameObject *obj);
+	void Custom(GameObject *obj,int message,int param,GameObject *sender);
+};
+
+/*!
+* \brief When the infantry is created it will update its movement speed to the global speed
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Global_Infantry_Speed_Object : public ScriptImpClass {
+	void Created(GameObject *obj);
+};
+
+/*!
+* \brief Tell objects with JMG_Utility_AI_Control_Point to ignore this object
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_AI_Control_Point_Ignore_Object : public ScriptImpClass {
+	void Created(GameObject *obj);
+};
+
+/*!
+* \brief Sends a custom when there are no objects of the preset type outside of the vehicle 
+* \Custom - Custom to watch for
+* \Preset - Preset to check for
+* \ID - ID to send to, 0 sends to self, -1 sends to sender
+* \SendCustom - custom to send
+* \Param - param to send (-1 sends the param that was received)
+* \Delay - delay to add
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Custom_Send_Custom_No_Presets_Outside_Of_Vehicle : public ScriptImpClass {
+	int occupants;
+	int recieveMessage;
+	int id;
+	int custom;
+	int Param;
+	float delay;
+	char preset[512];
+	bool repeat;
+	void Created(GameObject *obj);
+	void Custom(GameObject *obj,int message,int param,GameObject *sender);
+};
+/*!
+* \brief Sends a custom when there are no objects of the preset type inside of the vehicle 
+* \Custom - Custom to watch for
+* \Preset - Preset to check for
+* \ID - ID to send to, 0 sends to self, -1 sends to sender
+* \SendCustom - custom to send
+* \Param - param to send (-1 sends the param that was received)
+* \Delay - delay to add
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Custom_Send_Custom_No_Presets_Inside_Of_Vehicle : public ScriptImpClass {
+	int occupants;
+	int recieveMessage;
+	int id;
+	int custom;
+	int Param;
+	float delay;
+	char preset[512];
+	bool repeat;
+	void Created(GameObject *obj);
+	void Custom(GameObject *obj,int message,int param,GameObject *sender);
+};
+
+/*!
+* \brief Sends a custom on a custom from each of the players on the map
+* \Custom - Custom to watch for
+* \ID - ID to send to, 0 sends to self, -1 sends to sender, -2 sends to the player
+* \SendCustom - custom to send
+* \Param - param to send (-1 sends the param that was received)
+* \Delay - delay to add
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Custom_Send_Custom_From_All_Players : public ScriptImpClass {
+	int recieveMessage;
+	int id;
+	int custom;
+	int Param;
+	float delay;
+	void Created(GameObject *obj);
+	void Custom(GameObject *obj,int message,int param,GameObject *sender);
+};
+
+/*!
+* \brief Sends a custom message when killed by a player from the player
+* \ID - Id of the object to send the custom to, 0 sends to itself, -1 to killer
+* \Message - Custom to send
+* \Param - parameter to send with the custom
+* \Delay - Time amount to wait before sending the custom
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Killed_By_Player_Send_Custom_From_Player : public ScriptImpClass {
+	void Killed(GameObject *obj,GameObject *killer);
+};
+
+/*!
+* \brief Sets the level's fog on create, after that point its used to sync up any player that joins with the current fog settings 
+* \Min - Min range of the fog
+* \Max - Max range of the fog
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Sync_Fog_Controller : public ScriptImpClass {
+	bool fogSynced[128];
+	void Created(GameObject *obj);
+	void Timer_Expired(GameObject *obj,int number);
+public:
+	static float min;
+	static float max;
+};
+
+/*!
+* \brief Updates the fog controller's fog settings
+* \Custom - Custom to watch for
+* \Min - Min range of the fog
+* \Max - Max range of the fog
+* \Transition - how long it takes the fog to change
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Sync_Fog_Custom_Update : public ScriptImpClass {
+	int custom;
+	float min;
+	float max;
+	float transition;
+	void Created(GameObject *obj);
+	void Custom(GameObject *obj,int message,int param,GameObject *sender);
+};
+
+/*!
+* \brief Syncs the current animation with any players that join, this is useful if you see objects slowly slide to match their current frame
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Sync_Animation_On_Join : public ScriptImpClass {
+	bool synced[128];
+	void Created(GameObject *obj);
+	void Timer_Expired(GameObject *obj,int number);
 };

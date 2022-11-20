@@ -204,16 +204,19 @@ void RA_Global_Gap_Controller::Update_Generator(unsigned long ID, bool Active)
 
 void RA_Gap_Generator_Building::Created(GameObject *obj)
 {
+	enabled = false;
 	GameObject *GapControl = Find_Object_By_Preset(2, Get_Parameter("Gap_Controller"));
 	if (!Get_Int_Parameter("Team"))
 	{
 		Commands->Send_Custom_Event(obj, GapControl, 1000, Get_Int_Parameter("Stealth_Range"), 2);
 		Commands->Send_Custom_Event(obj, GapControl, 2222, 3, 3);
+		enabled = true;
 	}
 	else if (Get_Int_Parameter("Team") == 1)
 	{
 		Commands->Send_Custom_Event(obj, GapControl, 1111, Get_Int_Parameter("Stealth_Range"), 2);
 		Commands->Send_Custom_Event(obj, GapControl, 2222, 3, 3);
+		enabled = true;
 	}
 	shroudID = 0;
 	sizeID = 0;
@@ -231,10 +234,33 @@ void RA_Gap_Generator_Building::Timer_Expired(GameObject *obj, int number)
 {
 	if (number == Get_Int_Parameter("Timer_Number"))
 	{
-		if (!Is_Base_Powered(Get_Object_Type(obj)))
+		if (!enabled && Is_Base_Powered(Get_Object_Type(obj)))
 		{
 			GameObject *GapControl = Find_Object_By_Preset(2, Get_Parameter("Gap_Controller"));
-			Commands->Send_Custom_Event(obj, GapControl, 2222, 2, 0);
+			Commands->Send_Custom_Event(obj, GapControl, 2222, 1, 0); //Activate Stealth Field
+
+			if (!shroudID)
+			{
+				Vector3 position = Commands->Get_Bone_Position(obj, "ROOTTRANSFORM");
+				GameObject *object = Commands->Create_Object(Get_Parameter("ShroudPreset"), position);
+				Commands->Set_Player_Type(object,Commands->Get_Player_Type(obj));
+				Commands->Attach_To_Object_Bone(object, obj, "ROOTTRANSFORM");
+				shroudID = Commands->Get_ID(object);
+			}
+			if (!sizeID)
+			{
+				Vector3 position = Commands->Get_Bone_Position(obj, "ROOTTRANSFORM");
+				GameObject *object = Commands->Create_Object(Get_Parameter("SizePreset"), position);
+				Commands->Set_Player_Type(object,Commands->Get_Player_Type(obj));
+				Commands->Attach_To_Object_Bone(object, obj, "ROOTTRANSFORM");
+				sizeID = Commands->Get_ID(object);
+			}
+			enabled = true;
+		}
+		else if(enabled && !Is_Base_Powered(Get_Object_Type(obj)))
+		{
+			GameObject *GapControl = Find_Object_By_Preset(2, Get_Parameter("Gap_Controller"));
+			Commands->Send_Custom_Event(obj, GapControl, 2222, 0, 0); //Deactivate Stealth Field
 			if (shroudID)
 			{
 				Commands->Destroy_Object(Commands->Find_Object(shroudID));
@@ -245,6 +271,7 @@ void RA_Gap_Generator_Building::Timer_Expired(GameObject *obj, int number)
 				Commands->Destroy_Object(Commands->Find_Object(sizeID));
 				sizeID = 0;
 			}
+			enabled = false;
 		}
 		Commands->Start_Timer(obj, this, 2, Get_Int_Parameter("Timer_Number"));
 	}

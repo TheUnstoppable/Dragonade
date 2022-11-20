@@ -19,6 +19,7 @@ SCRIPTS_API ScriptedLabelControlClass* Create_Label_Control(ScriptedDialogClass*
 	Set_Control_Bounds(control, x, y, width, height);
 	control->Set_Text_Color(label_color);
 	control->Set_Label_Text(text);
+	control->Set_Is_Title(title);
 	return control;
 }
 

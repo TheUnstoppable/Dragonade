@@ -13,6 +13,7 @@
 #include "scripts.h"
 #include "agtfix.h"
 #include "engine_game.h"
+#include "engine_obj.h"
 #include "BuildingGameObj.h"
 #include "BuildingAggregateClass.h"
 	
@@ -140,6 +141,7 @@ void GDI_AGT::Create_Guns(GameObject* AGTObj)
 	GameObject* MissileObj = Commands->Create_Object("GDI_AGT", MissilePos);
 	if (MissileObj) 
 	{
+		Set_Object_Type(MissileObj, Get_Object_Type(AGTObj));
 		Commands->Attach_Script(MissileObj, "GDI_AGT_Missile", "0");
 		MissileID = Commands->Get_ID(MissileObj);
 	}
@@ -149,6 +151,7 @@ void GDI_AGT::Create_Guns(GameObject* AGTObj)
 		GameObject* GunObj = Commands->Create_Object("GDI_Ceiling_Gun_AGT", GunPos[i]);
 		if (GunObj) 
 		{
+			Set_Object_Type(GunObj, Get_Object_Type(AGTObj));
 			Commands->Attach_Script(GunObj, "GDI_AGT_Gun", "");
 			Commands->Send_Custom_Event(AGTObj, GunObj, 0, MissileID, 0);
 			GunID[i] = Commands->Get_ID(GunObj);
@@ -240,7 +243,7 @@ bool GDI_AGT_Gun::IsValidEnemy(GameObject* GunObj, GameObject* EnemyObj) {
 		return false;
 	
 	// TODO: Make switch for agt kills neutral?
-	if (Commands->Get_Player_Type(EnemyObj) != 0)
+	if (Commands->Get_Player_Type(EnemyObj) != (Get_Object_Type(GunObj) ? 0 : 1))
 		return false;
 	
 	if (Commands->Get_Health(EnemyObj) <= 0)
@@ -329,7 +332,7 @@ bool GDI_AGT_Missile::IsValidEnemy(GameObject* MissileObj, GameObject* EnemyObj)
 		return false;
 	
 	// TODO: Make switch for agt kills neutral?
-	if (Commands->Get_Player_Type(EnemyObj) != 0)
+	if (Commands->Get_Player_Type(EnemyObj) != (Get_Object_Type(MissileObj) ? 0 : 1))
 		return false;
 	
 	if (Commands->Get_Health(EnemyObj) <= 0)

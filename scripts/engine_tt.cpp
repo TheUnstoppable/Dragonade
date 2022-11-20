@@ -275,6 +275,17 @@ SCRIPTS_API dlg Hide_Dialog;
 SCRIPTS_API dlg Delete_Dialog;
 SCRIPTS_API dhwg Display_HUD_Weapon_Grant_Player;
 SCRIPTS_API dhwg Display_HUD_Ammo_Grant_Player;
+SCRIPTS_API gru Get_Repository_URL;
+SCRIPTS_API sru Set_Repository_URL;
+SCRIPTS_API gru Get_Screenshot_URL;
+SCRIPTS_API sru Set_Screenshot_URL;
+SCRIPTS_API tss Take_Screenshot;
+SCRIPTS_API iips Is_In_Pathfind_Sector;
+SCRIPTS_API sgm Set_Gravity_Multiplier;
+SCRIPTS_API iga Is_Gameplay_Allowed;
+SCRIPTS_API sga Set_Gameplay_Allowed;
+SCRIPTS_API pcc Print_Client_Console;
+SCRIPTS_API pccp Print_Client_Console_Player;
 
 SCRIPTS_API bool Can_Team_Build_Vehicle(int Team)
 {

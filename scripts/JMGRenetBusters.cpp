@@ -24,6 +24,8 @@
 #include "VehicleGameObj.h"
 #include "jmgUtility.h"
 #include "JMGRenetBuster.h" 
+#include "RigidBodyClass.h"
+#include "ArmedGameObjDef.h"
 // Did a major overhaul on all these scripts, even though the mod they belonged to is dead :(
 void JMG_Create_Ship_On_Poke::Created(GameObject *obj)
 {
@@ -2610,10 +2612,11 @@ void JMG_CMTB_Comet_Script::Created(GameObject *obj)
 		sprintf(anim,"CometSpin%d.CometSpin%d",Random,Random);
 		Commands->Set_Animation(obj,anim,true,0,0,-1,true);
 	}
+	int impulses = 1;
 	if (Commands->Get_Random(0.0f,1.0f) < 0.25f && JMG_CMTB_Main_Game_Control::CMTBLevel)
-		Set_Current_Clip_Bullets(obj,max((int)((Commands->Get_Random_Int(0,JMG_CMTB_Main_Game_Control::CMTBLevel)+1)*JMG_CMTB_Main_Game_Control::DifficultyMultiplier),1));
+		impulses = max((int)((Commands->Get_Random_Int(0,JMG_CMTB_Main_Game_Control::CMTBLevel)+1)*JMG_CMTB_Main_Game_Control::DifficultyMultiplier),1);
 	else
-		Set_Current_Clip_Bullets(obj,max((int)(JMG_CMTB_Main_Game_Control::CMTBLevel*JMG_CMTB_Main_Game_Control::DifficultyMultiplier),1));
+		impulses = max((int)(JMG_CMTB_Main_Game_Control::CMTBLevel*JMG_CMTB_Main_Game_Control::DifficultyMultiplier),1);
 	Vector3 Position = Commands->Get_Position(obj);
 	Position.Z = 0.5;
 	GameObject *SPOT = Commands->Create_Object("Daves Arrow",Position);
@@ -2638,14 +2641,20 @@ void JMG_CMTB_Comet_Script::Created(GameObject *obj)
 		RenCometBustersList += TypeObject(obj,1.5625f,1.25f,Asteroid);
 		break;
 	}
-	Vector3 target = Get_Vector3_Parameter("TargetPosition");
-	target.Z = Commands->Get_Position(obj).Z;
-	ActionParamsStruct params;
-	params.Set_Basic(this,99,1);
-	params.Set_Attack(target,100.0f,0.0f,true);
-	params.AttackForceFire = true;
-	Commands->Action_Attack(obj,params);
 	Commands->Destroy_Object(SPOT);
+
+	PhysicalGameObj *physicalGameObj = obj->As_PhysicalGameObj();
+	Matrix3D muzzle = physicalGameObj->As_ArmedGameObj()->Get_Muzzle();
+	Vector3 impulse_pos;
+	muzzle.Get_Translation(&impulse_pos);
+	Vector3 impulse;
+	muzzle.Get_X_Vector(&impulse);
+	impulse *= Get_Mass(obj)*-0.630f*impulses;
+	physicalGameObj->Peek_Physical_Object()->As_RigidBodyClass()->Apply_Impulse(impulse,impulse_pos);
+	Force_Position_Update(obj);
+	Force_Orientation_Update(obj);
+	Force_Velocity_Update(obj);
+	Update_Network_Object(obj);
 }
 void JMG_CMTB_Comet_Script::Killed(GameObject *obj, GameObject *damager)
 {

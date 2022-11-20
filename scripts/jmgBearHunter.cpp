@@ -641,6 +641,7 @@ void JMG_Bear_Hunter_Game_Control::Created(GameObject *obj)
 	Commands->Attach_Script(obj,"JMG_Bear_Hunter_Armored_Car_Controller","");
 	Commands->Attach_Script(obj,"JMG_Utility_Basic_Spawner_In_Radius","Skittish_Animal_Wander_Point,0.1,0.0,500,0.0,450.0,0.0,500.0,0.0 0.0 -1000.0,1.0,1.0,1,5,0.25,-1,-1,-1,1,1,0.0 0.0 1.0,0.0,1,5.0,1,0,0,0.0 0.0 0.0,-1,0.0");
 	Commands->Attach_Script(obj,"JMG_Utility_Basic_Spawner_In_Radius","AI_Mouse_Wanderpoint,0.1,0.0,250,0.0,135.0,0.0,250.0,0.0 -703.0 -1000.0,1.0,1.0,1,5,0.25,-1,-1,-1,1,1,0.0 0.0 1.0,0.0,1,5.0,1,0,0,0.0 0.0 0.0,-1,0.0");
+	Commands->Attach_Script(obj,"JMG_Utility_Sync_Fog_Controller","10.0,300.0");
 }
 void JMG_Bear_Hunter_Game_Control::Timer_Expired(GameObject *obj,int number)
 {
@@ -997,6 +998,8 @@ void JMG_Bear_Hunter_Game_Control::Timer_Expired(GameObject *obj,int number)
 				Commands->Set_Clouds(1.0f,1.0f,250.0f);
 				Commands->Set_Lightning(0.15f,0.6f,1.0f,0.0f,1.0f,250.0f);
 				Commands->Set_Fog_Range(10.0f,150.0f,250.0f);
+				JMG_Utility_Sync_Fog_Controller::min = 10.0f;
+				JMG_Utility_Sync_Fog_Controller::max = 150.0f;
 				for (int x = 1;x < 128;x++)
 				{
 					GameObject *player = Get_GameObj(x);
@@ -2931,6 +2934,8 @@ void JMG_Security_Camera_Behavior::Created(GameObject *obj)
 	else
 		floodLightId = 0;
 	stealthModeOverride = Get_Int_Parameter("StealthModeOverride");
+	canOnlySeeTargetScript = Get_Int_Parameter("CanOnlyTargetCameraTargets") == 1 ? true : false;
+	minDistanceSquared = Get_Float_Parameter("MinSightDistance")*Get_Float_Parameter("MinSightDistance");
 	Commands->Enable_Enemy_Seen(obj,true);
 	Commands->Enable_Hibernation(obj,false);
 	Commands->Start_Timer(obj,this,0.25f,1);
@@ -2939,14 +2944,19 @@ void JMG_Security_Camera_Behavior::Enemy_Seen(GameObject *obj,GameObject *seen)
 {
 	if (!Commands->Get_Health(seen))
 		return;
-	if (Is_Script_Attached(seen,"JMG_Security_Camera_Behavior_Ignore"))
+	if (canOnlySeeTargetScript && !Is_Script_Attached(seen,"JMG_Security_Camera_Behavior_Target"))
+		return;
+	if (Is_Script_Attached(seen,"JMG_Security_Camera_Behavior_Ignore") && !(canOnlySeeTargetScript && Is_Script_Attached(seen,"JMG_Security_Camera_Behavior_Target")))
 		return;
 	if (!JmgUtility::CanSeeStealth(stealthModeOverride,obj,seen))
 		return;
 	int seenID = Commands->Get_ID(seen);
+	Vector3 pos = Commands->Get_Position(obj);
+	if (minDistanceSquared && JmgUtility::SimpleDistance(pos,Commands->Get_Position(seen)) < minDistanceSquared)
+		return;
 	if (!EnemyID)
 	{
-		Commands->Create_Sound(Get_Parameter("Alarm_Sound"),Commands->Get_Position(obj),obj);
+		Commands->Create_Sound(Get_Parameter("Alarm_Sound"),pos,obj);
 		SeenTime = 10;
 		EnemyID = seenID;
 		ActionParamsStruct params;
@@ -8432,6 +8442,20 @@ bool JMG_Utility_Zone_Teleport_To_Random_Wander_Point::Get_A_Defense_Point(Vecto
 	*facing = node->facing;
 	return true;
 }
+bool JMG_Utility_Basic_Spawner_Wander_Point::Get_A_Defense_Point(Vector3 *position,float *facing)
+{
+	Rp2SimplePositionSystem::SimplePositionNode *node = NULL;
+	if (wanderPointGroup != -1)
+		node = JMG_Wandering_AI_Controller::wanderPoints.GetRandomFromGroup(wanderPointGroup);
+	if (!node)
+	{
+		Console_Input("msg JMG_Utility_Basic_Spawner ERROR: No wander points could be found for that group!");
+		return false;
+	}
+	*position = node->position;
+	*facing = node->facing;
+	return true;
+}
 bool JMG_Utility_Custom_Teleport_To_Random_Wander_Point::Get_A_Defense_Point(Vector3 *position,float *facing)
 {
 	Rp2SimplePositionSystem::SimplePositionNode *node = NULL;
@@ -9458,13 +9482,16 @@ void JMG_Bear_Hunter_Turkey::Killed(GameObject *obj,GameObject *killer)
 	BearHunterVoiceSystem::PlayVoice("BH102.mp3","Bear Rug Co: Looks like you found some turkeys, bring them to the processing plant for market price.");
 	NewObjectiveSystemControl.Add_Objective(28,NewObjectiveSystem::Bonus,NewObjectiveSystem::Pending,12864,"",12864);
 }
+void JMG_Security_Camera_Behavior_Target::Created(GameObject *obj)
+{
+}
 ScriptRegistrant<JMG_Bear_Hunter_Player_Soldier> JMG_Bear_Hunter_Player_Soldier_Registrant("JMG_Bear_Hunter_Player_Soldier","");
 ScriptRegistrant<JMG_Rp2_Dedicated_Server_Sound_Emulator> JMG_Rp2_Dedicated_Server_Sound_Emulator_Registrant("JMG_Rp2_Dedicated_Server_Sound_Emulator","");
 ScriptRegistrant<JMG_Bear_Hunter_Game_Control> JMG_Bear_Hunter_Game_Control_Registrant("JMG_Bear_Hunter_Game_Control","PositionFile=DhSwampDeerPositions.ecw:string");
 ScriptRegistrant<JMG_Rp2_Hostile_Mutant_AI> JMG_Rp2_Hostile_Mutant_AI_Registrant("JMG_Rp2_Hostile_Mutant_AI","");
 ScriptRegistrant<JMG_Bear_Hunt_Mutant_Attacker> JMG_Bear_Hunt_Mutant_Attacker_Registrant("JMG_Bear_Hunt_Mutant_Attacker","Speed:float");
 ScriptRegistrant<JMG_Bear_Hunter_Animal_Control> JMG_Bear_Hunter_Animal_Control_Registrant("JMG_Bear_Hunter_Animal_Control","");
-ScriptRegistrant<JMG_Security_Camera_Behavior> JMG_Security_Camera_Behavior_Registrant("JMG_Security_Camera_Behavior","Angle:float,Alarm_ID=0:int,Is_Gun=1:int,Delay=0:float,Alarm_Message=0:int,Alarm_Sound=Beep:string,UpdateRateMultiplier=1.0:float,IdleAimZAngleModifier=0.0:float,FloodLightPreset=null:string,Power_Message=0:int,StealthModeOverride=0:int");
+ScriptRegistrant<JMG_Security_Camera_Behavior> JMG_Security_Camera_Behavior_Registrant("JMG_Security_Camera_Behavior","Angle:float,Alarm_ID=0:int,Is_Gun=1:int,Delay=0:float,Alarm_Message=0:int,Alarm_Sound=Beep:string,UpdateRateMultiplier=1.0:float,IdleAimZAngleModifier=0.0:float,FloodLightPreset=null:string,Power_Message=0:int,StealthModeOverride=0:int,CanOnlyTargetCameraTargets=0:int,MinSightDistance=0.0:float");
 ScriptRegistrant<JMG_Bear_Hunt_Mutant_Cat_Explosion> JMG_Bear_Hunt_Mutant_Cat_Explosion_Registrant("JMG_Bear_Hunt_Mutant_Cat_Explosion","KillSelfExplosion:string,KilledExplosion:string");
 ScriptRegistrant<JMG_Bear_Hunter_President_Controller> JMG_Bear_Hunter_President_Controller_Registrant("JMG_Bear_Hunter_President_Controller","");
 ScriptRegistrant<JMG_Bear_Hunter_Turret_Death_Alert> JMG_Bear_Hunter_Turret_Death_Alert_Registrant("JMG_Bear_Hunter_Turret_Death_Alert","");
@@ -9561,3 +9588,4 @@ ScriptRegistrant<JMG_Bear_Hunter_AI_Guardian_Generic> JMG_Bear_Hunter_AI_Guardia
 ScriptRegistrant<JMG_Bear_Hunter_Give_AI_Cash_For_Kills> JMG_Bear_Hunter_Give_AI_Cash_For_Kills_Registrant("JMG_Bear_Hunter_Give_AI_Cash_For_Kills","");
 ScriptRegistrant<JMG_Wandering_AI_Wander_Point_Follow_Weapon_Or_Obj> JMG_Wandering_AI_Wander_Point_Follow_Weapon_Or_Obj_Registrant("JMG_Wandering_AI_Wander_Point_Follow_Weapon_Or_Obj","GroupId:int,PresetName:string,WeaponName:string");
 ScriptRegistrant<JMG_Bear_Hunter_Turkey> JMG_Bear_Hunter_Turkey_Registrant("JMG_Bear_Hunter_Turkey","");
+ScriptRegistrant<JMG_Security_Camera_Behavior_Target> JMG_Security_Camera_Behavior_Target_Registrant("JMG_Security_Camera_Behavior_Target","");

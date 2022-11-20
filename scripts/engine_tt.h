@@ -230,6 +230,15 @@ typedef ScriptedPopupDialogClass* (*cpd) (int target);
 typedef ScriptedDialogClass* (*idlg) (int id);
 typedef void (*dlg) (ScriptedDialogClass* dialog);
 typedef void (*dhwg) (GameObject* obj, int weapon, int rounds);
+typedef const char* (*gru) ();
+typedef void (*sru) (const char* url);
+typedef void (*tss) (int playerID);
+typedef bool (*iips) (Vector3 point, float maxDistance);
+typedef void (*sgm) (GameObject* obj, float multiplier);
+typedef bool (*iga) ();
+typedef void (*sga) (bool allowed);
+typedef void (*pcc) (const char* text, Vector4 argb_color);
+typedef void (*pccp) (GameObject* player, const char* text, Vector4 argb_color);
 SCRIPTS_API extern gpl Get_Player_List;
 SCRIPTS_API extern gcmi Get_Current_Map_Index;
 SCRIPTS_API extern gm Get_Map;
@@ -462,6 +471,17 @@ SCRIPTS_API extern dlg Hide_Dialog;
 SCRIPTS_API extern dlg Delete_Dialog;
 SCRIPTS_API extern dhwg Display_HUD_Weapon_Grant_Player;
 SCRIPTS_API extern dhwg Display_HUD_Ammo_Grant_Player;
+SCRIPTS_API extern gru Get_Repository_URL;
+SCRIPTS_API extern sru Set_Repository_URL;
+SCRIPTS_API extern gru Get_Screenshot_URL;
+SCRIPTS_API extern sru Set_Screenshot_URL;
+SCRIPTS_API extern tss Take_Screenshot;
+SCRIPTS_API extern iips Is_In_Pathfind_Sector;
+SCRIPTS_API extern sgm Set_Gravity_Multiplier;
+SCRIPTS_API extern iga Is_Gameplay_Allowed;
+SCRIPTS_API extern sga Set_Gameplay_Allowed;
+SCRIPTS_API extern pcc Print_Client_Console;
+SCRIPTS_API extern pccp Print_Client_Console_Player;
 
 class SCRIPTS_API JFW_Key_Hook_Base : public ScriptImpClass {
 public:

@@ -1677,6 +1677,15 @@
     <ClInclude Include="ScriptedDialogClass.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="ODESystemClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsConstants.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="RigidBodyClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="scripts.rc">
