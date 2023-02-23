@@ -18167,6 +18167,133 @@ void JMG_Utility_Sync_Animation_On_Join::Timer_Expired(GameObject *obj,int numbe
 		Commands->Start_Timer(obj,this,0.25,23453451);
 	}
 }
+void JMG_Utility_Set_Animation_Frame_To_Match_Ammo::Created(GameObject *obj)
+{
+	sprintf(animation,"%s",Get_Parameter("Animation"));
+	lastFrame = Get_Current_Bullets(obj);
+	Commands->Set_Animation(obj,animation,false,NULL,(float)lastFrame,(float)lastFrame,false);
+	Commands->Start_Timer(obj,this,0.1f,1);
+}
+void JMG_Utility_Set_Animation_Frame_To_Match_Ammo::Timer_Expired(GameObject *obj,int number)
+{
+	if (number == 1)
+	{
+		int currentFrame = Get_Current_Bullets(obj);
+		if (lastFrame != currentFrame)
+		{
+			lastFrame = currentFrame;
+			Commands->Set_Animation(obj,animation,false,NULL,(float)lastFrame,(float)lastFrame,false);
+		}
+		Commands->Start_Timer(obj,this,0.1f,1);
+	}
+}
+void JMG_Utility_Poke_Grant_Weapon::Created(GameObject *obj)
+{
+	Commands->Enable_HUD_Pokable_Indicator(obj,true);
+}
+void JMG_Utility_Poke_Grant_Weapon::Poked(GameObject *obj, GameObject *poker)
+{
+	if (Commands->Get_Player_Type(poker) == -4)
+		return;
+	Grant_Weapon(poker,Get_Parameter("Weapon"),true,Get_Int_Parameter("Rounds"),Get_Int_Parameter("Backpack") ? true : false);
+}
+void JMG_Utility_Zone_Create_Object_While_Occupied::Created(GameObject *obj)
+{
+	id = 0;
+	objectsInZone = 0;
+	sprintf(preset,"%s",Get_Parameter("Preset"));
+	location = Get_Vector3_Parameter("Location");
+	facing = Get_Float_Parameter("Facing");
+	enableCustom = Get_Int_Parameter("EnableCustom");
+	reCreateOnDeath = Get_Int_Parameter("ReCreateOnDeath") ? true : false;
+	if (enableCustom)
+		enabled = false;
+	else
+		enabled = true;
+}
+void JMG_Utility_Zone_Create_Object_While_Occupied::Custom(GameObject *obj,int message,int param,GameObject *sender)
+{
+	if (enableCustom && message == enableCustom)
+	{
+		enabled = param ? true : false;
+	}
+	if (message == Get_ID() && param == Get_ID())
+	{// Object occupying zone died
+		Exited(obj,sender);
+	}
+	if (message == Get_ID() && param == Get_ID()+1)
+	{
+		id = 0;
+		if (!reCreateOnDeath)
+		{
+			Destroy_Script();
+			return;
+		}
+		if (!objectsInZone)
+			return;
+		TriggerCreate(obj);
+	}
+}
+void JMG_Utility_Zone_Create_Object_While_Occupied::Entered(GameObject *obj,GameObject *enterer)
+{
+	objectsInZone++;
+	char params[256];
+	sprintf(params,"%d,%d",Commands->Get_ID(obj),Get_ID());
+	Commands->Attach_Script(enterer,"JMG_Utility_Zone_Create_Object_While_Occupied_Attached",params);
+	TriggerCreate(obj);
+}
+void JMG_Utility_Zone_Create_Object_While_Occupied::TriggerCreate(GameObject *obj)
+{
+	if (id || !enabled)
+		return;
+	char params[256];
+	GameObject *object = Commands->Create_Object(preset,location);
+	Commands->Set_Facing(object,facing);
+	id = Commands->Get_ID(object);
+	sprintf(params,"%d,%d",Commands->Get_ID(obj),Get_ID());
+	Commands->Attach_Script(object,"JMG_Utility_Zone_Create_Object_While_Occupied_Object_Attached",params);
+}
+void JMG_Utility_Zone_Create_Object_While_Occupied::Exited(GameObject *obj,GameObject *exiter)
+{
+	objectsInZone--;
+	Remove_Script(exiter,"JMG_Utility_Zone_Create_Object_While_Occupied_Attached");
+	if (!id || !enabled || objectsInZone)
+		return;
+	Commands->Send_Custom_Event(obj,Commands->Find_Object(id),Get_ID(),Get_ID(),0);
+	id = 0;
+}
+void JMG_Utility_Zone_Create_Object_While_Occupied_Attached::Killed(GameObject *obj,GameObject *killer)
+{
+	Destroyed(obj);
+}
+void JMG_Utility_Zone_Create_Object_While_Occupied_Attached::Destroyed(GameObject *obj)
+{
+	if (Exe == 4)
+		return;
+	int scriptId = Get_Int_Parameter("ScriptId");
+	Commands->Send_Custom_Event(obj,Commands->Find_Object(Get_Int_Parameter("ScriptZoneId")),scriptId,scriptId,0);
+	Destroy_Script();
+}
+void JMG_Utility_Zone_Create_Object_While_Occupied_Object_Attached::Created(GameObject *obj)
+{
+	deathByScript = false;
+	ownerScriptId = Get_Int_Parameter("ScriptId");
+}
+void JMG_Utility_Zone_Create_Object_While_Occupied_Object_Attached::Custom(GameObject *obj,int message,int param,GameObject *sender)
+{
+	if (message == ownerScriptId && param == ownerScriptId)
+	{
+		deathByScript = true;
+		Commands->Destroy_Object(obj);
+	}
+}
+void JMG_Utility_Zone_Create_Object_While_Occupied_Object_Attached::Destroyed(GameObject *obj)
+{
+	if (Exe == 4 || deathByScript)
+		return;
+	Commands->Send_Custom_Event(obj,Commands->Find_Object(Get_Int_Parameter("ScriptZoneId")),ownerScriptId,ownerScriptId+1,0);
+	Destroy_Script();
+}
 ScriptRegistrant<JMG_Utility_Check_If_Script_Is_In_Library> JMG_Utility_Check_If_Script_Is_In_Library_Registrant("JMG_Utility_Check_If_Script_Is_In_Library","ScriptName:string,CppName:string");
 ScriptRegistrant<JMG_Send_Custom_When_Custom_Sequence_Matched> JMG_Send_Custom_When_Custom_Sequence_Matched_Registrant("JMG_Send_Custom_When_Custom_Sequence_Matched","Success_Custom=0:int,Correct_Step_Custom=0:int,Partial_Failure_Custom=0:int,Failure_Custom=0:int,Send_To_ID=0:int,Custom_0=0:int,Custom_1=0:int,Custom_2=0:int,Custom_3=0:int,Custom_4=0:int,Custom_5=0:int,Custom_6=0:int,Custom_7=0:int,Custom_8=0:int,Custom_9=0:int,Disable_On_Success=1:int,Disable_On_Failure=0:int,Starts_Enabled=1:int,Enable_Custom=0:int,Correct_Step_Saftey=0:int,Failure_Saftey=1:int,Max_Failures=1:int");
 ScriptRegistrant<JMG_Utility_Change_Model_On_Timer> JMG_Utility_Change_Model_On_Timer_Registrant("JMG_Utility_Change_Model_On_Timer","Model=null:string,Time=0:float");
@@ -18606,3 +18733,8 @@ ScriptRegistrant<JMG_Utility_Killed_By_Player_Send_Custom_From_Player> JMG_Utili
 ScriptRegistrant<JMG_Utility_Sync_Fog_Controller> JMG_Utility_Sync_Fog_Controller_Registrant("JMG_Utility_Sync_Fog_Controller","MinRange:float,MaxRange:float");
 ScriptRegistrant<JMG_Utility_Sync_Fog_Custom_Update> JMG_Utility_Sync_Fog_Custom_Update_Registrant("JMG_Utility_Sync_Fog_Custom_Update","Custom:int,MinRange:float,MaxRange:float,Transition:float");
 ScriptRegistrant<JMG_Utility_Sync_Animation_On_Join> JMG_Utility_Sync_Animation_On_Join_Registrant("JMG_Utility_Sync_Animation_On_Join","");
+ScriptRegistrant<JMG_Utility_Set_Animation_Frame_To_Match_Ammo> JMG_Utility_Set_Animation_Frame_To_Match_Ammo_Registrant("JMG_Utility_Set_Animation_Frame_To_Match_Ammo","Animation:string");
+ScriptRegistrant<JMG_Utility_Poke_Grant_Weapon> JMG_Utility_Poke_Grant_Weapon_Registrant("JMG_Utility_Poke_Grant_Weapon","Weapon:string,Rounds:int,Backpack:int");
+ScriptRegistrant<JMG_Utility_Zone_Create_Object_While_Occupied> JMG_Utility_Zone_Create_Object_While_Occupied_Registrant("JMG_Utility_Zone_Create_Object_While_Occupied","Preset:string,Location:Vector3,Facing:float,EnableCustom:int,ReCreateOnDeath:int");
+ScriptRegistrant<JMG_Utility_Zone_Create_Object_While_Occupied_Attached> JMG_Utility_Zone_Create_Object_While_Occupied_Attached_Registrant("JMG_Utility_Zone_Create_Object_While_Occupied_Attached","ScriptZoneId:int,ScriptId:int");
+ScriptRegistrant<JMG_Utility_Zone_Create_Object_While_Occupied_Object_Attached> JMG_Utility_Zone_Create_Object_While_Occupied_Object_Attached_Registrant("JMG_Utility_Zone_Create_Object_While_Occupied_Object_Attached","ScriptZoneId:int,ScriptId:int");

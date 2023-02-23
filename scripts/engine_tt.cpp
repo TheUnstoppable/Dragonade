@@ -286,6 +286,8 @@ SCRIPTS_API iga Is_Gameplay_Allowed;
 SCRIPTS_API sga Set_Gameplay_Allowed;
 SCRIPTS_API pcc Print_Client_Console;
 SCRIPTS_API pccp Print_Client_Console_Player;
+SCRIPTS_API rl Reload_Level;
+SCRIPTS_API fcr Force_Client_Reload;
 
 SCRIPTS_API bool Can_Team_Build_Vehicle(int Team)
 {

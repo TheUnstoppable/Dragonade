@@ -15,7 +15,7 @@
 // (float) is merely there to make sure that it uses the float overloads to send the version over network.
 // and to make sure we do not forget the f suffix on the version number.
 #define TT_VERSION_MAGIC '!TT!'
-#define TT_VERSION ((float)4.7f)
+#define TT_VERSION ((float)4.8f)
 
 #define SAFE_DELETE_ARRAY(p)	{ delete[] p; p = NULL; }
 #define SAFE_DELETE(p)			{ delete p; p = NULL; }

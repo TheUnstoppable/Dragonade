@@ -425,6 +425,8 @@ bool SCRIPTSAPI Set_Script_Commands(ScriptCommandsClass* commands)
 	Set_Gameplay_Allowed = (sga)Address(tt, "Set_Gameplay_Allowed");
 	Print_Client_Console = (pcc)Address(tt, "Print_Client_Console");
 	Print_Client_Console_Player = (pccp)Address(tt, "Print_Client_Console_Player");
+	Reload_Level = (rl)Address(tt, "Reload_Level");
+	Force_Client_Reload = (fcr)Address(tt, "Force_Client_Reload");
 
 	DA::Init();
 

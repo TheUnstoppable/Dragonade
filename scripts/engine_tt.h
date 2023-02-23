@@ -239,6 +239,8 @@ typedef bool (*iga) ();
 typedef void (*sga) (bool allowed);
 typedef void (*pcc) (const char* text, Vector4 argb_color);
 typedef void (*pccp) (GameObject* player, const char* text, Vector4 argb_color);
+typedef void (*rl) ();
+typedef void (*fcr) (int playerID);
 SCRIPTS_API extern gpl Get_Player_List;
 SCRIPTS_API extern gcmi Get_Current_Map_Index;
 SCRIPTS_API extern gm Get_Map;
@@ -482,6 +484,8 @@ SCRIPTS_API extern iga Is_Gameplay_Allowed;
 SCRIPTS_API extern sga Set_Gameplay_Allowed;
 SCRIPTS_API extern pcc Print_Client_Console;
 SCRIPTS_API extern pccp Print_Client_Console_Player;
+SCRIPTS_API extern rl Reload_Level;
+SCRIPTS_API extern fcr Force_Client_Reload;
 
 class SCRIPTS_API JFW_Key_Hook_Base : public ScriptImpClass {
 public:

@@ -12099,3 +12099,76 @@ class JMG_Utility_Sync_Animation_On_Join : public ScriptImpClass {
 	void Created(GameObject *obj);
 	void Timer_Expired(GameObject *obj,int number);
 };
+
+/*!
+* \brief Makes the attached object sync its animation frame to the object's clip count
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Set_Animation_Frame_To_Match_Ammo : public ScriptImpClass {
+	char animation[32];
+	int lastFrame;
+	void Created(GameObject *obj);
+	void Timer_Expired(GameObject *obj,int number);
+};
+
+/*!
+* \brief Grants a weapon on poke
+* \Weapon - Weapon to grant
+* \Rounds - Rounds in the gun, -1 = infinite
+* \Backpack - Should it fill the backpack
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Poke_Grant_Weapon : public ScriptImpClass {
+	void Created(GameObject *obj);
+	void Poked(GameObject *obj, GameObject *poker);
+};
+
+/*!
+* \brief Creates an object while at least object is in a zone
+* \Preset - Preset to create
+* \Location - Spot to create the object
+* \Facing - Direction the object should face
+* \EnableCustom - Custom that enables the script, a param of non-zero enables, if the custom is 0 then the script is always enabled.
+* \RecreateOnDeath - Can the script zone trigger re-creation if the object was killed
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Zone_Create_Object_While_Occupied : public ScriptImpClass {
+	char preset[128];
+	int enableCustom;
+	bool enabled;
+	int id;
+	Vector3 location;
+	float facing;
+	int objectsInZone;
+	bool reCreateOnDeath;
+	void Created(GameObject *obj);
+	void Custom(GameObject *obj,int message,int param,GameObject *sender);
+	void Entered(GameObject *obj,GameObject *enterer);
+	void Exited(GameObject *obj,GameObject *exiter);
+	void TriggerCreate(GameObject *obj);
+};
+/*!
+* \brief Used by JMG_Utility_Zone_Create_Object_While_Occupied, ignore otherwise
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Zone_Create_Object_While_Occupied_Attached : public ScriptImpClass {
+	void Killed(GameObject *obj,GameObject *killer);
+	void Destroyed(GameObject *obj);
+};
+
+/*!
+* \brief Used by JMG_Utility_Zone_Create_Object_While_Occupied, ignore otherwise
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Zone_Create_Object_While_Occupied_Object_Attached : public ScriptImpClass {
+	int ownerScriptId;
+	bool deathByScript;
+	void Created(GameObject *obj);
+	void Custom(GameObject *obj,int message,int param,GameObject *sender);
+	void Destroyed(GameObject *obj);
+};
