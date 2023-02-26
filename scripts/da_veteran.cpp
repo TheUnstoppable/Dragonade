@@ -351,7 +351,7 @@ void DAVeteranManagerClass::Vehicle_Enter_Event(VehicleGameObj* Vehicle, cPlayer
 
 void DAVeteranManagerClass::Damage_Event(DamageableGameObj* Victim, ArmedGameObj* Damager, float Damage, unsigned Warhead, float Scale, DADamageType::Type Type) {
 	if (Damage < 0.f && RepairPointsRequiredForPoints > 0.f && Get_Object_Type(Victim) == Get_Object_Type(Damager)) {
-		Get_Player_Data(Damager)->Add_Repair_Points(Damage * Get_Damage_Multiplier(Victim));
+		Get_Player_Data(Damager)->Add_Repair_Points(WWMath::Fabs(Damage) * Get_Damage_Multiplier(Victim));
 		Check_Promotions(Damager);
 	} else if (Damage > 0.f && DamagePointsRequiredForPoints > 0.f && PTTEAM(Get_Object_Type(Damager)) == Get_Object_Type(Victim)) {
 		Get_Player_Data(Damager)->Add_Damage_Points(Damage * Get_Damage_Multiplier(Victim));
