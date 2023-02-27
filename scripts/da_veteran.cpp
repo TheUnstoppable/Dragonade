@@ -367,12 +367,27 @@ void DAVeteranManagerClass::Kill_Event(DamageableGameObj* Victim, ArmedGameObj* 
 			Check_Promotions(Killer);
 		}
 		else {
+			DamageableGameObj* ReferenceObj = Victim;
+			if (Victim->As_VehicleGameObj()) {
+				SoldierGameObj* VehOwner = 0;
+				if (cPlayer* Owner = DAVehicleManager::Get_Vehicle_Owner(Victim)) {
+					VehOwner = Owner->Get_GameObj();
+				}
+				else {
+					VehOwner = ((VehicleGameObj*)Victim)->Get_Owner();
+				}
+				if (VehOwner) {
+					ReferenceObj = VehOwner;
+				}
+			}
 			DynamicVectorClass<DADamageTableStruct> Damagers;
 			DADamageLog::Get_Damagers_By_Percent_Other_Team(Damagers, Victim, Get_Object_Type(Victim), 0.0f, 0.0f);
 			for (int i = 0; i < Damagers.Count(); i++) {
-				GameObject* Damager = Damagers[i].Player->Get_GameObj();
-				Give_Veteran_Points(Damager, Worth * Damagers[i].Damage);
-				Check_Promotions(Damager);
+				SoldierGameObj* Damager = Damagers[i].Player->Get_GameObj();
+				if (ReferenceObj->Is_Enemy(Damager)) {
+					Give_Veteran_Points(Damager, Worth * Damagers[i].Damage);
+					Check_Promotions(Damager);
+				}
 			}
 		}
 	}
