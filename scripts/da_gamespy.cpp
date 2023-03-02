@@ -113,16 +113,34 @@ void DAGameSpyGameFeatureClass::Think() {
 			NextMap.ToUpper();
 			StringClass Send;
 
-			//Basic
-			Send.Format(
-				"\\gametype\\%s\\mapname\\%s\\nextmap\\%s.mix\\timeleft\\%s\\timeelapsed\\%s\\timelimit\\%s\\Starting Credits\\%d\\FDS\\Dragonade %s\\",
-				DAGameManager::Get_Game_Mode_Long_Name(),DAGameManager::Get_Map(),Definitions.Get(NextMap)->mapName,Format_Time((unsigned long)The_Game()->Get_Time_Remaining_Seconds()),Format_Time(The_Game()->Get_Game_Duration_S()),Format_Time(The_Game()->Get_Time_Limit_Minutes()*60),The_Cnc_Game()->StartingCredits,DA::Get_Version()
-			);
+			//Basic & Info
+			Send.Format("\\gamename\\ccrenegade\\gamever\\838\\hostname\\%ls\\hostport\\%d\\mapname\\%s\\nextmap\\%s.mix\\gametype\\%s\\numplayers\\%d\\maxplayers\\%d\\timeleft\\%s\\timeelapsed\\%s\\timelimit\\%s\\",
+				Title,
+				The_Game()->Get_Port(),
+				DAGameManager::Get_Map(),
+				Definitions.Get(NextMap)->mapName,
+				DAGameManager::Get_Game_Mode_Long_Name(),
+				The_Game()->Get_Current_Players(),
+				The_Game()->Get_Max_Players(),
+				Format_Time((unsigned long)The_Game()->Get_Time_Remaining_Seconds()),
+				Format_Time(The_Game()->Get_Game_Duration_S()),
+				Format_Time(The_Game()->Get_Time_Limit_Minutes() * 60));
 			
 			//Custom rules
 			for (int i = 0;i < CustomRules.Count();i++) {
 				Send += CustomRules[i];
 			}
+
+			//Rules
+			Send += StringFormat("SVER\\Dragonade/%s TT/%.1f-r%u\\CSVR\\1\\DED\\1\\DG\\%d\\password\\%d\\TC\\%d\\FF\\%d\\SC\\%d\\BDEG\\%d\\BPEG\\%d\\",
+				DA::Get_Version(), GetTTVersion(), GetTTRevision(),
+				The_Game()->Driver_Is_Always_Gunner() ? 1 : 0,
+				The_Game()->Is_Passworded() ? 1 : 0,
+				The_Game()->Is_Team_Changing_Allowed() || DAGameManager::Find_Game_Feature("Request Team Change") ? 1 : 0,
+				The_Game()->Is_Friendly_Fire_Permitted() ? 1 : 0,
+				The_Cnc_Game()->Get_Starting_Credits(),
+				The_Cnc_Game()->Base_Destruction_Ends_Game() ? 1 : 0,
+				The_Cnc_Game()->Beacon_Placement_Ends_Game() ? 1 : 0);
 
 			//Game features
 			const DynamicVectorClass<DAGameFeatureFactoryClass*> &GameFeatures = DAGameManager::Get_Game_Features();
@@ -134,44 +152,29 @@ void DAGameSpyGameFeatureClass::Think() {
 			}
 
 			//Basic
-			Send += StringFormat("hostname\\ %ls\\gamename\\ccrenegade\\gamever\\838\\hostport\\%d\\password\\%d\\numplayers\\%d\\maxplayers\\%d\\queryid\\%u.1",
-				Title,The_Game()->Get_Port(),The_Game()->Is_Passworded(),The_Game()->Get_Current_Players(),The_Game()->Get_Max_Players(),QueryID
+			Send += StringFormat("queryid\\%u.1",
+				QueryID
 			);
 
 			//Send what we have so far.
 			sendto(ListenSocket,Send,Send.Get_Length()+1,0,(sockaddr*)&ClientAddress,sizeof(sockaddr_in));
 
 			Send = "";
-			int PlayerCount = 0;
 			int SendCount = 2;
-
-			int BuildingCount[2] = {0,0};
-			for (SLNode<BuildingGameObj> *z = GameObjManager::BuildingGameObjList.Head();z;z = z->Next()) {
-				if (!z->Data()->Is_Destroyed()) {
-					if (z->Data()->Get_Player_Type() == 0) {
-						BuildingCount[0]++;
-					}
-					else if (z->Data()->Get_Player_Type() == 1) {
-						BuildingCount[1]++;
-					}
-				}
-			}
 
 			//Nod team
 			cTeam *Team = Find_Team(0);
 			Send += StringFormat(
-				"\\player_%d\\%ls\\score_%d\\%d\\kills_%d\\%d\\deaths_%d\\%d\\time_%d\\%s\\ping_%d\\%d\\team_%d\\%ls",
-				PlayerCount,Get_Wide_Team_Name(0),PlayerCount,(int)Team->Get_Score(),PlayerCount,Team->Get_Kills(),PlayerCount,Team->Get_Deaths(),PlayerCount,Format_Time(The_Game()->Get_Game_Duration_S()),PlayerCount,BuildingCount[0],PlayerCount,Get_Wide_Team_Name(0)
+				"\\team_t0\\%ls\\score_t0\\%d\\kills_t0\\%d\\deaths_t0\\%d",
+				Get_Wide_Team_Name(0),(int)Team->Get_Score(),Team->Get_Kills(),Team->Get_Deaths()
 			);
-			PlayerCount++;
 	
 			//GDI team
 			Team = Find_Team(1);
 			Send += StringFormat(
-				"\\player_%d\\%ls\\score_%d\\%d\\kills_%d\\%d\\deaths_%d\\%d\\time_%d\\%s\\ping_%d\\%d\\team_%d\\%ls",
-				PlayerCount,Get_Wide_Team_Name(1),PlayerCount,(int)Team->Get_Score(),PlayerCount,Team->Get_Kills(),PlayerCount,Team->Get_Deaths(),PlayerCount,Format_Time(The_Game()->Get_Game_Duration_S()),PlayerCount,BuildingCount[1],PlayerCount,Get_Wide_Team_Name(1)
+				"\\team_t1\\%ls\\score_t1\\%d\\kills_t1\\%d\\deaths_t1\\%d",
+				Get_Wide_Team_Name(1),(int)Team->Get_Score(),Team->Get_Kills(),Team->Get_Deaths()
 			);
-			PlayerCount++;
 
 			//Players
 			for (SLNode<cPlayer>* z = Get_Player_List()->Head();z;z = z->Next()) {
@@ -184,10 +187,9 @@ void DAGameSpyGameFeatureClass::Think() {
 				}
 				if (Player->Is_Active()) {
 					Send += StringFormat(
-						"\\player_%d\\%ls\\score_%d\\%d\\kills_%d\\%d\\deaths_%d\\%d\\time_%d\\%s\\ping_%d\\%d\\team_%d\\%ls",
-						PlayerCount,Player->Get_Name(),PlayerCount,(int)Player->Get_Score(),PlayerCount,Player->Get_Kills(),PlayerCount,Player->Get_Deaths(),PlayerCount,Format_Time((TIMEGETTIME()-Player->JoinTime)/1000),PlayerCount,Get_Ping(Player->Get_Id()),PlayerCount,Get_Wide_Team_Name(Player->Get_Player_Type())
+						"\\player_%d\\%ls\\score_%d\\%d\\kills_%d\\%d\\deaths_%d\\%d\\time_%d\\%s\\ping_%d\\%d\\team_%d\\%d",
+						Player->Get_Id(),Player->Get_Name(),Player->Get_Id(),(int)Player->Get_Score(),Player->Get_Id(),Player->Get_Kills(),Player->Get_Id(),Player->Get_Deaths(),Player->Get_Id(),Format_Time((TIMEGETTIME()-Player->JoinTime)/1000),Player->Get_Id(),Get_Ping(Player->Get_Id()),Player->Get_Id(),Player->Get_Player_Type()
 					);
-					PlayerCount++;
 				}
 			}
 			if (!Send.Is_Empty()) {
