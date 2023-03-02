@@ -1,4 +1,4 @@
-Dragonade 1.10.6
+Dragonade 1.10.7
 Created by Whitedragon and Black-Cell.net
 
 Special thanks to:
