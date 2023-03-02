@@ -26,6 +26,18 @@ Installation:
 
 Update History:
 
+Version 1.10.7
+  Additions:
+   - Updated to TT 4.8.
+
+  Changes:
+   - Tweaks to the chat hook of Dragonade Core.
+   - Use the vehicle owner for enemy checking of vehicles for Veteran System.
+   - Partially standardize GameSpy broadcaster for the new TT system.
+
+  Bug Fixes:
+   - Fix Veteran System is not granting veteran points for repairing.
+
 Version 1.10.6
   Additions:
    - Updated to TT 4.7.4.
