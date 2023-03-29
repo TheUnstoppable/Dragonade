@@ -144,14 +144,16 @@ void DABuildingAnnotationsGameFeatureClass::Damage_Event(DamageableGameObj* Vict
 						}
 					}
 
-					const char* PlayerName = Get_Player_Name(Damager);
-					if (EnableRepairing && AnnounceRepairing[Team] && Get_Object_Type(Damager) == Team && strcmp(PlayerName, "None")) {
-						DA::Team_Color_Message_With_Team_Color(Team, "%s%s is repairing the %s.", DA::Get_Message_Prefix(), PlayerName, DATranslationManager::Translate(Victim));
-						DA::Create_2D_Sound_Team(Team, Sounds[3][Team]);
-						AnnounceRepairing[Team] = false;
-						Start_Timer(5555558, 30.0f, false, Team);
+					if (EnableRepairing && AnnounceRepairing[Team] && Get_Object_Type(Damager) == Team) {
+						const char* PlayerName = Get_Player_Name(Damager);
+						if (strcmp(PlayerName, "None")) {
+							DA::Team_Color_Message_With_Team_Color(Team, "%s%s is repairing the %s.", DA::Get_Message_Prefix(), PlayerName, DATranslationManager::Translate(Victim));
+							DA::Create_2D_Sound_Team(Team, Sounds[3][Team]);
+							AnnounceRepairing[Team] = false;
+							Start_Timer(5555558, 30.0f, false, Team);
+						}
+						delete[] PlayerName;
 					}
-					delete[] PlayerName;
 				}
 			}
 		}
