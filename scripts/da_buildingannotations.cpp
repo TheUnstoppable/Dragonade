@@ -62,7 +62,7 @@ void DABuildingAnnotationsGameFeatureClass::Settings_Loaded_Event() {
 	Enable25 = DASettingsManager::Get_Bool("ReportPercent25", true);
 	EnableRepairing = DASettingsManager::Get_Bool("ReportRepairing", true);
 	IncludeList.Clear();
-	INISection* IncludeSection = DASettingsManager::Get_Section("BuildingAnnotations_Includes");
+	INISection* IncludeSection = DASettingsManager::Get_Section("BuildingAnnotations_Include");
 	if (IncludeSection) {
 		for (INIEntry* Entry = IncludeSection->EntryList.First(); Entry && Entry->Is_Valid(); Entry = Entry->Next()) {
 			if (!strcmp(Entry->Value, "1")) {
@@ -71,7 +71,7 @@ void DABuildingAnnotationsGameFeatureClass::Settings_Loaded_Event() {
 		}
 	}
 	ExcludeList.Clear();
-	INISection* ExcludeSection = DASettingsManager::Get_Section("BuildingAnnotations_Excludes");
+	INISection* ExcludeSection = DASettingsManager::Get_Section("BuildingAnnotations_Exclude");
 	if (ExcludeSection) {
 		for (INIEntry* Entry = ExcludeSection->EntryList.First(); Entry && Entry->Is_Valid(); Entry = Entry->Next()) {
 			if (!strcmp(Entry->Value, "1")) {
