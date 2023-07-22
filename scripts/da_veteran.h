@@ -80,6 +80,7 @@ private:
 	virtual void Vehicle_Exit(VehicleGameObj* Vehicle, int Seat);
 	virtual void Timer_Expired(int Number, unsigned int Data);
 	virtual void Custom(GameObject* Sender, int Type, int Param);
+	virtual void Think();
 
 public:
 	const char* Get_Observer_Name() override { return "DAVeteranPlayerDataObserverClass"; }
@@ -108,7 +109,12 @@ private:
 	float SoldierOriginalArmor;
 	float VehicleOriginalHealth;
 	float VehicleOriginalArmor;
-	
+
+	float SoldierCalculatedHealth;
+	float SoldierCalculatedArmor;
+	float VehicleCalculatedHealth;
+	float VehicleCalculatedArmor;
+
 	inline bool Is_In_Vehicle() {
 		return Get_Owner() && Get_Owner()->Get_GameObj() && Get_Owner()->Get_GameObj()->Get_Vehicle() && Get_Owner()->Get_GameObj()->Get_Vehicle()->Get_Driver() == Get_Owner()->Get_GameObj();
 	}
@@ -140,7 +146,7 @@ public:
 	float Get_Points(GameObject* obj);
 	float Get_Damage_Multiplier(StringClass name);
 	float Get_Damage_Multiplier(GameObject* obj);
-	void Give_Veteran_Points(GameObject *obj, float amount);
+	void Give_Veteran_Points(GameObject* obj, float amount);
 	StringClass Get_Veteran_Type(GameObject* obj);
 	void Check_Promotions(GameObject* obj);
 

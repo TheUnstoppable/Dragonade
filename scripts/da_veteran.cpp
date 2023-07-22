@@ -417,7 +417,7 @@ void DAVeteranPlayerDataObserverClass::Init() {
 	RepairPoints = 0.f;
 	DamagePoints = 0.f;
 	
-	Set_Flags(DAPlayerFlags::PERSISTLEAVE | DAPlayerFlags::PERSISTMAP);
+	Set_Flags(DAPlayerFlags::PERSISTLEAVE | DAPlayerFlags::PERSISTMAP | DAPlayerFlags::THINK);
 	DAPlayerClass* DAPlayer = Get_Owner()->Get_DA_Player();
 	DAPlayer->Set_Character_Discount(Get_Player_Level()->PurchaseDiscount);
 	DAPlayer->Set_Vehicle_Discount(Get_Player_Level()->PurchaseDiscount);
@@ -437,8 +437,10 @@ void DAVeteranPlayerDataObserverClass::Created() {
 	SoldierGameObj* Soldier = Get_Owner()->Get_GameObj();
 	SoldierOriginalHealth = Commands->Get_Max_Health(Soldier);
 	SoldierOriginalArmor = Commands->Get_Max_Shield_Strength(Soldier);
-	Set_Max_Health(Soldier, Commands->Get_Max_Health(Soldier) * HALF(Get_Player_Level()->InfantryHealthIncrease));
-	Set_Max_Shield_Strength(Soldier, Commands->Get_Max_Shield_Strength(Soldier) * HALF(Get_Player_Level()->InfantryHealthIncrease));
+	SoldierCalculatedHealth = Commands->Get_Max_Health(Soldier) * HALF(Get_Player_Level()->InfantryHealthIncrease);
+	SoldierCalculatedArmor = Commands->Get_Max_Shield_Strength(Soldier) * HALF(Get_Player_Level()->InfantryHealthIncrease);
+	Set_Max_Health(Soldier, SoldierCalculatedHealth);
+	Set_Max_Shield_Strength(Soldier, SoldierCalculatedArmor);
 
 	if (Get_Player_Level()->InfantryRegen > 0.f) {
 		Stop_Timer(123123);
@@ -450,9 +452,11 @@ void DAVeteranPlayerDataObserverClass::Vehicle_Enter(VehicleGameObj* Vehicle, in
 	if (Seat == 0) {
 		VehicleOriginalHealth = Commands->Get_Max_Health(Vehicle);
 		VehicleOriginalArmor = Commands->Get_Max_Shield_Strength(Vehicle);
+		VehicleCalculatedHealth = Commands->Get_Max_Health(Vehicle) * HALF(Get_Player_Level()->VehicleHealthIncrease);
+		VehicleCalculatedArmor = Commands->Get_Max_Shield_Strength(Vehicle) * HALF(Get_Player_Level()->VehicleHealthIncrease);
 
-		Set_Max_Health_Without_Healing(Vehicle, Commands->Get_Max_Health(Vehicle) * HALF(Get_Player_Level()->VehicleHealthIncrease));
-		Set_Max_Shield_Strength_Without_Healing(Vehicle, Commands->Get_Max_Shield_Strength(Vehicle) * HALF(Get_Player_Level()->VehicleHealthIncrease));
+		Set_Max_Health_Without_Healing(Vehicle, VehicleCalculatedHealth);
+		Set_Max_Shield_Strength_Without_Healing(Vehicle, VehicleCalculatedArmor);
 
 		//Scale health and armor
 		Commands->Set_Health(Vehicle, (Commands->Get_Health(Vehicle) * Commands->Get_Max_Health(Vehicle)) / VehicleOriginalHealth);
@@ -473,6 +477,7 @@ void DAVeteranPlayerDataObserverClass::Vehicle_Exit(VehicleGameObj* Vehicle, int
 		
 		Set_Max_Health_Without_Healing(Vehicle, VehicleOriginalHealth);
 		Set_Max_Shield_Strength_Without_Healing(Vehicle, VehicleOriginalArmor);
+		VehicleOriginalHealth = VehicleOriginalArmor = VehicleCalculatedHealth = VehicleCalculatedArmor = -1;
 
 		if (Get_Player_Level()->InfantryRegen > 0.f) {
 			Stop_Timer(123123);
@@ -505,16 +510,25 @@ void DAVeteranPlayerDataObserverClass::Custom(GameObject* Sender, int Type, int 
 			Custom(Sender, Type, 3);
 			
 			SoldierGameObj* Soldier = Get_Owner()->Get_GameObj();
-			Set_Max_Health_Without_Healing(Soldier, SoldierOriginalHealth * HALF(Get_Player_Level()->InfantryHealthIncrease));
-			Set_Max_Shield_Strength_Without_Healing(Soldier, SoldierOriginalArmor * HALF(Get_Player_Level()->InfantryHealthIncrease));
+
+			SoldierCalculatedHealth = SoldierOriginalHealth * HALF(Get_Player_Level()->InfantryHealthIncrease);
+			SoldierCalculatedArmor = SoldierOriginalArmor * HALF(Get_Player_Level()->InfantryHealthIncrease);
+
+			Set_Max_Health_Without_Healing(Soldier, SoldierCalculatedHealth);
+			Set_Max_Shield_Strength_Without_Healing(Soldier, SoldierCalculatedArmor);
 
 			// Scale health and armor
 			Commands->Set_Health(Soldier, (Commands->Get_Health(Soldier) * Commands->Get_Max_Health(Soldier)) / SoldierOriginalHealth);
 			Commands->Set_Shield_Strength(Soldier, (Commands->Get_Shield_Strength(Soldier) * Commands->Get_Max_Shield_Strength(Soldier)) / SoldierOriginalArmor);
+
 			if (Is_In_Vehicle()) {
 				VehicleGameObj* Vehicle = Soldier->Get_Vehicle();
-				Set_Max_Health_Without_Healing(Vehicle, VehicleOriginalHealth * HALF(Get_Player_Level()->VehicleHealthIncrease));
-				Set_Max_Shield_Strength_Without_Healing(Vehicle, VehicleOriginalArmor * HALF(Get_Player_Level()->VehicleHealthIncrease));
+
+				VehicleCalculatedHealth = VehicleOriginalHealth * HALF(Get_Player_Level()->VehicleHealthIncrease);
+				VehicleCalculatedArmor = VehicleOriginalArmor * HALF(Get_Player_Level()->VehicleHealthIncrease);
+
+				Set_Max_Health_Without_Healing(Vehicle, VehicleCalculatedHealth);
+				Set_Max_Shield_Strength_Without_Healing(Vehicle, VehicleCalculatedArmor);
 
 				// Scale health and armor
 				Commands->Set_Health(Vehicle, (Commands->Get_Health(Vehicle) * Commands->Get_Max_Health(Vehicle)) / VehicleOriginalHealth);
@@ -557,5 +571,29 @@ void DAVeteranPlayerDataObserverClass::Custom(GameObject* Sender, int Type, int 
 	} else if (Type == 558223) { // Edit veteran points.
 		Add_Points(*(float*)&Param);
 		((DAVeteranManagerClass*)DAVeteranManagerClassRegistrant.Get_Instance())->Check_Promotions(Get_Owner()->Get_GameObj());
+	}
+}
+
+void DAVeteranPlayerDataObserverClass::Think() {
+	if (Is_In_Vehicle()) {
+		VehicleGameObj* Vehicle = Get_Owner()->Get_GameObj()->Get_Vehicle();
+		if (Commands->Get_Max_Health(Vehicle) - VehicleCalculatedHealth > WWMATH_EPSILON) {
+			VehicleCalculatedHealth = Commands->Get_Max_Health(Vehicle);
+			VehicleOriginalHealth = VehicleCalculatedHealth / HALF(Get_Player_Level()->VehicleHealthIncrease);
+		}
+		if (Commands->Get_Max_Shield_Strength(Vehicle) - VehicleCalculatedArmor > WWMATH_EPSILON) {
+			VehicleCalculatedArmor = Commands->Get_Max_Shield_Strength(Vehicle);
+			VehicleOriginalArmor = VehicleCalculatedArmor / HALF(Get_Player_Level()->VehicleHealthIncrease);
+		}
+	}
+
+	SoldierGameObj* Soldier = Get_Owner()->Get_GameObj();
+	if (Commands->Get_Max_Health(Soldier) - SoldierCalculatedHealth > WWMATH_EPSILON) {
+		SoldierCalculatedHealth = Commands->Get_Max_Health(Soldier);
+		SoldierOriginalHealth = SoldierCalculatedHealth / HALF(Get_Player_Level()->InfantryHealthIncrease);
+	}
+	if (Commands->Get_Max_Shield_Strength(Soldier) - SoldierCalculatedArmor > WWMATH_EPSILON) {
+		SoldierCalculatedArmor = Commands->Get_Max_Shield_Strength(Soldier);
+		SoldierOriginalArmor = SoldierCalculatedArmor / HALF(Get_Player_Level()->InfantryHealthIncrease);
 	}
 }
