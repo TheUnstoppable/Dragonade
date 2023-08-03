@@ -280,9 +280,7 @@ DAVehicleOwnershipObserverClass *DAVehicleOwnershipGameFeatureClass::Bind_Vehicl
 	Unbind_Vehicle(Player); //Unbind the player's old vehicle if there is one.
 
 	if (!Is_Script_Attached(Vehicle, "MS_AI_Marker_Vehicle_Search_Ignore")) { //Make bot script ignore this vehicle.
-		StringClass scriptParams;
-		scriptParams.Format("%d", Get_Object_Type(Vehicle));
-		Commands->Attach_Script(Vehicle, "MS_AI_Marker_Vehicle_Search_Ignore", scriptParams.Peek_Buffer());
+		Attach_Script_V(Vehicle, "MS_AI_Marker_Vehicle_Search_Ignore", "%d", Get_Object_Type(Player->Get_GameObj()));
 	}
 
 	return new DAVehicleOwnershipObserverClass(Vehicle,Player);
