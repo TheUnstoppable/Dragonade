@@ -29,6 +29,7 @@ void DAVehicleQueueGameFeatureClass::Init() {
 	Register_Event(DAEvent::REQUESTVEHICLE,INT_MAX);
 	Register_Event(DAEvent::TEAMCHANGE);
 	Register_Event(DAEvent::PLAYERLEAVE);
+	Register_Event(DAEvent::THINK);
 	Register_Object_Event(DAObjectEvent::CREATED,DAObjectEvent::VEHICLE);
 	Register_Object_Event(DAObjectEvent::KILLRECEIVED,DAObjectEvent::BUILDING);
 	Register_Chat_Command((DAECC)&DAVehicleQueueGameFeatureClass::VQ_Chat_Command,"!vq|!queue|!q|!veh|!vehicle|!vehlimit|!vehiclelimit|!vlimit|!limit");
@@ -234,6 +235,22 @@ bool DAVehicleQueueGameFeatureClass::VQ_Chat_Command(cPlayer *Player,const DATok
 	return true;
 }
 
+void DAVehicleQueueGameFeatureClass::Think() {
+	if (!Is_Timer(1, 1)) {
+		VehicleFactoryGameObj* VF = (VehicleFactoryGameObj*)BaseControllerClass::Find_Base(0)->Find_Building(BuildingConstants::TYPE_VEHICLE_FACTORY);
+		if (VF && VF->Is_Available()) {
+			Process_Queue(0);
+		}
+	}
+
+	if (!Is_Timer(1, 2)) {
+		VehicleFactoryGameObj* VF = (VehicleFactoryGameObj*)BaseControllerClass::Find_Base(1)->Find_Building(BuildingConstants::TYPE_VEHICLE_FACTORY);
+		if (VF && VF->Is_Available()) {
+			Process_Queue(1);
+		}
+	}
+}
+
 void DAVehicleQueueGameFeatureClass::Spawn_Vehicle(int Team,DAVehicleQueueStruct *Q) {
 	VehicleFactoryGameObj *VF = (VehicleFactoryGameObj*)BaseControllerClass::Find_Base(Team)->Find_Building(BuildingConstants::TYPE_VEHICLE_FACTORY);
 	if (VF && VF->Is_Available()) {
@@ -251,7 +268,7 @@ void DAVehicleQueueGameFeatureClass::Spawn_Vehicle(int Team,DAVehicleQueueStruct
 		else {
 			VF->Set_Busy(false);
 		}
-		Start_Timer(1,VF->Get_Definition().Get_Total_Building_Time()+0.1f,false,Team);
+		Start_Timer(1,VF->Get_Definition().Get_Total_Building_Time()+0.1f,false,Team+1);
 	}
 	else {
 		delete Q;
@@ -262,7 +279,7 @@ void DAVehicleQueueGameFeatureClass::Spawn_Vehicle(int Team,cPlayer *Player,cons
 	Spawn_Vehicle(Team,new DAVehicleQueueStruct(Player,Vehicle,Cost,Owner));
 }
 
-void DAVehicleQueueGameFeatureClass::Timer_Expired(int Number,unsigned int Team) {
+void DAVehicleQueueGameFeatureClass::Process_Queue(int Team) {
 	if (Building[Team]) {
 		if (Building[Team]->Player) {
 			if (Building[Team]->Player->Is_Alive_And_Kicking()) { //Ungray menu for purchasing player.
@@ -292,7 +309,7 @@ void DAVehicleQueueGameFeatureClass::Timer_Expired(int Number,unsigned int Team)
 			Send_Purchase_Response(Q->Player->Get_Id(),0);
 		}
 		else {
-			Timer_Expired(Number,Team);
+			Process_Queue(Team);
 			DA::Private_Color_Message(Q->Player,COLORGRAY,"Insufficient funds. You have been removed from the vehicle queue.");
 			if (Team == 0) {
 				DA::Create_2D_Sound_Player(Q->Player,"M00EVAN_DSGN0024I1EVAN_snd.wav");
