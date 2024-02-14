@@ -1686,6 +1686,9 @@
     <ClInclude Include="RigidBodyClass.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="HUDSurfaceClass.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="scripts.rc">

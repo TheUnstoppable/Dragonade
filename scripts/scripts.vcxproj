@@ -538,6 +538,7 @@ copy "$(TargetPath)" "%RenServerPath%\$(TargetFileName)"
     <ClInclude Include="gap.h" />
     <ClInclude Include="GridCull.h" />
     <ClInclude Include="HarvesterClass.h" />
+    <ClInclude Include="HUDSurfaceClass.h" />
     <ClInclude Include="inttest.h" />
     <ClInclude Include="iran_scripts.h" />
     <ClInclude Include="jfwcine.h" />

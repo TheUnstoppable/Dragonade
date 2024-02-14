@@ -65,6 +65,9 @@ DADisableListManager::Level_Loaded (INT_MAX-1) - Load disable list
 Any other level loaded events
 */
 
+DA_API DA_gdv Get_Dragonade_Version;
+DA_API DA_gdr Get_Dragonade_Revision;
+
 const char *DA::Get_Version() {
 	return "1.10.7";
 }
@@ -73,6 +76,15 @@ void DA::Init() {
 	RNG.seed((unsigned long)time(0));
 	Commands->Get_Random_Int = Get_Random_Int;
 	Commands->Get_Random = Get_Random_Float;
+
+	HINSTANCE Handle = LoadLibrary("da.dll");
+	if (!Handle) {
+		MessageBox(NULL, "da.dll was not found. Exiting FDS.", "Error", MB_OK | MB_ICONEXCLAMATION | MB_TOPMOST);
+		ExitProcess(HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND));
+	}
+
+	Get_Dragonade_Version = (DA_gdv)GetProcAddress(Handle, "Get_Dragonade_Version");
+	Get_Dragonade_Revision = (DA_gdr)GetProcAddress(Handle, "Get_Dragonade_Revision");
 
 	DAEventManager::Init(); //These must be initialized in this order.
 	DADisableListManager::Init(); //Block disabled presets before any other event classes can hear about them.
@@ -92,12 +104,6 @@ void DA::Init() {
 	DAChatCommandManager::Init();
 	DAVeteranManagerClass::Static_Init();
 	DAPluginManager::Init();
-	
-	HINSTANCE Handle = LoadLibrary("da.dll");
-	if (!Handle) {
-		MessageBox(NULL,"da.dll was not found. Exiting FDS.","Error",MB_OK|MB_ICONEXCLAMATION|MB_TOPMOST);
-		ExitProcess(HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND));
-	}
 
 	for (int i = 0;i < ConsoleFunctions.Count();i++) { //Add any console functions using the registrant to the main list.
 		Add_Console_Function(ConsoleFunctions[i]);

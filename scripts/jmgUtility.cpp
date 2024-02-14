@@ -5014,6 +5014,7 @@ void JMG_Utility_Zone_Send_Custom_No_Weapon::Entered(GameObject *obj,GameObject 
 	if (Get_Int_Parameter("TriggerOnce"))
 		Destroy_Script();
 }
+int JMG_Utility_Custom_Display_Briefing_Message::voiceId = 0;
 void JMG_Utility_Custom_Display_Briefing_Message::Created(GameObject *obj)
 {
 	triggered = false;
@@ -5074,6 +5075,7 @@ void JMG_Utility_Custom_Display_Briefing_Message::Created(GameObject *obj)
 	}
 	Commands->Text_File_Close(File);
 	CurrentNode = BriefingText;
+	voiceId = 0;
 	Commands->Start_Timer(obj,this,0.1f,56345343);
 }
 void JMG_Utility_Custom_Display_Briefing_Message::Timer_Expired(GameObject *obj,int number)
@@ -5105,7 +5107,9 @@ void JMG_Utility_Custom_Display_Briefing_Message::Custom(GameObject *obj,int mes
 			return;
 		triggered = true;
 		Commands->Start_Timer(obj,this,0.0f,56345344);
-		Commands->Create_2D_Sound(Get_Parameter("UISound"));
+		if (voiceId)
+			Commands->Stop_Sound(voiceId,true);
+		voiceId = Commands->Create_2D_Sound(Get_Parameter("UISound"));
 	}
 }
 void JMG_Utility_Custom_Display_Briefing_Message::Destroyed(GameObject *obj)
@@ -8535,6 +8539,7 @@ void JMG_Utility_Custom_Display_Briefing_Message_StringID::Created(GameObject *o
 			Count++;
 		}
 	}
+	JMG_Utility_Custom_Display_Briefing_Message::voiceId = 0;
 	CurrentNode = BriefingText;
 }
 void JMG_Utility_Custom_Display_Briefing_Message_StringID::Timer_Expired(GameObject *obj,int number)
@@ -8566,7 +8571,9 @@ void JMG_Utility_Custom_Display_Briefing_Message_StringID::Custom(GameObject *ob
 			return;
 		triggered = true;
 		Commands->Start_Timer(obj,this,0.0f,1);
-		Commands->Create_2D_Sound(Get_Parameter("UISound"));
+		if (JMG_Utility_Custom_Display_Briefing_Message::voiceId)
+			Commands->Stop_Sound(JMG_Utility_Custom_Display_Briefing_Message::voiceId,true);
+		JMG_Utility_Custom_Display_Briefing_Message::voiceId = Commands->Create_2D_Sound(Get_Parameter("UISound"));
 	}
 }
 void JMG_Utility_Custom_Display_Briefing_Message_StringID::Destroyed(GameObject *obj)
@@ -9813,7 +9820,7 @@ JMG_Utility_Basic_Spawner_In_Radius::SpawnFailureTypes JMG_Utility_Basic_Spawner
 	CastResultStruct res;
 	res.ComputeContactPoint = true;
 	LineSegClass ray(topRay,bottomRay);
-	PhysRayCollisionTestClass coltest(ray, &res, TERRAIN_ONLY_COLLISION_GROUP);
+	PhysRayCollisionTestClass coltest(ray, &res, TERRAIN_ONLY_COLLISION_GROUP,COLLISION_TYPE_PHYSICAL);
 	PhysicsSceneClass::Get_Instance()->Cast_Ray(coltest,false);
 	if (coltest.CollidedRenderObj && Vector3::Dot_Product(res.Normal,ray.Get_Dir()) <= 0)
 	{
@@ -18294,6 +18301,140 @@ void JMG_Utility_Zone_Create_Object_While_Occupied_Object_Attached::Destroyed(Ga
 	Commands->Send_Custom_Event(obj,Commands->Find_Object(Get_Int_Parameter("ScriptZoneId")),ownerScriptId,ownerScriptId+1,0);
 	Destroy_Script();
 }
+void JMG_Utility_Animate_While_Moving_Idle_Or_Dead::Created(GameObject *obj)
+{
+	if (!obj->As_SmartGameObj())
+	{
+		Console_Input("msg JMG_Utility_Animate_While_Moving_Idle_Or_Dead ERROR: Only attach to smart game objects!");
+		Commands->Destroy_Object(obj);
+		return;
+	}
+	sprintf(subObject,"%s",Get_Parameter("SubObject"));
+	sprintf(idle,"%s",Get_Parameter("IdleAnimation"));
+	sprintf(death,"%s",Get_Parameter("DeathAnimation"));
+	sprintf(move,"%s",Get_Parameter("MoveAnimation"));
+	deathFrame = Get_Float_Parameter("DeathFrame");
+	PlayAnimation(obj,idle,-1);
+	moving = false;
+	Commands->Start_Timer(obj,this,0.1f,1);
+}
+void JMG_Utility_Animate_While_Moving_Idle_Or_Dead::Timer_Expired(GameObject *obj,int number)
+{
+	if (number == 1 && Commands->Get_Health(obj))
+	{
+		Vector3 speed;
+		obj->As_SmartGameObj()->Get_Velocity(speed);
+		if (speed.Length2() > 0.0f)
+		{
+			if (!moving)
+			{
+				moving = true;
+				PlayAnimation(obj,move,-1);
+			}
+		}
+		else if (moving)
+		{
+			moving = false;
+			PlayAnimation(obj,idle,-1);
+		}
+		Commands->Start_Timer(obj,this,0.1f,1);
+	}
+}
+void JMG_Utility_Animate_While_Moving_Idle_Or_Dead::Killed(GameObject *obj,GameObject *killer)
+{
+	PlayAnimation(obj,death,deathFrame);
+}
+void JMG_Utility_Animate_While_Moving_Idle_Or_Dead::PlayAnimation(GameObject *obj,const char *aniamtionName,float frame)
+{
+	if (_stricmp(subObject,""))
+	{
+		for (int x = 1;x < 128;x++)
+		{
+			GameObject *player = Get_GameObj(x);
+			if (!player)
+				continue;
+			Set_Subobject_Animation_Player(player,obj,aniamtionName,frame < 0 ? true : false,subObject,0,frame,true);
+		}
+	}
+	else
+		Commands->Set_Animation(obj,aniamtionName,frame < 0 ? true : false,NULL,0,frame,true);
+}
+void JMG_Utility_Send_Custom_When_HP_Crosses_Threshold::Created(GameObject *obj)
+{
+	id = Get_Int_Parameter("ID");
+	targetRatio = Get_Float_Parameter("TargetRatio");
+	aboveCustom = Get_Int_Parameter("AboveCustom");
+	aboveParam = Get_Int_Parameter("AboveParam");
+	belowCustom = Get_Int_Parameter("BelowCustom");
+	belowParam = Get_Int_Parameter("BelowParam");
+	below = Get_Hitpoints(obj) < Get_Max_Hitpoints(obj)*targetRatio;
+}
+void JMG_Utility_Send_Custom_When_HP_Crosses_Threshold::Damaged(GameObject *obj,GameObject *damager,float damage)
+{
+	if (!damager)
+		damager = obj;
+	if (Get_Hitpoints(obj) < Get_Max_Hitpoints(obj)*targetRatio)
+	{
+		if (!below)
+		{
+			below = true;
+			GameObject *object = id ? (id == -1 ? damager : Commands->Find_Object(id)) : obj;
+			Commands->Send_Custom_Event(damager,object,belowCustom,belowParam,0);
+		}
+	}
+	else if (below)
+	{
+		below = false;
+		GameObject *object = id ? (id == -1 ? damager : Commands->Find_Object(id)) : obj;
+		Commands->Send_Custom_Event(damager,object,aboveCustom,aboveParam,0);
+	}
+}
+void JMG_Utility_Change_SkinType_To_Blamo_Until_Damaged::Created(GameObject *obj)
+{
+	minHealthRatio = Get_Float_Parameter("MinHealthRatio");
+	sprintf(skinType,"%s",Get_Skin(obj));
+	Set_Skin(obj,"Blamo");
+}
+void JMG_Utility_Change_SkinType_To_Blamo_Until_Damaged::Damaged(GameObject *obj,GameObject *damager,float damage)
+{
+	if (damage < 0)
+		return;
+	if (Get_Hitpoints(obj)+damage < Get_Max_Hitpoints(obj)*minHealthRatio)
+	{
+		Set_Skin(obj,skinType);
+		Destroy_Script();
+	}
+}
+void JMG_Utility_Send_Custom_When_Moved_Distance_From_Spawn::Created(GameObject *obj)
+{
+	distance = Get_Float_Parameter("Distance");
+	distance *= distance;
+	requireInPathfind = Get_Int_Parameter("RequireInPathfind") ? true : false;
+	Commands->Start_Timer(obj,this,Get_Float_Parameter("StartDelay"),1);
+}
+void JMG_Utility_Send_Custom_When_Moved_Distance_From_Spawn::Timer_Expired(GameObject *obj,int number)
+{
+	if (number == 1)
+	{
+		location = Commands->Get_Position(obj);
+		Vector3 out;
+		if (!requireInPathfind || Get_Random_Pathfind_Spot(Commands->Get_Position(obj),0.0f,&out))
+			Commands->Start_Timer(obj,this,0.1f,2);
+		else
+			Commands->Start_Timer(obj,this,0.1f,1);
+	}
+	if (number == 2)
+	{
+		Vector3 out;
+		if ((!requireInPathfind || Get_Random_Pathfind_Spot(Commands->Get_Position(obj),0.0f,&out)) && JmgUtility::SimpleDistance(Commands->Get_Position(obj),location) >= distance)
+		{
+			GameObject *object = Get_Int_Parameter("ID") ? Commands->Find_Object(Get_Int_Parameter("ID")) : obj;
+			Commands->Send_Custom_Event(obj,object,Get_Int_Parameter("Custom"),Get_Int_Parameter("Param"),0);
+		}
+		Commands->Start_Timer(obj,this,0.1f,2);
+	}
+}
+
 ScriptRegistrant<JMG_Utility_Check_If_Script_Is_In_Library> JMG_Utility_Check_If_Script_Is_In_Library_Registrant("JMG_Utility_Check_If_Script_Is_In_Library","ScriptName:string,CppName:string");
 ScriptRegistrant<JMG_Send_Custom_When_Custom_Sequence_Matched> JMG_Send_Custom_When_Custom_Sequence_Matched_Registrant("JMG_Send_Custom_When_Custom_Sequence_Matched","Success_Custom=0:int,Correct_Step_Custom=0:int,Partial_Failure_Custom=0:int,Failure_Custom=0:int,Send_To_ID=0:int,Custom_0=0:int,Custom_1=0:int,Custom_2=0:int,Custom_3=0:int,Custom_4=0:int,Custom_5=0:int,Custom_6=0:int,Custom_7=0:int,Custom_8=0:int,Custom_9=0:int,Disable_On_Success=1:int,Disable_On_Failure=0:int,Starts_Enabled=1:int,Enable_Custom=0:int,Correct_Step_Saftey=0:int,Failure_Saftey=1:int,Max_Failures=1:int");
 ScriptRegistrant<JMG_Utility_Change_Model_On_Timer> JMG_Utility_Change_Model_On_Timer_Registrant("JMG_Utility_Change_Model_On_Timer","Model=null:string,Time=0:float");
@@ -18738,3 +18879,7 @@ ScriptRegistrant<JMG_Utility_Poke_Grant_Weapon> JMG_Utility_Poke_Grant_Weapon_Re
 ScriptRegistrant<JMG_Utility_Zone_Create_Object_While_Occupied> JMG_Utility_Zone_Create_Object_While_Occupied_Registrant("JMG_Utility_Zone_Create_Object_While_Occupied","Preset:string,Location:Vector3,Facing:float,EnableCustom:int,ReCreateOnDeath:int");
 ScriptRegistrant<JMG_Utility_Zone_Create_Object_While_Occupied_Attached> JMG_Utility_Zone_Create_Object_While_Occupied_Attached_Registrant("JMG_Utility_Zone_Create_Object_While_Occupied_Attached","ScriptZoneId:int,ScriptId:int");
 ScriptRegistrant<JMG_Utility_Zone_Create_Object_While_Occupied_Object_Attached> JMG_Utility_Zone_Create_Object_While_Occupied_Object_Attached_Registrant("JMG_Utility_Zone_Create_Object_While_Occupied_Object_Attached","ScriptZoneId:int,ScriptId:int");
+ScriptRegistrant<JMG_Utility_Animate_While_Moving_Idle_Or_Dead> JMG_Utility_Animate_While_Moving_Idle_Or_Dead_Registrant("JMG_Utility_Animate_While_Moving_Idle_Or_Dead","SubObject:string,IdleAnimation:string,MoveAnimation:string,DeathAnimation:string,DeathFrame:float");
+ScriptRegistrant<JMG_Utility_Send_Custom_When_HP_Crosses_Threshold> JMG_Utility_Send_Custom_When_HP_Crosses_Threshold_Registrant("JMG_Utility_Send_Custom_When_HP_Crosses_Threshold","TargetRatio:float,ID:int,AboveCustom:int,AboveParam:int,BelowCustom:int,BelowParam:int");
+ScriptRegistrant<JMG_Utility_Change_SkinType_To_Blamo_Until_Damaged> JMG_Utility_Change_SkinType_To_Blamo_Until_Damaged_Registrant("JMG_Utility_Change_SkinType_To_Blamo_Until_Damaged","MinHealthRatio=1.0:float");
+ScriptRegistrant<JMG_Utility_Send_Custom_When_Moved_Distance_From_Spawn> JMG_Utility_Send_Custom_When_Moved_Distance_From_Spawn_Registrant("JMG_Utility_Send_Custom_When_Moved_Distance_From_Spawn","Distance:float,ID:int,Custom:int,Param:int,StartDelay=0.0:float,RequireInPathfind=0:int");

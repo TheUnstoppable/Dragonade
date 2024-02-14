@@ -53,8 +53,14 @@ void Nod_Obelisk_CnC::Create_Weapon(GameObject* ObeliskObj) {
 	// Create the Obelisk weapon
 	GameObject* WeaponObj = Commands->Create_Object("Nod_Obelisk", WeaponPos);
 	if (WeaponObj) {
+		if (DefinitionClass* Def = Find_Definition(Get_Int_Parameter("WeaponDef"))) {
+			if (Def->Get_Class_ID() == CID_Weapon) {
+				Grant_Weapon(WeaponObj, Def->Get_Name(), true, -1, true);
+				Commands->Select_Weapon(WeaponObj, Def->Get_Name());
+			}
+		}
 		Set_Object_Type(WeaponObj, Get_Object_Type(ObeliskObj));
-		Commands->Attach_Script(WeaponObj, "Obelisk_Weapon_CnC", "");
+		Commands->Attach_Script(WeaponObj, "Obelisk_Weapon_CnC", Get_Parameter("EffectModel"));
 		WeaponID = Commands->Get_ID(WeaponObj);
 	}
 }
@@ -133,6 +139,9 @@ void Obelisk_Weapon_CnC::StartEffect(GameObject* WeaponObj) {
 
 	GameObject* EffectObj = Commands->Create_Object("Obelisk Effect", Commands->Get_Position(WeaponObj));
 	if (EffectObj) {
+		if (Get_Parameter("EffectModel") && Get_Parameter("EffectModel")[0]) {
+			Commands->Set_Model(EffectObj, Get_Parameter("EffectModel"));
+		}
 		EffectID = Commands->Get_ID(EffectObj);
 	}
 }
@@ -192,8 +201,11 @@ void Obelisk_Weapon_CnC::Timer_Expired(GameObject* WeaponObj, int Number) {
 			{
 				GameObject* EffectObj = Commands->Create_Object("Obelisk Effect", Commands->Get_Position(WeaponObj));
 				if (EffectObj) {
-					EffectID = Commands->Get_ID(EffectObj);
+					if (Get_Parameter("EffectModel") && Get_Parameter("EffectModel")[0]) {
+						Commands->Set_Model(EffectObj, Get_Parameter("EffectModel"));
 					}
+					EffectID = Commands->Get_ID(EffectObj);
+				}
 			}
 
 			// Check effect in 4 seconds
@@ -282,9 +294,9 @@ void Obelisk_Weapon_CnC::Register_Auto_Save_Variables() {
 	Auto_Save_Variable(&Charged, 1, 4);
 }
 
-ScriptRegistrant<Nod_Obelisk_CnC> M00_Nod_Obelisk_CnC_Registrant("M00_Nod_Obelisk_CnC", "");
-ScriptRegistrant<Nod_Obelisk_CnC> Nod_Obelisk_CnC_Registrant("Nod_Obelisk_CnC", "");
-ScriptRegistrant<Obelisk_Weapon_CnC> Obelisk_Weapon_CnC_Registrant("Obelisk_Weapon_CnC", "");
+ScriptRegistrant<Nod_Obelisk_CnC> M00_Nod_Obelisk_CnC_Registrant("M00_Nod_Obelisk_CnC", "WeaponDef=0:int,EffectModel:string");
+ScriptRegistrant<Nod_Obelisk_CnC> Nod_Obelisk_CnC_Registrant("Nod_Obelisk_CnC", "WeaponDef=0:int,EffectModel:string");
+ScriptRegistrant<Obelisk_Weapon_CnC> Obelisk_Weapon_CnC_Registrant("Obelisk_Weapon_CnC", "EffectModel:string");
 
 void Nod_Obelisk_CnC_Ground::Created(GameObject* ObeliskObj) {
 	if (Commands->Get_Building_Power(ObeliskObj)) {
@@ -295,6 +307,12 @@ void Nod_Obelisk_CnC_Ground::Created(GameObject* ObeliskObj) {
 		// Create the Obelisk weapon
 		GameObject* WeaponObj = Commands->Create_Object("Nod_Obelisk", WeaponPos);
 		if (WeaponObj) {
+			if (DefinitionClass* Def = Find_Definition(Get_Int_Parameter("WeaponDef"))) {
+				if (Def->Get_Class_ID() == CID_Weapon) {
+					Grant_Weapon(WeaponObj, Def->Get_Name(), true, -1, true);
+					Commands->Select_Weapon(WeaponObj, Def->Get_Name());
+				}
+			}
 			WeaponID = Commands->Get_ID(WeaponObj);
 			Commands->Attach_Script(WeaponObj, "Obelisk_Weapon_CnC_Ground", "");
 		}
@@ -321,8 +339,14 @@ void Nod_Obelisk_CnC_Ground::Custom(GameObject* ObeliskObj, int type, int Param,
 				// Create the Obelisk weapon
 				WeaponObj = Commands->Create_Object("Nod_Obelisk", WeaponPos);
 				if (WeaponObj) {
+					if (DefinitionClass* Def = Find_Definition(Get_Int_Parameter("WeaponDef"))) {
+						if (Def->Get_Class_ID() == CID_Weapon) {
+							Grant_Weapon(WeaponObj, Def->Get_Name(), true, -1, true);
+							Commands->Select_Weapon(WeaponObj, Def->Get_Name());
+						}
+					}
 					WeaponID = Commands->Get_ID(WeaponObj);
-					Commands->Attach_Script(WeaponObj, "Obelisk_Weapon_CnC_Ground", "");
+					Commands->Attach_Script(WeaponObj, "Obelisk_Weapon_CnC_Ground", Get_Parameter("EffectModel"));
 				}
 			}
 		} else {
@@ -406,6 +430,9 @@ void Obelisk_Weapon_CnC_Ground::StartEffect(GameObject* WeaponObj) {
 
 	GameObject* EffectObj = Commands->Create_Object("Obelisk Effect", Commands->Get_Position(WeaponObj));
 	if (EffectObj) {
+		if (Get_Parameter("EffectModel") && Get_Parameter("EffectModel")[0]) {
+			Commands->Set_Model(EffectObj, Get_Parameter("EffectModel"));
+		}
 		EffectID = Commands->Get_ID(EffectObj);
 	}
 }
@@ -465,6 +492,9 @@ void Obelisk_Weapon_CnC_Ground::Timer_Expired(GameObject* WeaponObj, int Number)
 			{
 				GameObject* EffectObj = Commands->Create_Object("Obelisk Effect", Commands->Get_Position(WeaponObj));
 				if (EffectObj) {
+					if (Get_Parameter("EffectModel") && Get_Parameter("EffectModel")[0]) {
+						Commands->Set_Model(EffectObj, Get_Parameter("EffectModel"));
+					}
 					EffectID = Commands->Get_ID(EffectObj);
 					}
 			}
@@ -559,5 +589,5 @@ void Obelisk_Weapon_CnC_Ground::Register_Auto_Save_Variables() {
 	Auto_Save_Variable(&Charged, 1, 4);
 }
 
-ScriptRegistrant<Nod_Obelisk_CnC_Ground> Nod_Obelisk_CnC_Ground_Registrant("Nod_Obelisk_CnC_Ground", "");
-ScriptRegistrant<Obelisk_Weapon_CnC_Ground> Obelisk_Weapon_CnC_Ground_Registrant("Obelisk_Weapon_CnC_Ground", "");
+ScriptRegistrant<Nod_Obelisk_CnC_Ground> Nod_Obelisk_CnC_Ground_Registrant("Nod_Obelisk_CnC_Ground", "WeaponDef=0:int,EffectModel:string");
+ScriptRegistrant<Obelisk_Weapon_CnC_Ground> Obelisk_Weapon_CnC_Ground_Registrant("Obelisk_Weapon_CnC_Ground", "EffectModel:string");

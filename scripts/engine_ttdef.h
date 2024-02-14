@@ -33,10 +33,13 @@ enum AnnouncementEnum
 };
 enum DialogMessageType
 {
-	MESSAGE_TYPE_DIALOG_SHOW,
-	MESSAGE_TYPE_DIALOG_CLOSE,
-	MESSAGE_TYPE_CONTROL_MOUSE_CLICK,
-	MESSAGE_TYPE_CONTROL_VALUE_CHANGE
+	MESSAGE_TYPE_DIALOG_SHOW, // gets called when the dialog is shown
+	MESSAGE_TYPE_DIALOG_CLOSE, // gets called when the dialog is hidden/being deleted
+	MESSAGE_TYPE_DIALOG_ESCAPE, // gets called when the client hits Esc key
+	MESSAGE_TYPE_CONTROL_MOUSE_CLICK, // gets called when the client left-clicks on a supported control
+	MESSAGE_TYPE_CONTROL_VALUE_CHANGE, // gets called when the client changes the value of a supported control
+	MESSAGE_TYPE_CONTROL_VALUE_CONFIRM, // gets called when the client hits Enter key on a supported control
+	MESSAGE_TYPE_CONTROL_FOCUSED // gets called when the client changes the focused control
 };
 typedef bool (*ChatHook) (int PlayerID,TextMessageEnum Type,const wchar_t *Message,int recieverID);
 typedef bool (*HostHook) (int PlayerID,TextMessageEnum Type,const char *Message);

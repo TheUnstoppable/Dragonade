@@ -17,6 +17,7 @@
 #include "dp88_customAI.h"
 #include "dp88_custom_timer_defines.h"
 #include "VehicleGameObj.h"
+#include "WeaponClass.h"
 
 /*------------------------
 Base class for custom AI's
@@ -1253,6 +1254,7 @@ void dp88_AI_ChargedTurret::Timer_Expired(GameObject* pSelf, int number)
   if (number == TIMER_AI_THINK && m_bPowerState != checkPowerState(pSelf))
   {
     m_bPowerState = !m_bPowerState;
+	m_target = 0;
 
     // Charging state must always become false now - either we were unpowered to begin with or
     // we were powered and have now gone offline. Either way, we can't possibly be charging now.
@@ -1291,8 +1293,9 @@ void dp88_AI_ChargedTurret::Timer_Expired(GameObject* pSelf, int number)
 
     // Has our target already died or ran like a coward before we could empty our clip? If so then
     // reset and trigger a reload (so we don't have a partial charge next time round)
-    else if (!m_target)
+	else if (!m_target || Commands->Get_Health(m_target) <= 0)
     {
+	  m_target = 0;
       m_bIsDischarging = false;
       Set_Current_Bullets(pSelf, 0);
       
@@ -1308,6 +1311,8 @@ void dp88_AI_ChargedTurret::Timer_Expired(GameObject* pSelf, int number)
     m_bIsPreReloading = false;
     if (m_target)
       StartCharging(pSelf);
+	else
+	  ApplyIdleAnimation(pSelf);
   }
 
   dp88_AI_Turret::Timer_Expired(pSelf, number);
@@ -1389,6 +1394,13 @@ void dp88_AI_ChargedTurret::StartCharging(GameObject* pSelf)
   // charging cycle
   if (!m_bIsPreReloading && !m_bIsCharging && !m_bIsDischarging && checkPowerState(pSelf) && m_target)
   {
+	if ( Get_Int_Parameter("Reload_Before_Charge") && pSelf->As_SmartGameObj() && pSelf->As_SmartGameObj()->Get_Weapon() && pSelf->As_SmartGameObj()->Get_Weapon()->Get_State() != WeaponClass::STATE_IDLE && pSelf->As_SmartGameObj()->Get_Weapon()->Get_State() != WeaponClass::STATE_READY)
+    {
+      Commands->Start_Timer(pSelf, this, pSelf->As_SmartGameObj()->Get_Weapon()->Get_State_Timer(), TIMER_AI_CHARGE_PRERELOAD_COMPLETE);
+      m_bIsPreReloading = true;
+      return;
+    }
+
     m_bIsCharging = true;
 
     // Only play a single iteration of the charge up animation - if we need to keep attacking after
@@ -1413,7 +1425,7 @@ void dp88_AI_ChargedTurret::StartDischarging(GameObject* pSelf)
     m_bIsCharging = false;
   
     // Got an enemy? Also double check power state whilst we are here, just to be sure
-    if (m_target && checkPowerState(pSelf))
+	if (m_target && checkPowerState(pSelf) && Commands->Get_Health(m_target) > 0)
     {
         m_bIsDischarging = true;
 
@@ -1422,6 +1434,11 @@ void dp88_AI_ChargedTurret::StartDischarging(GameObject* pSelf)
           dp88_AI_Turret::attackLocation(pSelf, Commands->Get_Position(m_target), m_bTargetPrimaryFire);
         else
           dp88_AI_Turret::attackTarget(pSelf, m_target, m_bTargetPrimaryFire);
+    }
+
+	else
+    {
+        m_target = 0;
     }
 
     // If we didn't find anything to shoot at then apply the idle animation again
@@ -1483,7 +1500,8 @@ ScriptRegistrant<dp88_AI_ChargedTurret> dp88_AI_ChargedTurret_Registrant(
   "Modifier_Target_Value=0.05:float,"
   "Requires_Power=0:int,"
   "Debug=0:int,"
-  "Detects_Stealth=1:int");
+  "Detects_Stealth=1:int,"
+  "Reload_Before_Charge=0:int");
 
 
 

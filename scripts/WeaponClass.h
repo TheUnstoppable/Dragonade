@@ -211,6 +211,7 @@ private:
 	bool				tiltGunWhileReloading;
 public:
 	static void			Set_Ammo_By_WeaponId_No_Networking(GameObject *obj,int weaponId,int clipBullets,int inventoryRounds);
+	float				Get_State_Timer( void )										{ return StateTimer; }
 }; // 00AC
 
 #endif

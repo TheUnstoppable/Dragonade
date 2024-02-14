@@ -44,7 +44,7 @@ class ScriptedDialogClass
 {
 public:
 	ScriptedDialogClass(int client, int dlg_id);
-	~ScriptedDialogClass();
+	virtual ~ScriptedDialogClass();
 
 	virtual DialogType Get_Dialog_Type() = 0;
 	virtual ScriptedMenuDialogClass* As_ScriptedMenuDialogClass() { return NULL; }
@@ -63,6 +63,7 @@ public:
 	virtual void Remove_Control(int id);
 	virtual void Remove_Control(ScriptedControlClass* control);
 	virtual void Clear_Controls();
+	virtual void Focus_Control(ScriptedControlClass* control);
 
 protected:
 	int id;
@@ -75,7 +76,7 @@ class ScriptedMenuDialogClass : public ScriptedDialogClass
 {
 public:
 	ScriptedMenuDialogClass(int client, int dlg_id);
-	~ScriptedMenuDialogClass();
+	virtual ~ScriptedMenuDialogClass();
 
 	virtual DialogType Get_Dialog_Type() { return DIALOGTYPE_MENU; }
 	virtual ScriptedMenuDialogClass* As_ScriptedMenuDialogClass() { return this; }
@@ -85,7 +86,7 @@ class ScriptedPopupDialogClass : public ScriptedDialogClass
 {
 public:
 	ScriptedPopupDialogClass(int client, int dlg_id);
-	~ScriptedPopupDialogClass();
+	virtual ~ScriptedPopupDialogClass();
 
 	virtual DialogType Get_Dialog_Type() { return DIALOGTYPE_POPUP; }
 	virtual ScriptedPopupDialogClass* As_ScriptedPopupDialogClass() { return this; }

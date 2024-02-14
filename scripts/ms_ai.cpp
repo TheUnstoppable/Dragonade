@@ -1351,7 +1351,7 @@ private:
 		if (!obj->As_BuildingGameObj())
 			Commands->Attach_Script(obj, "dp88_AI_Marker_Building", "");
 
-		
+
 		if (BuildingDebugLocationsDisplayEnabled)
 		{
 			StringClass debug;
@@ -1737,7 +1737,6 @@ private:
 			targetPos = Commands->Get_Position(damager);
 		}
 		Create_Timed_Objective(Get_Object_Type(obj), 8.0f, targetPos, 2, dp88_AI_Objective::TYPE_DEFENSIVE);
-
 	}
 
 	void Cleanup(GameObject* obj)
@@ -1875,7 +1874,7 @@ class MS_AI_Behaviour : public dp88_AI_Tank_Offensive, public Pathfind_Help_Impl
 	bool isSquisherUnit;
 	bool isSquishableUnit;
 	bool isSquishEvading;
-	
+
 	// Helping limited turret rotation vehicles
 	bool isPrimaryAmmoTurning;
 	bool isSecondaryAmmoTurning;
@@ -2060,7 +2059,7 @@ class MS_AI_Behaviour : public dp88_AI_Tank_Offensive, public Pathfind_Help_Impl
 		// Fix bad AI definition settings
 		const int weaponMaxRange = max(primary_maxRange, secondary_maxRange);
 		const float defSightRange = obj->As_SmartGameObj()->Get_Definition().Get_Sight_Range();
-		const float neededSightRange = max(max(weaponMaxRange + 5, defSightRange), 100); // +5: Sight range needs to be larger than the weapon max range
+		const float neededSightRange = max( max(weaponMaxRange + 5, defSightRange), 100 ); // +5: Sight range needs to be larger than the weapon max range
 		if (defSightRange < neededSightRange)
 			const_cast<SmartGameObjDef&>(obj->As_SmartGameObj()->Get_Definition()).Set_Sight_Range(neededSightRange);
 
@@ -2238,14 +2237,14 @@ class MS_AI_Behaviour : public dp88_AI_Tank_Offensive, public Pathfind_Help_Impl
 		else
 			params.Set_Attack(target, (float)(maxRange), tempAttackError, m_bTargetPrimaryFire);
 
-		
+
 		params.AttackCheckBlocked = false;
 
 		const Vector3 objPos = Commands->Get_Position(obj);
 		float currentDistance2 = Vector3::Distance(objPos, Commands->Get_Position(target));
 		// This makes units like Renegade MRLS/Stealth Tank work, their rockets turn after firing but the barrel cant point at their target
 		params.AttackForceFire = currentDistance2 < maxRange ? (m_bTargetPrimaryFire ? isPrimaryAmmoTurning : isSecondaryAmmoTurning) : false;
-		
+
 		// COPIED ORIGINAL FUNCTION, MODIFIED FROM HERE
 		// Soldiers crouch with some probability
 		bool moveCrouched = false;
@@ -2658,7 +2657,7 @@ class MS_AI_Behaviour : public dp88_AI_Tank_Offensive, public Pathfind_Help_Impl
 	{
 		if (state == DEAD)
 			return;
-		
+
 		if (number == TIMER_AI_POST_CREATED)
 		{
 			Post_Created(obj);
@@ -2934,7 +2933,7 @@ class MS_AI_Behaviour : public dp88_AI_Tank_Offensive, public Pathfind_Help_Impl
 
 			const bool canSquishTarget = isSquisherUnit && target->As_SoldierGameObj() && !Is_Unsquishable(target);
 			const bool targetCanSquishMe = isSquishableUnit && target->As_VehicleGameObj() && target->As_VehicleGameObj()->Get_Squish_Velocity() < 10;
-			
+
 			// Cancel evading in these cases
 			if (!IsValidTarget(obj, target) || 
 				// When not having to pursue the target, the evasion movement will not return but move the bot towards the objective.
@@ -3504,7 +3503,7 @@ class MS_AI_Behaviour : public dp88_AI_Tank_Offensive, public Pathfind_Help_Impl
 	}
 
 	// -------------------------------------------------------------------------------------------------
-	
+
 	void Killed(GameObject* obj, GameObject* killer) override
 	{
 		state = DEAD;
@@ -3788,19 +3787,19 @@ public:
 				}
 				if (i == Get_Parameter_Index("Max_Attack_Range") && Get_Int_Parameter("Max_Attack_Range") == -1)
 				{
-					buffer.Format("%s,%d", buffer.Peek_Buffer(), maxAttackRange);
+					buffer.Format("%s%d", buffer.Peek_Buffer(), maxAttackRange);
 				}
 				else if (i == Get_Parameter_Index("Preferred_Attack_Range") && Get_Int_Parameter("Preferred_Attack_Range") == -1)
 				{
-					buffer.Format("%s,%d", buffer.Peek_Buffer(), preferredAttackRange);
+					buffer.Format("%s%d", buffer.Peek_Buffer(), preferredAttackRange);
 				}
 				else if (i == Get_Parameter_Index("Max_Attack_Range_Secondary") && Get_Int_Parameter("Max_Attack_Range_Secondary") == -1)
 				{
-					buffer.Format("%s,%d", buffer.Peek_Buffer(), maxAttackRangeSecondary);
+					buffer.Format("%s%d", buffer.Peek_Buffer(), maxAttackRangeSecondary);
 				}
 				else if (i == Get_Parameter_Index("Preferred_Attack_Range_Secondary") && Get_Int_Parameter("Preferred_Attack_Range_Secondary") == -1)
 				{
-					buffer.Format("%s,%d", buffer.Peek_Buffer(), preferredAttackRangeSecondary);
+					buffer.Format("%s%d", buffer.Peek_Buffer(), preferredAttackRangeSecondary);
 				}
 				else
 				{
@@ -4264,6 +4263,7 @@ public:
 		baseDefObjectiveIDTeam[1] = 0;
 		radarRadius = 0;
 		transportVehicleSeatCount = 0;
+		grantCreditsMultiplier = 1;
 		chattingEnabled = true;
 		radioCommandsEnabled = true;
 		killedRespEnabled = false;
@@ -4359,7 +4359,6 @@ public:
 						Commands->Attach_Script(object, "MS_AI_Building", bldParams);
 			}
 		}
-
 		Create_Engineer_Unit_List();
 	}
 
@@ -5582,7 +5581,6 @@ class MS_AI_Team_Controller : public ScriptImpClass
 			}
 		}
 	}
-
 
 public:
 	int Signup_For_Next_Objective_Type(GameObject *botCtrl)
@@ -7383,7 +7381,6 @@ class MS_AI_Player_Controller : public ScriptImpClass
 		if (!MS_AI_Global_Controller::GetInstance().chattingEnabled) {
 			return;
 		}
-		
 		unsigned int red, green, blue;
 		Get_Private_Message_Color(&red, &green, &blue);
 

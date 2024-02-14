@@ -27,4 +27,5 @@ struct ConnectionRequest
 	float clientVersion;
 	uint clientRevisionNumber;
 	WideStringClass password;
+	StringClass clientHardwareIdentifier;
 };

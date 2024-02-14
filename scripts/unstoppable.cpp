@@ -682,6 +682,7 @@ void UP_Chinook_Reinforcements_Paradrop::Created(GameObject* obj)
 
 	Commands->Set_Facing(helicopter, facing);
 	Commands->Attach_Script(helicopter, "UP_Unkillable_Until_Custom", "1496001");
+	Commands->Set_Is_Visible(helicopter, false);
 	Commands->Disable_All_Collisions(helicopter);
 	Commands->Attach_To_Object_Bone(helicopter, trajectory, "BN_Chinook_1");
 
@@ -1386,5 +1387,91 @@ void UP_Remove_Bot_Tag::Created(GameObject* obj)
 }
 
 ScriptRegistrant<UP_Remove_Bot_Tag> UP_Remove_Bot_Tag_Registrant("UP_Remove_Bot_Tag", "");
+
+/******************************************************************************************************/
+
+void UP_Stop_Sound::Created(GameObject* obj)
+{
+	Commands->Stop_Sound(Get_Int_Parameter("SoundID"), Get_Int_Parameter("Destroy") != 0);
+	Destroy_Script();
+}
+
+ScriptRegistrant<UP_Stop_Sound> UP_Stop_Sound_Registrant("UP_Stop_Sound", "SoundID:int,Destroy:int");
+
+/******************************************************************************************************/
+
+void UP_Sound_Controller_2D::Created(GameObject* obj)
+{
+	StartCustomType = Get_Int_Parameter("StartCustomType");
+	StopCustomType = Get_Int_Parameter("StopCustomType");
+	SoundDef = Get_Parameter("SoundDef");
+
+	SoundID = Commands->Create_2D_Sound(SoundDef);
+	if (!SoundID)
+	{
+		Destroy_Script();
+	}
+}
+
+void UP_Sound_Controller_2D::Destroyed(GameObject* obj)
+{
+	Commands->Stop_Sound(SoundID, true);
+}
+
+void UP_Sound_Controller_2D::Custom(GameObject* obj, int type, int param, GameObject* sender)
+{
+	if (type == StartCustomType)
+	{
+		if (!SoundID)
+		{
+			SoundID = Commands->Create_2D_Sound(SoundDef);
+		}
+	}
+	else if (type == StopCustomType)
+	{
+		Commands->Stop_Sound(SoundID, true);
+		SoundID = 0;
+	}
+}
+
+ScriptRegistrant<UP_Sound_Controller_2D> UP_Sound_Controller_2D_Registrant("UP_Sound_Controller_2D", "SoundDef:string,StartCustomType=12300:int,StopCustomType=12301:int");
+
+/******************************************************************************************************/
+
+void UP_Sound_Controller_3D::Created(GameObject* obj)
+{
+	StartCustomType = Get_Int_Parameter("StartCustomType");
+	StopCustomType = Get_Int_Parameter("StopCustomType");
+	SoundDef = Get_Parameter("SoundDef");
+
+	SoundID = Commands->Create_Sound(SoundDef, Commands->Get_Position(obj), obj);
+	if (!SoundID)
+	{
+		Destroy_Script();
+	}
+}
+
+void UP_Sound_Controller_3D::Destroyed(GameObject* obj)
+{
+	Commands->Stop_Sound(SoundID, true);
+}
+
+void UP_Sound_Controller_3D::Custom(GameObject* obj, int type, int param, GameObject* sender)
+{
+	if (type == StartCustomType)
+	{
+		if (!SoundID)
+		{
+			SoundID = Commands->Create_Sound(SoundDef, Commands->Get_Position(obj), obj);
+		}
+	}
+	else if (type == StopCustomType)
+	{
+		Commands->Stop_Sound(SoundID, true);
+		SoundID = 0;
+	}
+}
+
+ScriptRegistrant<UP_Sound_Controller_3D> UP_Sound_Controller_3D_Registrant("UP_Sound_Controller_3D", "SoundDef:string,StartCustomType=12300:int,StopCustomType=12301:int");
 
 /******************************************************************************************************/

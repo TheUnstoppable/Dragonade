@@ -33,6 +33,11 @@ typedef ScriptableGameObj GameObject;
 #define Format_String(Buffer) { Buffer[255] = '\0'; va_list arg_list; va_start(arg_list,Format); vsnprintf(Buffer,255,Format,arg_list); va_end(arg_list); };
 #define Format_String_Prefix(Buffer) { Buffer[255] = '\0'; va_list arg_list; va_start(arg_list,Format); strcpy(Buffer,MessagePrefix); vsnprintf(Buffer+MessagePrefix.Get_Length(),255-MessagePrefix.Get_Length(),Format,arg_list); va_end(arg_list); };
 
+typedef const char* (*DA_gdv)();
+typedef unsigned int (*DA_gdr)();
+DA_API extern DA_gdv Get_Dragonade_Version;
+DA_API extern DA_gdr Get_Dragonade_Revision;
+
 class DA_API DA {
 public:
 	static const char *Get_Version();

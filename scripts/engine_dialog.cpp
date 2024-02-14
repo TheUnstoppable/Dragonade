@@ -13,13 +13,13 @@
 #include "engine.h"
 #include "engine_dialog.h"
 
-SCRIPTS_API ScriptedLabelControlClass* Create_Label_Control(ScriptedDialogClass* dialog, int x, int y, int width, int height, const wchar_t* text, bool title, Vector3 label_color)
+SCRIPTS_API ScriptedLabelControlClass* Create_Label_Control(ScriptedDialogClass* dialog, int x, int y, int width, int height, const wchar_t* text, TextStyle style, Vector3 label_color)
 {
 	ScriptedLabelControlClass* control = dialog->Create_Control(CONTROLTYPE_LABEL)->As_ScriptedLabelControlClass();
 	Set_Control_Bounds(control, x, y, width, height);
 	control->Set_Text_Color(label_color);
 	control->Set_Label_Text(text);
-	control->Set_Is_Title(title);
+	control->Set_Style(style);
 	return control;
 }
 
@@ -115,6 +115,14 @@ SCRIPTS_API ScriptedProgressBarControlClass* Create_ProgressBar_Control(Scripted
 	return control;
 }
 
+SCRIPTS_API ScriptedHealthBarControlClass* Create_HealthBar_Control(ScriptedDialogClass* dialog, int x, int y, int width, int height, float value)
+{
+	ScriptedHealthBarControlClass* control = dialog->Create_Control(CONTROLTYPE_HEALTHBAR)->As_ScriptedHealthBarControlClass();
+	Set_Control_Bounds(control, x, y, width, height);
+	control->Set_Life(value);
+	return control;
+}
+
 SCRIPTS_API void Set_Control_Bounds(ScriptedControlClass* control, int x, int y, int width, int height)
 {
 	control->Set_Location(x > 400 ? 400 : (x < 0 ? 0 : x), y > 300 ? 300 : (y < 0 ? 0 : y));
@@ -145,7 +153,7 @@ SCRIPTS_API ScriptedDialogClass* Create_Yes_No_Dialog(GameObject* obj, const wch
 
 	ScriptedPopupDialogClass* dialog = Create_Centered_Popup(playerId, 230, 80, popup_title);
 
-	Create_Label_Control(dialog, 10, 10, 210, 30, label_text, false, label_color);
+	Create_Label_Control(dialog, 10, 10, 210, 30, label_text, TEXTSTYLE_BODY, label_color);
 
 	ScriptedButtonControlClass* yes_button = Create_Bordered_Button_Control(dialog, 30, 50, 60, 20, L"Yes");
 	ScriptedButtonControlClass* no_button = Create_Bordered_Button_Control(dialog, 140, 50, 60, 20, L"No");
@@ -171,7 +179,7 @@ SCRIPTS_API ScriptedDialogClass* Create_Yes_No_Cancel_Dialog(GameObject* obj, co
 
 	ScriptedPopupDialogClass* dialog = Create_Centered_Popup(playerId, 230, 80, popup_title);
 
-	Create_Label_Control(dialog, 10, 10, 210, 30, label_text, false, label_color);
+	Create_Label_Control(dialog, 10, 10, 210, 30, label_text, TEXTSTYLE_BODY, label_color);
 
 	ScriptedButtonControlClass* yes_button = Create_Bordered_Button_Control(dialog, 10, 50, 60, 20, L"Yes");
 	ScriptedButtonControlClass* no_button = Create_Bordered_Button_Control(dialog, 85, 50, 60, 20, L"No");
@@ -199,7 +207,7 @@ SCRIPTS_API ScriptedDialogClass* Create_User_Prompt(GameObject* obj, const wchar
 
 	ScriptedPopupDialogClass* dialog = Create_Centered_Popup(playerId, 230, 85, popup_title);
 
-	Create_Label_Control(dialog, 10, 10, 210, 20, label_text, false, label_color);
+	Create_Label_Control(dialog, 10, 10, 210, 20, label_text, TEXTSTYLE_BODY, label_color);
 
 	ScriptedTextAreaControlClass* textarea = Create_TextArea_Control(dialog, 10, 30, 210, 15, initial_text, text_limit);
 	ScriptedButtonControlClass* ok_button = Create_Bordered_Button_Control(dialog, 35, 55, 60, 20, L"Okay");

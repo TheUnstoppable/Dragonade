@@ -24,6 +24,7 @@ class ScriptedCheckBoxControlClass;
 class ScriptedComboBoxControlClass;
 class ScriptedSliderControlClass;
 class ScriptedProgressBarControlClass;
+class ScriptedHealthBarControlClass;
 
 typedef enum
 {
@@ -34,7 +35,8 @@ typedef enum
 	CONTROLTYPE_CHECKBOX,
 	CONTROLTYPE_COMBOBOX,
 	CONTROLTYPE_SLIDER,
-	CONTROLTYPE_PROGRESSBAR
+	CONTROLTYPE_PROGRESSBAR,
+	CONTROLTYPE_HEALTHBAR
 } ControlType;
 
 class ScriptedControlClass
@@ -52,6 +54,7 @@ public:
 	virtual ScriptedComboBoxControlClass* As_ScriptedComboBoxControlClass() { return NULL; }
 	virtual ScriptedSliderControlClass* As_ScriptedSliderControlClass() { return NULL; }
 	virtual ScriptedProgressBarControlClass* As_ScriptedProgressBarControlClass() { return NULL; }
+	virtual ScriptedHealthBarControlClass* As_ScriptedHealthBarControlClass() { return NULL; }
 
 	int Get_Control_ID() { return controlId; }
 	const Vector2& Get_Location() { return location; }

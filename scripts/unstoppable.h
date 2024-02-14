@@ -155,7 +155,7 @@ private:
 class UP_Master_Control_Terminal : public ScriptImpClass
 {
 private:
-	GameObject* MainBuilding;
+	ReferencerClass MainBuilding;
 	float Multiplier;
 
 public:
@@ -553,11 +553,11 @@ class UP_Chinook_Reinforcements_Paradrop : public ScriptImpClass
 private:
 	bool chinookKilled;
 	int paratrooperIndex;
-	GameObject* presetObj1;
-	GameObject* presetObj2;
-	GameObject* presetObj3;
-	GameObject* helicopter;
-	GameObject* trajectory;
+	ReferencerClass presetObj1;
+	ReferencerClass presetObj2;
+	ReferencerClass presetObj3;
+	ReferencerClass helicopter;
+	ReferencerClass trajectory;
 
 	bool Check_Object(GameObject* obj)
 	{
@@ -660,7 +660,7 @@ class UP_AttachScript_Interval : public ScriptImpClass
 private:
 	StringClass Script;
 	StringClass Parameters;
-	GameObject* Target;
+	ReferencerClass Target;
 	float Interval;
 	int LoopCount;
 	int Looped;
@@ -856,6 +856,9 @@ public:
  * \ingroup UnstoppableScripts
  *
  * Sets the bot tag of attached soldier object, then detaches.
+ *
+ * \param Tag
+ *   Tag to set.
  */
 class UP_Set_Bot_Tag : public ScriptImpClass
 {
@@ -869,6 +872,17 @@ public:
  * \ingroup UnstoppableScripts
  *
  * Sets the bot tag of attached soldier object with multiple lines, then detaches.
+ *
+ * \param Tag1
+ *   First line for the tag.
+ * \param Tag2
+ *   Second line for the tag.
+ * \param Tag3
+ *   Third line for the tag.
+ * \param Tag4
+ *   Fourth line for the tag.
+ * \param Tag5
+ *   Fifth line for the tag.
  */
 class UP_Set_Bot_Tag_MultiLine : public ScriptImpClass
 {
@@ -887,4 +901,80 @@ class UP_Remove_Bot_Tag : public ScriptImpClass
 {
 public:
 	void Created(GameObject* obj);
+};
+
+/*!
+ * \brief Stop Sound
+ * \author Unstoppable
+ * \ingroup UnstoppableScripts
+ *
+ * Stops the sound specified by its ID, then detaches.
+ *
+ * \param SoundID
+ *   ID of the sound to stop.
+ * \param Destroy
+ *   Whether or not to destroy the sound after stopping.
+ */
+class UP_Stop_Sound : public ScriptImpClass
+{
+public:
+	void Created(GameObject* obj);
+};
+
+/*!
+ * \brief 2D Sound Controller
+ * \author Unstoppable
+ * \ingroup UnstoppableScripts
+ *
+ * Creates a 2D sound with specified definition name, and starts/stops it with customs.
+ * The created sound is destroyed when the script detaches or the attached object gets destroyed.
+ *
+ * \param SoundDef
+ *   Definition name of the sound to create.
+ * \param StartCustomType
+ *   Expected custom type to start the sound.
+ * \param StopCustomType
+ *   Expected custom type to stop the sound.
+ */
+class UP_Sound_Controller_2D : public ScriptImpClass
+{
+public:
+	void Created(GameObject* obj);
+	void Destroyed(GameObject* obj);
+	void Custom(GameObject* obj, int type, int param, GameObject* sender);
+
+private:
+	StringClass SoundDef;
+	int SoundID;
+	int StartCustomType;
+	int StopCustomType;
+};
+
+/*!
+ * \brief 3D Sound Controller
+ * \author Unstoppable
+ * \ingroup UnstoppableScripts
+ *
+ * Creates a 3D sound with specified definition name and at the position of the attached object, and starts/stops it with customs.
+ * The created sound is destroyed when the script detaches or the attached object gets destroyed.
+ *
+ * \param SoundDef
+ *   Definition name of the sound to create.
+ * \param StartCustomType
+ *   Expected custom type to start the sound.
+ * \param StopCustomType
+ *   Expected custom type to stop the sound.
+ */
+class UP_Sound_Controller_3D : public ScriptImpClass
+{
+public:
+	void Created(GameObject* obj);
+	void Destroyed(GameObject* obj);
+	void Custom(GameObject* obj, int type, int param, GameObject* sender);
+
+private:
+	StringClass SoundDef;
+	int SoundID;
+	int StartCustomType;
+	int StopCustomType;
 };

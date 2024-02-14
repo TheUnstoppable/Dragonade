@@ -16,7 +16,9 @@
 #include "engine_obj.h"
 #include "BuildingGameObj.h"
 #include "BuildingAggregateClass.h"
-	
+#include "engine_def.h"
+#include "engine_tt.h"
+
 void GDI_AGT::Created(GameObject* AGTObj)
 {
 	Commands->Enable_Hibernation(AGTObj,false);
@@ -141,6 +143,14 @@ void GDI_AGT::Create_Guns(GameObject* AGTObj)
 	GameObject* MissileObj = Commands->Create_Object("GDI_AGT", MissilePos);
 	if (MissileObj) 
 	{
+		if (DefinitionClass* Def = Find_Definition(Get_Int_Parameter("MissileDef")))
+		{
+			if (Def->Get_Class_ID() == CID_Weapon)
+			{
+				Grant_Weapon(MissileObj, Def->Get_Name(), true, -1, true);
+				Commands->Select_Weapon(MissileObj, Def->Get_Name());
+			}
+		}
 		Set_Object_Type(MissileObj, Get_Object_Type(AGTObj));
 		Commands->Attach_Script(MissileObj, "GDI_AGT_Missile", "0");
 		MissileID = Commands->Get_ID(MissileObj);
@@ -151,6 +161,14 @@ void GDI_AGT::Create_Guns(GameObject* AGTObj)
 		GameObject* GunObj = Commands->Create_Object("GDI_Ceiling_Gun_AGT", GunPos[i]);
 		if (GunObj) 
 		{
+			if (DefinitionClass* Def = Find_Definition(Get_Int_Parameter("GunDef")))
+			{
+				if (Def->Get_Class_ID() == CID_Weapon)
+				{
+					Grant_Weapon(MissileObj, Def->Get_Name(), true, -1, true);
+					Commands->Select_Weapon(MissileObj, Def->Get_Name());
+				}
+			}
 			Set_Object_Type(GunObj, Get_Object_Type(AGTObj));
 			Commands->Attach_Script(GunObj, "GDI_AGT_Gun", "");
 			Commands->Send_Custom_Event(AGTObj, GunObj, 0, MissileID, 0);
@@ -352,7 +370,7 @@ bool GDI_AGT_Missile::IsValidEnemy(GameObject* MissileObj, GameObject* EnemyObj)
 
 
 
-ScriptRegistrant<GDI_AGT> M00_Advanced_Guard_Tower_Registrant("M00_Advanced_Guard_Tower", "");
-ScriptRegistrant<GDI_AGT> GDI_AGT_Registrant("GDI_AGT", "");
+ScriptRegistrant<GDI_AGT> M00_Advanced_Guard_Tower_Registrant("M00_Advanced_Guard_Tower", "MissileDef=0:int,GunDef=0:int");
+ScriptRegistrant<GDI_AGT> GDI_AGT_Registrant("GDI_AGT", "MissileDef=0:int,GunDef=0:int");
 ScriptRegistrant<GDI_AGT_Gun> GDI_AGT_Gun_Registrant("GDI_AGT_Gun", "");
 ScriptRegistrant<GDI_AGT_Missile> GDI_AGT_Missile_Registrant("GDI_AGT_Missile", "");

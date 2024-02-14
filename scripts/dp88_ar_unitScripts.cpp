@@ -875,8 +875,8 @@ ScriptRegistrant<dp88_AR_Tesla_Coil> dp88_AR_Tesla_Coil_Registrant(
   "Modifier_Target_Value=0.05:float,"
   "Requires_Power=1:int,"
   "Debug=0:int,"
-  "Detects_Stealth=1:int"
-);
+  "Detects_Stealth=1:int,"
+  "Reload_Before_Charge=0:int");
 
 // IFV
 ScriptRegistrant<dp88_AR_IFV> dp88_AR_IFV_Registrant( "dp88_AR_IFV", "Turret_Frames_Animation=v_all_ifv.v_all_ifv:string,Switch_Time=10:int,Switching_Anim_Frame=2:int,Keyhook=VDeploy:string,String:int,Color:vector3,Sound:string" );

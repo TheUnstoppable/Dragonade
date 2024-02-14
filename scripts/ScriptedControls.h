@@ -18,6 +18,14 @@
 
 typedef enum
 {
+	TEXTSTYLE_BODY,
+	TEXTSTYLE_TITLE,
+	TEXTSTYLE_LARGE_CONTROL,
+	TEXTSTYLE_TOOLTIP
+} TextStyle;
+
+typedef enum
+{
 	TEXTORIENTATION_LEFT,
 	TEXTORIENTATION_CENTER,
 	TEXTORIENTATION_RIGHT
@@ -45,14 +53,14 @@ public:
 	const Vector3& Get_Text_Color() { return color; }
 	void Set_Text_Color(Vector3& newColor) { color = newColor; Set_Dirty(true); }
 	void Set_Text_Color(int r, int g, int b) { color.X = r / 255.f; color.Y = g / 255.f; color.Z = b / 255.f; Set_Dirty(true); }
-	bool Get_Is_Title() { return isTitle; }
-	void Set_Is_Title(bool title) { isTitle = title; Set_Dirty(true); }
+	TextStyle Get_Style() { return style; }
+	void Set_Style(TextStyle newStyle) { style = newStyle; Set_Dirty(true); }
 	TextOrientation Get_Orientation() { return orientation; }
 	void Set_Orientation(TextOrientation newOrientation) { orientation = newOrientation; Set_Dirty(true); }
 private:
 	WideStringClass text;
 	Vector3 color;
-	bool isTitle;
+	TextStyle style;
 	TextOrientation orientation;
 };
 
@@ -218,6 +226,23 @@ private:
 	int maxVal;
 	int progress;
 	int stepCount;
+};
+
+/********************************************************************************/
+
+class ScriptedHealthBarControlClass : public ScriptedControlClass
+{
+public:
+	ScriptedHealthBarControlClass(int ctl_id);
+
+	virtual ControlType Get_Control_Type() { return CONTROLTYPE_HEALTHBAR; }
+	virtual ScriptedHealthBarControlClass* As_ScriptedHealthBarControlClass() { return this; }
+
+	float Get_Life() { return life; }
+	void Set_Life(float newLife) { life = WWMath::Clamp(newLife); Set_Dirty(true); }
+
+private:
+	float life;
 };
 
 /********************************************************************************/

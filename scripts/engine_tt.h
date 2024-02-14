@@ -20,6 +20,7 @@
 #include "SList.h"
 #include "cPlayer.h"
 #include "PurchaseSettingsDefClass.h"
+#include "HUDSurfaceClass.h"
 #include "ScriptedDialogClass.h"
 class ConnectionAcceptanceFilter;
 class WideStringClass;
@@ -241,6 +242,23 @@ typedef void (*pcc) (const char* text, Vector4 argb_color);
 typedef void (*pccp) (GameObject* player, const char* text, Vector4 argb_color);
 typedef void (*rl) ();
 typedef void (*fcr) (int playerID);
+typedef void (*chudc) (Vector3 color);
+typedef void (*chudcp) (GameObject* obj, Vector3 color);
+typedef void (*egt) (bool onoff);
+typedef void (*egtp) (GameObject* obj, bool onoff);
+typedef bool (*gsr) (int playerID, Vector2* out);
+typedef HUDSurfaceClass* (*chs) (int target);
+typedef HUDSurfaceClass* (*fhs) (int id);
+typedef void (*hudsfc) (HUDSurfaceClass* surface);
+typedef bool (*iosc) ();
+typedef void (*osc) (bool onoff);
+typedef unsigned int (*spgui) ();
+typedef unsigned char (*spguc) ();
+typedef void (*spsui) (unsigned int newval);
+typedef void (*spsuc) (unsigned char newval);
+typedef void (*gtod) (unsigned int* hours, unsigned int* minutes);
+typedef void (*stod) (unsigned int hours, unsigned int minutes);
+typedef bool (*icbad) (int playerID);
 SCRIPTS_API extern gpl Get_Player_List;
 SCRIPTS_API extern gcmi Get_Current_Map_Index;
 SCRIPTS_API extern gm Get_Map;
@@ -486,6 +504,42 @@ SCRIPTS_API extern pcc Print_Client_Console;
 SCRIPTS_API extern pccp Print_Client_Console_Player;
 SCRIPTS_API extern rl Reload_Level;
 SCRIPTS_API extern fcr Force_Client_Reload;
+SCRIPTS_API extern chudc Change_Enemy_HUD_Color;
+SCRIPTS_API extern chudcp Change_Enemy_HUD_Color_Player;
+SCRIPTS_API extern chudc Change_Friendly_HUD_Color;
+SCRIPTS_API extern chudcp Change_Friendly_HUD_Color_Player;
+SCRIPTS_API extern chudc Change_Neutral_HUD_Color;
+SCRIPTS_API extern chudcp Change_Neutral_HUD_Color_Player;
+SCRIPTS_API extern egt Enable_Global_Targeting;
+SCRIPTS_API extern egtp Enable_Global_Targeting_Player;
+SCRIPTS_API extern gsr Get_Screen_Resolution;
+SCRIPTS_API extern chs Create_HUD_Surface;
+SCRIPTS_API extern fhs Find_HUD_Surface;
+SCRIPTS_API extern hudsfc Show_HUD_Surface;
+SCRIPTS_API extern hudsfc Hide_HUD_Surface;
+SCRIPTS_API extern hudsfc Delete_HUD_Surface;
+SCRIPTS_API extern gcsh Get_Client_Hardware_Identifier;
+SCRIPTS_API extern iosc Is_Overriding_Sky_Colors;
+SCRIPTS_API extern osc Override_Sky_Colors;
+SCRIPTS_API extern spgui Get_Warm_Sky_Color;
+SCRIPTS_API extern spgui Get_Cold_Sky_Color;
+SCRIPTS_API extern spgui Get_Sun_Color;
+SCRIPTS_API extern spgui Get_Sun_Halo_Color;
+SCRIPTS_API extern spgui Get_Moon_Halo_Color;
+SCRIPTS_API extern spguc Get_Starfield_Alpha;
+SCRIPTS_API extern spgui Get_Sky_Color;
+SCRIPTS_API extern spgui Get_Gloominess_Color;
+SCRIPTS_API extern spsui Set_Warm_Sky_Color;
+SCRIPTS_API extern spsui Set_Cold_Sky_Color;
+SCRIPTS_API extern spsui Set_Sun_Color;
+SCRIPTS_API extern spsui Set_Sun_Halo_Color;
+SCRIPTS_API extern spsui Set_Moon_Halo_Color;
+SCRIPTS_API extern spsuc Set_Starfield_Alpha;
+SCRIPTS_API extern spsui Set_Sky_Color;
+SCRIPTS_API extern spsui Set_Gloominess_Color;
+SCRIPTS_API extern gtod Get_Time_Of_Day;
+SCRIPTS_API extern stod Set_Time_Of_Day;
+SCRIPTS_API extern icbad Is_Connection_Bad;
 
 class SCRIPTS_API JFW_Key_Hook_Base : public ScriptImpClass {
 public:

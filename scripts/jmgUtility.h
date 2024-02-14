@@ -4259,6 +4259,8 @@ class JMG_Utility_Custom_Display_Briefing_Message : public ScriptImpClass {
 	void Destroyed(GameObject *obj);
 	void AddNewTextNode();
 	void RemoveTextNodes();
+public:
+	static int voiceId;
 };
 
 /*!
@@ -12171,4 +12173,87 @@ class JMG_Utility_Zone_Create_Object_While_Occupied_Object_Attached : public Scr
 	void Created(GameObject *obj);
 	void Custom(GameObject *obj,int message,int param,GameObject *sender);
 	void Destroyed(GameObject *obj);
+};
+
+/*!
+* \brief Makes the object or a sub-object of the object animate while moving, dead, or idle.
+* \SubObject - Name of the sub-object if any
+* \IdleAnimation - Name of the idle animation
+* \MoveAnimation - Name of the move animation
+* \DeathAnimation - Name of the death animation
+* \DeathFrame - Last frame of the death animation
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Animate_While_Moving_Idle_Or_Dead : public ScriptImpClass {
+	char subObject[16];
+	char idle[32];
+	char death[32];
+	char move[32];
+	float deathFrame;
+	bool moving;
+	void Created(GameObject *obj);
+	void Timer_Expired(GameObject *obj,int number);
+	void Killed(GameObject *obj,GameObject *killer);
+	void PlayAnimation(GameObject *obj,const char *aniamtionName,float frame);
+};
+
+/*!
+* \brief Sends the matching custom when the units HP drops below the ratio
+* \TargetRatio - (Health+Armor)*THIS VALUE returns the ratio
+* \ID - ID to send to, 0 sends to self, -1 sends to damager, if no damager uses self
+* \AboveCustom - Custom to send when you first go above the ratio
+* \AboveParam - Param to send when you first go above the ratio
+* \BelowCustom - Custom to send when you first go below the ratio
+* \BelowParam - Param to send when you first go below the ratio
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Send_Custom_When_HP_Crosses_Threshold : public ScriptImpClass {
+	bool below;
+	int id;
+	float targetRatio;
+	int aboveCustom;
+	int aboveParam;
+	int belowCustom;
+	int belowParam;
+	void Created(GameObject *obj);
+	void Damaged(GameObject *obj,GameObject *damager,float damage);
+};
+
+/*!
+* \brief Changes the SkinType to Blamo until Armor takes any damage, after that it reverts the SkinType back to the original and destroys the script
+* \MinHealthRatio - Hitpoints have to drop below this value before reverting the SkinType from blamo
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Change_SkinType_To_Blamo_Until_Damaged : public ScriptImpClass {
+	char skinType[128];
+	float minHealthRatio;
+	void Created(GameObject *obj);
+	void Damaged(GameObject *obj,GameObject *damager,float damage);
+public:
+	JMG_Utility_Change_SkinType_To_Blamo_Until_Damaged()
+	{
+		sprintf(skinType,"None");
+	}
+};
+
+/*!
+* \brief Sends a custom message when the attached object moves a distance from its initial spawn location
+* \Distance - Distance object has to move
+* \ID - ID to send to, 0 sends to self
+* \Custom - Custom to send
+* \Param - Param to send
+* \StartDelay - amount of time to wait before doing first detection if the object has moved
+* \RequireInPathfind - Only trigger if the object is in a pathfind zone
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Send_Custom_When_Moved_Distance_From_Spawn : public ScriptImpClass {
+	Vector3 location;
+	float distance;
+	bool requireInPathfind;
+	void Created(GameObject *obj);
+	void Timer_Expired(GameObject *obj,int number);
 };
