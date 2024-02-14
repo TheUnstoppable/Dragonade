@@ -640,10 +640,8 @@ void DAEventManager::Dialog_Event(int PlayerID, int DialogID, int ControlID, Dia
 		ScriptedDialogClass *Dialog = Find_Dialog(DialogID);
 		if (Dialog) {
 			ScriptedControlClass* Control = Dialog->Find_Control(ControlID);
-			if (Control) {
-				for (int i = 0; i < Events[DAEvent::DIALOG].Count(); i++) {
-					Events[DAEvent::DIALOG][i]->Base->Dialog_Event(Player, MessageType, Dialog, Control);
-				}
+			for (int i = 0; i < Events[DAEvent::DIALOG].Count(); i++) {
+				Events[DAEvent::DIALOG][i]->Base->Dialog_Event(Player, MessageType, Dialog, Control);
 			}
 		}
 	}
