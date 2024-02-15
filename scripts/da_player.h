@@ -106,7 +106,8 @@ public:
 	void Reset_Last_Tib_Damage_Time();
 	bool Is_Loaded();
 	void Set_Loaded(bool Load);
-	const StringClass &Get_Serial();
+	const StringClass& Get_Serial();
+	const StringClass& Get_HWID();
 	void Set_Version(float Ver);
 	float Get_Version();
 	unsigned int Get_Revision();
@@ -196,6 +197,7 @@ private:
 	unsigned long CreationTime;
 	bool NeedsTeam;
 	StringClass Serial;
+	StringClass HWID;
 	float Version;
 	unsigned int Revision;
 	DynamicVectorClass<DAPlayerObserverClass*> Observers;

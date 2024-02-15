@@ -875,7 +875,7 @@ ConnectionAcceptanceFilter::STATUS DAEventManager::DAEventConnectionAcceptanceFi
 		STATUS Return = Events[DAEvent::CONNECTIONREQUEST][i]->Base->Connection_Request_Event(const_cast<ConnectionRequest&>(Request),RefusalMessage);
 		if (Return == ConnectionAcceptanceFilter::STATUS_REFUSING) {
 			StringClass String;
-			String.Format("Refused connection from %ls(%s)(%s)(%.1f)(%u): %ls\n",Request.clientName,Long_To_IP(Request.clientAddress.sin_addr.s_addr),Request.clientSerialHash,Request.clientVersion,Request.clientRevisionNumber,RefusalMessage);
+			String.Format("Refused connection from %ls(%s)(%s)(%s)(%.1f)(%u): %ls\n",Request.clientName,Long_To_IP(Request.clientAddress.sin_addr.s_addr),Request.clientSerialHash,Request.clientHardwareIdentifier,Request.clientVersion,Request.clientRevisionNumber,RefusalMessage);
 			Console_Output("%s\n",String);
 			DALogManager::Write_Log("_CONNECTIONREFUSED","%s",String);
 			return ConnectionAcceptanceFilter::STATUS_REFUSING;

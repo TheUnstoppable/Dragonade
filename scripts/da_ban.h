@@ -18,19 +18,22 @@
 
 class DA_API DABanEntryClass {
 public:
-	DABanEntryClass(const char *Name,const char *IP,const char *Serial,const char *Reason);
+	DABanEntryClass(const char *Name,const char *IP,const char *Serial,const char *HWID,const char *Reason);
 	bool Matches_Name(const char *Name);
 	bool Matches_IP(const char *IP);
 	bool Matches_Serial(const char *Serial);
+	bool Matches_HWID(const char *HWID);
 	const StringClass &Get_Name();
 	const StringClass &Get_IP();
 	const StringClass &Get_Serial();
+	const StringClass &Get_HWID();
 	const StringClass &Get_Reason();
 
 private:
 	StringClass Name;
 	StringClass IP;
 	StringClass Serial;
+	StringClass HWID;
 	StringClass Reason;
 };
 
@@ -41,14 +44,14 @@ public:
 	void Load();
 	void Save();
 	void Save(DABanEntryClass *Entry);
-	DABanEntryClass *Add_Entry(const char *Name,const char *IP,const char *Serial,const char *Reason);
-	bool Remove_Entry(const char *Name,const char *IP,const char *Serial);
-	bool Remove_Entry_Match_All(const char *Name,const char *IP,const char *Serial);
-	DABanEntryClass *Find_Entry(const char *Name,const char *IP,const char *Serial);
-	DABanEntryClass *Find_Entry_Match_All(const char *Name,const char *IP,const char *Serial);
+	DABanEntryClass *Add_Entry(const char *Name,const char *IP,const char *Serial,const char *HWID,const char *Reason);
+	bool Remove_Entry(const char *Name,const char *IP,const char *Serial,const char *HWID);
+	bool Remove_Entry_Match_All(const char *Name,const char *IP,const char *Serial,const char *HWID);
+	DABanEntryClass *Find_Entry(const char *Name,const char *IP,const char *Serial,const char *HWID);
+	DABanEntryClass *Find_Entry_Match_All(const char *Name,const char *IP,const char *Serial,const char *HWID);
 	void List_Entries();
-	void List_Entries(const char *Name,const char *IP,const char *Serial);
-	void List_Entries_Match_All(const char *Name,const char *IP,const char *Serial);
+	void List_Entries(const char *Name,const char *IP,const char *Serial,const char *HWID);
+	void List_Entries_Match_All(const char *Name,const char *IP,const char *Serial,const char *HWID);
 	int Get_Count();
 	DABanEntryClass *Peek_Entry(int Position);
 	const StringClass &Get_Name();

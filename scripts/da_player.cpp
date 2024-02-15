@@ -49,6 +49,7 @@ DAPlayerClass::DAPlayerClass(cPlayer *Player) {
 	Player->Set_DA_Player(this);
 	Owner = Player;
 	Serial = Get_Client_Serial_Hash(Get_ID());
+	HWID = Get_Client_Hardware_Identifier(Get_ID());
 	Version = Get_Client_Version(Get_ID());
 	Revision = Get_Client_Revision(Get_ID());
 	AccessLevel = DAAccessLevel::NONE;
@@ -423,6 +424,10 @@ const StringClass &DAPlayerClass::Get_Serial() {
 	return Serial;
 }
 
+const StringClass& DAPlayerClass::Get_HWID() {
+	return HWID;
+}
+
 void DAPlayerClass::Set_Version(float Ver) {
 	Version = Ver;
 }
@@ -478,6 +483,7 @@ bool DAPlayerClass::Get_Needs_Team() {
 void DAPlayerClass::Join() {
 	Get_Owner()->Set_DA_Player(this);
 	Serial = Get_Client_Serial_Hash(Get_ID());
+	HWID = Get_Client_Hardware_Identifier(Get_ID());
 	Version = Get_Client_Version(Get_ID());
 	Revision = Get_Client_Revision(Get_ID());
 	for (int i = 0;i < Observers.Count();i++) {
@@ -1125,7 +1131,7 @@ ConnectionAcceptanceFilter::STATUS DAPlayerManager::Connection_Request_Event(Con
 		return ConnectionAcceptanceFilter::STATUS_REFUSING;
 	}
 	else if (cPlayer *Player = Find_Player(Request.clientName)) {
-		if (Request.clientAddress.sin_addr.s_addr == (unsigned int)Player->Get_Ip_Address() && Request.clientSerialHash == Player->Get_DA_Player()->Get_Serial()) { //Client reconnecting before their ghost has timed out.
+		if (Request.clientAddress.sin_addr.s_addr == (unsigned int)Player->Get_Ip_Address() && Request.clientSerialHash == Player->Get_DA_Player()->Get_Serial() && Request.clientHardwareIdentifier == Player->Get_DA_Player()->Get_HWID()) { //Client reconnecting before their ghost has timed out.
 			Evict_Client(Player->Get_Id(),L"Ghost");
 		}
 		else {
