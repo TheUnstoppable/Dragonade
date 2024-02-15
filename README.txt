@@ -1,4 +1,4 @@
-Dragonade 1.10.7
+Dragonade 1.10.8
 Created by Whitedragon and Black-Cell.net
 
 Special thanks to:
@@ -25,6 +25,22 @@ Installation:
 
 
 Update History:
+
+Version 1.10.8
+  Additions:
+   - Updates to TT 4.8.1.
+
+  Changes:
+   - Added Hardware ID support for bans, ForceTT and connection refusal messages.
+   - Changes in maximum health/armor will now replace the calculated health/armor of veteran system.
+    
+  Bug Fixes:
+   - Fix Building Annotations config section names.
+   - Fix repairing message and a memory leak in Building Annotations.
+   - Avoid heap allocations (for player name) every repair in Building Annotations.
+   - Use player object team instead of vehicle team to prevent smart bots from stealing teammate's vehicles.
+   - Fix a rare time-based crash (primarily caused by unstable FPS) while processing vehicle queue when Vehicle Factory is busy.
+   - Fix so dialog events that does not involve controls will now trigger events.
 
 Version 1.10.7
   Additions:
