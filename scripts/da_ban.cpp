@@ -304,7 +304,7 @@ Register_Console_Function(KickConsoleFunctionClass);
 class BanConsoleFunctionClass : public ConsoleFunctionClass {
 public:
 	const char *Get_Name() { return "ban"; }
-	const char *Get_Help() { return "BAN <playerid> [reason] - Kicks the given player from the server and bans their nick, IP, and serial."; }
+	const char *Get_Help() { return "BAN <playerid> [reason] - Kicks the given player from the server and bans their nick, IP, serial and hwid."; }
 	void Activate(const char *ArgumentsString) {
 		DATokenParserClass Parser(ArgumentsString,' ');
 		int ID;
@@ -351,7 +351,7 @@ Register_Console_Function(AddBanConsoleFunctionClass);
 class RemoveBanConsoleFunctionClass : public ConsoleFunctionClass {
 public:
 	const char *Get_Name() { return "removeban"; }
-	const char *Get_Help() { return "REMOVEBAN <name/IP/serial/hwid> / REMOVEBAN <name> <ip> <serial> <hwid> - Removes any ban that matches the specified name, IP, OR serial, or name, IP, AND serial."; }
+	const char *Get_Help() { return "REMOVEBAN <name/IP/serial/hwid> / REMOVEBAN <name> <ip> <serial> <hwid> - Removes any ban that matches the specified name, IP, OR serial/hwid, or name, IP, AND serial/hwid."; }
 	void Activate(const char *ArgumentsString) {
 		DATokenParserClass Parser(ArgumentsString,' ');
 		const char *Name = Parser.Get_String();
@@ -373,7 +373,7 @@ Register_Console_Function(RemoveBanConsoleFunctionClass);
 class ListBanConsoleFunctionClass : public ConsoleFunctionClass {
 public:
 	const char *Get_Name() { return "listban"; }
-	const char *Get_Help() { return "LISTBAN / LISTBAN <name/IP/serial/hwid> / LISTBAN <name> <IP> <serial> <hwid> - Lists all bans, or any ban that matches the specified name, IP, OR serial, or name, IP, AND serial."; }
+	const char *Get_Help() { return "LISTBAN / LISTBAN <name/IP/serial/hwid> / LISTBAN <name> <IP> <serial> <hwid> - Lists all bans, or any ban that matches the specified name, IP, OR serial/hwid, or name, IP, AND serial/hwid."; }
 	void Activate(const char *ArgumentsString) {
 		DATokenParserClass Parser(ArgumentsString,' ');
 		const char *Name = Parser.Get_String();
@@ -415,7 +415,7 @@ Register_Console_Function(AddBanExceptionConsoleFunctionClass);
 class RemoveBanExceptionConsoleFunctionClass : public ConsoleFunctionClass {
 public:
 	const char *Get_Name() { return "removebanexception"; }
-	const char *Get_Help() { return "REMOVEBANEXCEPTION <name/IP/serial/hwid> / REMOVEBANEXCEPTION <name> <ip> <serial> <hwid> - Removes any ban exception that matches the specified name, IP, OR serial, or name, IP, AND serial."; }
+	const char *Get_Help() { return "REMOVEBANEXCEPTION <name/IP/serial/hwid> / REMOVEBANEXCEPTION <name> <ip> <serial> <hwid> - Removes any ban exception that matches the specified name, IP, OR serial/hwid, or name, IP, AND serial/hwid."; }
 	void Activate(const char *ArgumentsString) {
 		DATokenParserClass Parser(ArgumentsString,' ');
 		const char *Name = Parser.Get_String();
@@ -437,7 +437,7 @@ Register_Console_Function(RemoveBanExceptionConsoleFunctionClass);
 class ListBanExceptionConsoleFunctionClass : public ConsoleFunctionClass {
 public:
 	const char *Get_Name() { return "listbanexception"; }
-	const char *Get_Help() { return "LISTBANEXCEPTION / LISTBANEXCEPTION <name/IP/serial/hwid> / LISTBANEXCEPTION <name> <IP> <serial> <hwid> - Lists all ban exceptions, or any ban exception that matches the specified name, IP, OR serial, or name, IP, AND serial."; }
+	const char *Get_Help() { return "LISTBANEXCEPTION / LISTBANEXCEPTION <name/IP/serial/hwid> / LISTBANEXCEPTION <name> <IP> <serial> <hwid> - Lists all ban exceptions, or any ban exception that matches the specified name, IP, OR serial/hwid, or name, IP, AND serial/hwid."; }
 	void Activate(const char *ArgumentsString) {
 		DATokenParserClass Parser(ArgumentsString,' ');
 		const char *Name = Parser.Get_String();
@@ -511,7 +511,7 @@ Register_Console_Function(AddForceTTConsoleFunctionClass);
 class RemoveForceTTConsoleFunctionClass : public ConsoleFunctionClass {
 public:
 	const char *Get_Name() { return "removeforcett"; }
-	const char *Get_Help() { return "REMOVEFORCETT <name/ip/serial> / REMOVEFORCETT <name> <ip> <serial> - Removes any forceTT that matches the specified name, IP, OR serial, or name, IP, AND serial."; }
+	const char *Get_Help() { return "REMOVEFORCETT <name/ip/serial> / REMOVEFORCETT <name> <ip> <serial> - Removes any forceTT that matches the specified name, IP, OR serial/hwid, or name, IP, AND serial/hwid."; }
 	void Activate(const char *ArgumentsString) {
 		DATokenParserClass Parser(ArgumentsString,' ');
 		const char *Name = Parser.Get_String();
@@ -533,7 +533,7 @@ Register_Console_Function(RemoveForceTTConsoleFunctionClass);
 class ListForceTTConsoleFunctionClass : public ConsoleFunctionClass {
 public:
 	const char *Get_Name() { return "listforcett"; }
-	const char *Get_Help() { return "LISTFORCETT / LISTFORCETT <name/IP/serial/hwid> / LISTFORCETT <name> <IP> <serial> <hwid> - Lists all forceTTs, or any forceTT that matches the specified name, IP, OR serial, or name, IP, AND serial."; }
+	const char *Get_Help() { return "LISTFORCETT / LISTFORCETT <name/IP/serial/hwid> / LISTFORCETT <name> <IP> <serial> <hwid> - Lists all forceTTs, or any forceTT that matches the specified name, IP, OR serial/hwid, or name, IP, AND serial/hwid."; }
 	void Activate(const char *ArgumentsString) {
 		DATokenParserClass Parser(ArgumentsString,' ');
 		const char *Name = Parser.Get_String();
@@ -575,7 +575,7 @@ Register_Console_Function(AddForceTTExceptionConsoleFunctionClass);
 class RemoveForceTTExceptionConsoleFunctionClass : public ConsoleFunctionClass {
 public:
 	const char *Get_Name() { return "removeforcettexception"; }
-	const char *Get_Help() { return "REMOVEFORCETTEXCEPTION <name/ip/serial/hwid> / REMOVEFORCETTEXCEPTION <name> <ip> <serial> <hwid> - Removes any forceTT exception that matches the specified name, IP, OR serial, or name, IP, AND serial."; }
+	const char *Get_Help() { return "REMOVEFORCETTEXCEPTION <name/ip/serial/hwid> / REMOVEFORCETTEXCEPTION <name> <ip> <serial> <hwid> - Removes any forceTT exception that matches the specified name, IP, OR serial/hwid, or name, IP, AND serial/hwid."; }
 	void Activate(const char *ArgumentsString) {
 		DATokenParserClass Parser(ArgumentsString,' ');
 		const char *Name = Parser.Get_String();
@@ -597,7 +597,7 @@ Register_Console_Function(RemoveForceTTExceptionConsoleFunctionClass);
 class ListForceTTExceptionConsoleFunctionClass : public ConsoleFunctionClass {
 public:
 	const char *Get_Name() { return "listforcettexception"; }
-	const char *Get_Help() { return "LISTFORCETTEXCEPTION / LISTFORCETTEXCEPTION <name/IP/serial/hwid> / LISTFORCETTEXCEPTION <name> <IP> <serial> <hwid> - Lists all forceTT exceptions, or any forceTT exception that matches the specified name, IP, OR serial, or name, IP, AND serial."; }
+	const char *Get_Help() { return "LISTFORCETTEXCEPTION / LISTFORCETTEXCEPTION <name/IP/serial/hwid> / LISTFORCETTEXCEPTION <name> <IP> <serial> <hwid> - Lists all forceTT exceptions, or any forceTT exception that matches the specified name, IP, OR serial/hwid, or name, IP, AND serial/hwid."; }
 	void Activate(const char *ArgumentsString) {
 		DATokenParserClass Parser(ArgumentsString,' ');
 		const char *Name = Parser.Get_String();
