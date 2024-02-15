@@ -27,10 +27,11 @@ DABanListClass *DABanManager::ForceTTExceptionList;
 
 /********************************************************************************************************************************/
 
-DABanEntryClass::DABanEntryClass(const char *Name,const char *IP,const char *Serial,const char *Reason) {
+DABanEntryClass::DABanEntryClass(const char *Name,const char *IP,const char *Serial,const char *HWID,const char *Reason) {
 	this->Name = Name;
 	this->IP = IP;
 	this->Serial = Serial;
+	this->HWID = HWID;
 	this->Reason = Reason;
 }
 
@@ -119,8 +120,9 @@ void DABanListClass::Load() {
 			const char *Name = Parser.Get_String();
 			const char *IP = Parser.Get_String();
 			const char *Serial = Parser.Get_String();
-			if (Name && IP && Serial) {
-				List.Add(new DABanEntryClass(Name,IP,Serial,Parser.Get_String()));
+			const char* HWID = Parser.Get_String();
+			if (Name && IP && Serial && HWID) {
+				List.Add(new DABanEntryClass(Name,IP,Serial,HWID,Parser.Get_String()));
 			}
 		}
 	}
@@ -131,7 +133,7 @@ void DABanListClass::Save() {
 	if (File.Open(FileName,2)) {
 		StringClass Buffer;
 		for (int i = 0;i < List.Count();i++) {
-			Buffer.Format("%s\t%s\t%s\t%s",List[i]->Get_Name(),List[i]->Get_IP(),List[i]->Get_Serial(),List[i]->Get_Reason());
+			Buffer.Format("%s\t%s\t%s\t%s\ts",List[i]->Get_Name(),List[i]->Get_IP(),List[i]->Get_Serial(),List[i]->Get_HWID(),List[i]->Get_Reason());
 			File.Write_Line(Buffer);
 		}
 		LastModTime = File.Get_Date_Time();
@@ -143,7 +145,7 @@ void DABanListClass::Save(DABanEntryClass *Entry) {
 	if (File.Open(FileName,3)) {
 		File.Seek(File.Size(),0);
 		StringClass Buffer;
-		Buffer.Format("%s\t%s\t%s\t%s",Entry->Get_Name(),Entry->Get_IP(),Entry->Get_Serial(),Entry->Get_Reason());
+		Buffer.Format("%s\t%s\t%s\t%s\t%s",Entry->Get_Name(),Entry->Get_IP(),Entry->Get_Serial(),Entry->Get_HWID(),Entry->Get_Reason());
 		File.Write_Line(Buffer);
 		File.Close();
 		File.Open(1);
