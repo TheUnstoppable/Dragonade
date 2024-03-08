@@ -217,6 +217,9 @@ copy "$(TargetPath)" "%RenServerPath%\$(TargetFileName)"
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="w3d_types.natvis" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

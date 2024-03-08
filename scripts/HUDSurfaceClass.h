@@ -52,8 +52,8 @@ public:
 	int Get_Client_ID() const { return clientId; }
 	bool Is_Dirty() const { return isDirty; }
 	void Set_Dirty(bool dirty) { isDirty = dirty; }
-	const Vector2& Get_Boundary_Area() const { return boundary; }
-	float Get_Aspect_Ratio() const { return boundary.Y > WWMATH_EPSILON ? boundary.X / boundary.Y : 0; }
+	const RectClass& Get_Boundary_Area() const { return boundary; }
+	float Get_Aspect_Ratio() const { return boundary.Height() > WWMATH_EPSILON ? boundary.Width() / boundary.Height() : 0; }
 	const StringClass& Get_Surface_Texture() const { return surfaceTexture; }
 	void Set_Surface_Texture(const char* texture) { surfaceTexture = texture; Set_Dirty(true); }
 
@@ -69,7 +69,7 @@ public:
 protected:
 	int id;
 	int clientId;
-	Vector2 boundary;
+	RectClass boundary;
 	StringClass surfaceTexture;
 	DynamicVectorClass<HUDElementClass*> elements;
 	bool isDirty;
@@ -185,8 +185,6 @@ public:
 	void Set_Clipping_Area(const RectClass& newArea) { clipArea = newArea; Set_Dirty(true); }
 	float Get_Clipping_Area_Size() const { const Vector2& a = clipArea.getSize(); return a.X * a.Y; }
 	float Get_Clipping_Area_Diagonal_Length() const { return clipArea.Extent().Length() * 2; }
-	bool Is_Clipping_Enabled() const { return clipEnabled; }
-	void Set_Clipping_Enabled(bool enabled) { clipEnabled = enabled; Set_Dirty(true); }
 	const Vector4& Get_Color() const { return color; }
 	void Set_Color(const Vector4& newColor) { color = newColor; Set_Dirty(true); }
 	void Set_Color(int a, int r, int g, int b) { color = Vector4(a / 255.f, r / 255.f, g / 255.f, b / 255.f); Set_Dirty(true); }
@@ -195,6 +193,5 @@ protected:
 	WideStringClass text;
 	HUDFontType font;
 	RectClass clipArea;
-	bool clipEnabled;
 	Vector4 color;
 };

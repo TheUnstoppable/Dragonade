@@ -26,6 +26,7 @@
 #include "JMGRenetBuster.h" 
 #include "RigidBodyClass.h"
 #include "ArmedGameObjDef.h"
+#include "GameObjManager.h"
 // Did a major overhaul on all these scripts, even though the mod they belonged to is dead :(
 void JMG_Create_Ship_On_Poke::Created(GameObject *obj)
 {
@@ -778,9 +779,9 @@ void JMG_CMTB_Main_Game_Control::Custom(GameObject *obj,int message,int param,Ga
 			RenCometBustersScoreControl.Get_Current_Player_Score_Node(MiniGamePlayerControlSystem[x].PlayerID)->RoundsPlayed++;
 			MaxPlayerCount++;
 		}
-		GameObject *moonHolder = Commands->Find_Object(MoonHolderID);
-		if (moonHolder)
-			Commands->Destroy_Object(moonHolder);
+		GameObject *moon = Commands->Find_Object(JMG_CMTB_Main_Game_Control::MoonID);
+		if (moon)
+			Commands->Apply_Damage(moon,9999.9f,"None",0);
 		RenCometBustersList.ClearAllObjects();
 		JMG_CMTB_Main_Game_Control::CMTBLevel = 0;
 		NextLevelDelay = 0;
@@ -1288,7 +1289,7 @@ void JMG_CMTB_Main_Game_Control::Create_Player_Ship(GameObject *obj,int PlayerNu
 		MiniGamePlayerControlSystem[PlayerNumber].RespawnTime = 30;
 	if (abs(MiniGamePlayerControlSystem[PlayerNumber].LastNewLifeScore-MiniGamePlayerControlSystem[PlayerNumber].Score) > 100000.0f)
 	{// Give a new life
-		JmgUtility::DisplayChatMessage(Player,127,255,0,"You have aquired another life!");
+		JmgUtility::DisplayChatMessage(Player,127,255,0,"You have acquired another life!");
 		Create_2D_Sound_Player(Player,"SFX.Comet_Busters_Pickup_Powerup");
 		MiniGamePlayerControlSystem[PlayerNumber].NumberOfLives++;
 		MiniGamePlayerControlSystem[PlayerNumber].LastNewLifeScore = MiniGamePlayerControlSystem[PlayerNumber].Score;
@@ -1545,7 +1546,7 @@ void JMG_CMTB_Ship_Control_Script::Custom(GameObject *obj,int message,int param,
 				case 4: JmgUtility::DisplayChatMessage(sender,200,200,125,"Selected Special Ability: Energy Regen");break;
 				case 5 :JmgUtility::DisplayChatMessage(sender,200,200,125,"Selected Special Ability: Weapons Upgrade");break;
 				case 6: JmgUtility::DisplayChatMessage(sender,200,200,125,"Selected Special Ability: Drone");break;
-				case 7: JmgUtility::DisplayChatMessage(sender,200,200,125,"Selected Special Ability: High Explosive Warhead");break;
+				case 7: JmgUtility::DisplayChatMessage(sender,200,200,125,"Selected Special Ability: High Yield Warhead");break;
 				case 8: JmgUtility::DisplayChatMessage(sender,200,200,125,"Selected Special Ability: SOS Beacon");break;
 				case 9: JmgUtility::DisplayChatMessage(sender,200,200,125,"Selected Special Ability: Drone Swarm");break;
 				default: JmgUtility::DisplayChatMessage(sender,200,200,125,"Selected Special Ability: None");break;
@@ -1572,7 +1573,7 @@ void JMG_CMTB_Ship_Control_Script::Custom(GameObject *obj,int message,int param,
 				JmgUtility::DisplayChatMessage(sender,200,200,125,"R - Toggle Rapid Fire");
 				JmgUtility::DisplayChatMessage(sender,200,200,125,"Q - Shield");
 				JmgUtility::DisplayChatMessage(sender,200,200,125,"Z - Cloak");
-				sprintf(inventory,"G - Highly Explosive Warhead (x%d)",MiniGamePlayerControlSystem[x].SuperBombs);
+				sprintf(inventory,"G - Highly Yield Warhead (x%d)",MiniGamePlayerControlSystem[x].SuperBombs);
 				JmgUtility::DisplayChatMessage(sender,200,200,125,inventory);
 				sprintf(inventory,"T - SOS Beacon (x%d)",MiniGamePlayerControlSystem[x].HasSOSBeacon);
 				JmgUtility::DisplayChatMessage(sender,200,200,125,inventory);
@@ -1811,7 +1812,7 @@ void JMG_CMTB_Ship_Control_Script::Custom(GameObject *obj,int message,int param,
 					PerkSystemIncreasePlayerPerkUnlockAmount(Get_Vehicle_Driver(obj),112,1);
 					RenCometBustersScoreControl.Get_Current_Player_Score_Node(MiniGamePlayerControlSystem[x].PlayerID)->SOSBeacons++;
 					MiniGamePlayerControlSystem[x].HasSOSBeacon = true;
-					JmgUtility::DisplayChatMessage(Get_Vehicle_Driver(obj),127,255,0,"You have aquired a SOS Beacon!");
+					JmgUtility::DisplayChatMessage(Get_Vehicle_Driver(obj),127,255,0,"You have acquired a SOS Beacon!");
 					Create_2D_Sound_Player(Get_Vehicle_Driver(obj),"SFX.Comet_Busters_Pickup_Powerup");
 					break;
 				case 4:
@@ -1823,12 +1824,12 @@ void JMG_CMTB_Ship_Control_Script::Custom(GameObject *obj,int message,int param,
 					PerkSystemIncreasePlayerPerkUnlockAmount(Get_Vehicle_Driver(obj),111,1);
 					MiniGamePlayerControlSystem[x].SuperBombs++;
 					RenCometBustersScoreControl.Get_Current_Player_Score_Node(MiniGamePlayerControlSystem[x].PlayerID)->HEWPowerups++;
-					JmgUtility::DisplayChatMessage(Get_Vehicle_Driver(obj),127,255,0,"You have aquired a high yield warhead!");
+					JmgUtility::DisplayChatMessage(Get_Vehicle_Driver(obj),127,255,0,"You have acquired a high yield warhead!");
 					Create_2D_Sound_Player(Get_Vehicle_Driver(obj),"SFX.Comet_Busters_Pickup_Powerup");
 					break;
 				case 5:
 					PerkSystemIncreasePlayerPerkUnlockAmount(Get_Vehicle_Driver(obj),105,1);
-					JmgUtility::DisplayChatMessage(Get_Vehicle_Driver(obj),127,255,0,"You have aquired another life!");
+					JmgUtility::DisplayChatMessage(Get_Vehicle_Driver(obj),127,255,0,"You have acquired another life!");
 					MiniGamePlayerControlSystem[x].NumberOfLives++;
 					MiniGamePlayerControlSystem[x].LastNewLifeScore = MiniGamePlayerControlSystem[x].Score;
 					RenCometBustersScoreControl.Get_Current_Player_Score_Node(MiniGamePlayerControlSystem[x].PlayerID)->ExtraLifePowerups++;
@@ -1876,21 +1877,21 @@ void JMG_CMTB_Ship_Control_Script::Custom(GameObject *obj,int message,int param,
 					PerkSystemIncreasePlayerPerkUnlockAmount(Get_Vehicle_Driver(obj),110,1);
 					RenCometBustersScoreControl.Get_Current_Player_Score_Node(MiniGamePlayerControlSystem[x].PlayerID)->PickedUpDrone++;
 					MiniGamePlayerControlSystem[x].DronePowerup = true;
-					JmgUtility::DisplayChatMessage(Get_Vehicle_Driver(obj),127,255,0,"You have aquired a Drone!");
+					JmgUtility::DisplayChatMessage(Get_Vehicle_Driver(obj),127,255,0,"You have acquired a Drone!");
 					Create_2D_Sound_Player(Get_Vehicle_Driver(obj),"SFX.Comet_Busters_Pickup_Powerup");
 					break;
 				case 12:
 					PerkSystemIncreasePlayerPerkUnlockAmount(Get_Vehicle_Driver(obj),50,1);
 					RenCometBustersScoreControl.Get_Current_Player_Score_Node(MiniGamePlayerControlSystem[x].PlayerID)->RegenPowerups++;
 					RapidPowerRegen = 120;
-					JmgUtility::DisplayChatMessage(Get_Vehicle_Driver(obj),127,255,0,"You have aquired a rapid energy cell regen for 2 minutes!");
+					JmgUtility::DisplayChatMessage(Get_Vehicle_Driver(obj),127,255,0,"You have acquired a rapid energy cell regen for 2 minutes!");
 					Create_2D_Sound_Player(Get_Vehicle_Driver(obj),"SFX.Comet_Busters_Pickup_Powerup_Health");
 					break;
 				case 13:
 					PerkSystemIncreasePlayerPerkUnlockAmount(Get_Vehicle_Driver(obj),107,1);
 					RenCometBustersScoreControl.Get_Current_Player_Score_Node(MiniGamePlayerControlSystem[x].PlayerID)->DoublePointsPowerups++;
 					MiniGamePlayerControlSystem[x].DoublePointsTime = 60;
-					JmgUtility::DisplayChatMessage(Get_Vehicle_Driver(obj),127,255,0,"You have aquired a double points powerup for 1 minute!");
+					JmgUtility::DisplayChatMessage(Get_Vehicle_Driver(obj),127,255,0,"You have acquired a double points powerup for 1 minute!");
 					Create_2D_Sound_Player(Get_Vehicle_Driver(obj),"SFX.Comet_Busters_Pickup_Powerup_Points");
 					break;
 				case 14:
@@ -1925,14 +1926,14 @@ void JMG_CMTB_Ship_Control_Script::Custom(GameObject *obj,int message,int param,
 					PerkSystemIncreasePlayerPerkUnlockAmount(Get_Vehicle_Driver(obj),113,1);
 					RenCometBustersScoreControl.Get_Current_Player_Score_Node(MiniGamePlayerControlSystem[x].PlayerID)->PickedUpDroneSwarm++;
 					MiniGamePlayerControlSystem[x].DroneSwarmPowerup = true;
-					JmgUtility::DisplayChatMessage(Get_Vehicle_Driver(obj),127,255,0,"You have aquired drone swarm calling codes!");
+					JmgUtility::DisplayChatMessage(Get_Vehicle_Driver(obj),127,255,0,"You have acquired drone swarm calling codes!");
 					Create_2D_Sound_Player(Get_Vehicle_Driver(obj),"SFX.Comet_Busters_Pickup_Powerup");
 					break;
 				case 16:
 					PerkSystemIncreasePlayerPerkUnlockAmount(Get_Vehicle_Driver(obj),109,1);
 					RenCometBustersScoreControl.Get_Current_Player_Score_Node(MiniGamePlayerControlSystem[x].PlayerID)->RegenPowerups++;
 					ExtraShotActive = 120;
-					JmgUtility::DisplayChatMessage(Get_Vehicle_Driver(obj),127,255,0,"You have aquired a 2 minute weapon upgrade!");
+					JmgUtility::DisplayChatMessage(Get_Vehicle_Driver(obj),127,255,0,"You have acquired a 2 minute weapon upgrade!");
 					Create_2D_Sound_Player(Get_Vehicle_Driver(obj),"SFX.Comet_Busters_Pickup_Powerup_Health");
 					Set_Current_Clip_Bullets(obj,Get_Current_Clip_Bullets(obj)+1);
 					break;
@@ -2852,7 +2853,7 @@ void JMG_CMTB_Spectator_Object::Custom(GameObject *obj,int message,int param,Gam
 		case 4: JmgUtility::DisplayChatMessage(sender,200,200,125,"Selected Special Ability: Energy Regen");break;
 		case 5 :JmgUtility::DisplayChatMessage(sender,200,200,125,"Selected Special Ability: Weapons Upgrade");break;
 		case 6: JmgUtility::DisplayChatMessage(sender,200,200,125,"Selected Special Ability: Drone");break;
-		case 7: JmgUtility::DisplayChatMessage(sender,200,200,125,"Selected Special Ability: High Explosive Warhead");break;
+		case 7: JmgUtility::DisplayChatMessage(sender,200,200,125,"Selected Special Ability: High Yield Warhead");break;
 		case 8: JmgUtility::DisplayChatMessage(sender,200,200,125,"Selected Special Ability: SOS Beacon");break;
 		case 9: JmgUtility::DisplayChatMessage(sender,200,200,125,"Selected Special Ability: Drone Swarm");break;
 		default: JmgUtility::DisplayChatMessage(sender,200,200,125,"Selected Special Ability: None");break;
@@ -2969,7 +2970,7 @@ void JMG_CMTB_Spectator_Object::Custom(GameObject *obj,int message,int param,Gam
 		case 4: JmgUtility::DisplayChatMessage(sender,200,200,125,"Selected Special Ability: Energy Regen");break;
 		case 5 :JmgUtility::DisplayChatMessage(sender,200,200,125,"Selected Special Ability: Weapons Upgrade");break;
 		case 6: JmgUtility::DisplayChatMessage(sender,200,200,125,"Selected Special Ability: Drone");break;
-		case 7: JmgUtility::DisplayChatMessage(sender,200,200,125,"Selected Special Ability: High Explosive Warhead");break;
+		case 7: JmgUtility::DisplayChatMessage(sender,200,200,125,"Selected Special Ability: High Yield Warhead");break;
 		case 8: JmgUtility::DisplayChatMessage(sender,200,200,125,"Selected Special Ability: SOS Beacon");break;
 		case 9: JmgUtility::DisplayChatMessage(sender,200,200,125,"Selected Special Ability: Drone Swarm");break;
 		default: JmgUtility::DisplayChatMessage(sender,200,200,125,"Selected Special Ability: None");break;
@@ -2991,7 +2992,7 @@ void JMG_CMTB_Spectator_Object::SpecialAbilitiesList(GameObject *player)
 	if (CheckIfPlayerHasPerkUnlocked(player,110))
 		JmgUtility::DisplayChatMessage(player,200,200,125,"6 - 20% chance of being granted a Drone on spawn.");
 	if (CheckIfPlayerHasPerkUnlocked(player,111))
-		JmgUtility::DisplayChatMessage(player,200,200,125,"7 - 5% chance of being granted a High Explosive Warhead on spawn.");
+		JmgUtility::DisplayChatMessage(player,200,200,125,"7 - 5% chance of being granted a High Yield Warhead on spawn.");
 	if (CheckIfPlayerHasPerkUnlocked(player,112))
 		JmgUtility::DisplayChatMessage(player,200,200,125,"8 - 2.5% chance of being granted a SOS Beacon on spawn.");
 	if (CheckIfPlayerHasPerkUnlocked(player,113))
@@ -3259,8 +3260,8 @@ float JMG_CMTB_Motion_Mine::Clamp_Value(float Value,float Min,float Max)
 }
 void JMG_CMTB_The_Moon_Script::Created(GameObject *obj)
 {
+	JMG_CMTB_Main_Game_Control::MoonID = Commands->Get_ID(obj);
 	lastHealth = Commands->Get_Health(obj);
-	moonKilled = false;
 	RenCometBustersList += TypeObject(obj,2626.5625f,51.25f,TheMoon);
 	Commands->Start_Timer(obj,this,Commands->Get_Random(5.0f,8.75f),5437);
 }
@@ -3273,7 +3274,7 @@ void JMG_CMTB_The_Moon_Script::Timer_Expired(GameObject *obj,int number)
 			Commands->Start_Timer(obj,this,Commands->Get_Random(5.0f,8.75f),5437);
 			return;
 		}
-		if (RenCometBustersList.CountType(Mine) < 150)
+		if (RenCometBustersList.CountType(Mine) < 50)
 			for (int x = 0;x < 2;x++)
 			{
 				int Random = Commands->Get_Random_Int(0,16);
@@ -3304,17 +3305,16 @@ void JMG_CMTB_The_Moon_Script::Damaged(GameObject *obj,GameObject *damager,float
 {
 	if (!damager || damage <= 0 || obj == damager)
 		return;
-	lastHealth = Commands->Get_Health(obj);
 	int damagerId = Commands->Get_Preset_ID(damager);
 	if (damagerId != 1000000077 && damagerId != 1000000091 && damagerId != 1000000250 && !Commands->Is_A_Star(damager))
-		Commands->Apply_Damage(obj,-damage,"None",damager);
+		Commands->Set_Health(obj,lastHealth);
+	else
+		lastHealth = Commands->Get_Health(obj);
 }
 void JMG_CMTB_The_Moon_Script::Killed(GameObject *obj, GameObject *damager)
 {
-	if (damager || !JMG_CMTB_Main_Game_Control::GameInProgress)//TODO remove this to remove end game lage blast
+	if (damager || !JMG_CMTB_Main_Game_Control::GameInProgress)
 	{
-		moonKilled = true;
-		Commands->Create_Explosion_At_Bone("Explosion_Moon",obj,"Scale",0);
 		int Number = (int)(JMG_CMTB_Main_Game_Control::CMTBLevel*0.2f);
 		char params[512];
 		sprintf(params,"%d,%.3f %.3f %.3f",3,Commands->Get_Position(obj).X,Commands->Get_Position(obj).Y,Commands->Get_Position(obj).Z);
@@ -3326,32 +3326,17 @@ void JMG_CMTB_The_Moon_Script::Killed(GameObject *obj, GameObject *damager)
 		}
 		GameObject *Powerup = Commands->Create_Object("CMTB_Powerup_Object",Commands->Get_Position(obj));
 		Commands->Attach_Script(Powerup,"JMG_CMTB_Powerup_Script","3,0");
-		GameObject *moonHolder = Commands->Find_Object(JMG_CMTB_Main_Game_Control::MoonHolderID);
-		if (moonHolder)
-			Commands->Destroy_Object(moonHolder);
-		RenCometBustersList -= obj;
 		RenCometBustersList.GrantScoreToKiller(damager,0.0,TheMoon);
 	}
+	Commands->Create_Explosion_At_Bone("Explosion_Moon",obj,"Scale",0);
 }
 void JMG_CMTB_The_Moon_Script::Destroyed(GameObject *obj)
 {
-	if (!moonKilled && JMG_CMTB_Main_Game_Control::GameInProgress)
-	{
-		GameObject *moonHolder = Commands->Find_Object(JMG_CMTB_Main_Game_Control::MoonHolderID);
-		if (moonHolder)
-		{
-			GameObject *moon = Commands->Create_Object_At_Bone(moonHolder,"TheMoon!","moon");
-			Commands->Attach_To_Object_Bone(moon,moonHolder,"moon");
-			int MaxPlayerCount = 0;
-			for (int x = 0;x < MaxGamePlayerCount;x++)
-				if (MiniGamePlayerControlSystem[x].GamePlayerID)
-					MaxPlayerCount++;
-			Set_Max_Health(moon,200.0f*MaxPlayerCount);
-			Commands->Set_Health(moon,lastHealth ? lastHealth+10 : 10);
-		}
-		RenCometBustersList -= obj;
-		return;
-	}
+	GameObject *moonHolder = Commands->Find_Object(JMG_CMTB_Main_Game_Control::MoonHolderID);
+	if (moonHolder)
+		Commands->Destroy_Object(moonHolder);
+	RenCometBustersList -= obj;
+	JMG_CMTB_Main_Game_Control::MoonID = 0;
 }
 bool JMG_CMTB_The_Moon_Script::EnableSpawnPositions(GameObject *obj)
 {
@@ -3375,7 +3360,7 @@ void JMG_CMTB_Ship_Super_Weapon::Created(GameObject *obj)
 {
 	LastDistance = 0.0f;
 	Commands->Set_Model(obj,"CMTBChargeSpark");
-	Commands->Start_Timer(obj,this,4.0f,5437);
+	Commands->Start_Timer(obj,this,3.75f,5436);
 	GameObject *Player = Commands->Find_Object(Get_Int_Parameter("ControllerShipID"));
 	Commands->Set_Facing(obj,Commands->Get_Facing(Player));
 	Commands->Attach_To_Object_Bone(Player,obj,"origin");
@@ -3384,6 +3369,17 @@ void JMG_CMTB_Ship_Super_Weapon::Created(GameObject *obj)
 }
 void JMG_CMTB_Ship_Super_Weapon::Timer_Expired(GameObject *obj,int number)
 {
+	if (number == 5436)
+	{
+		Commands->Start_Timer(obj,this,0.25f,5437);
+		for (SLNode<SmartGameObj> *current = GameObjManager::SmartGameObjList.Head();current;current = current->Next())
+		{
+			SmartGameObj *o = current->Data();
+			if (!o || !Is_Script_Attached(o,"JMG_CMTB_Player_Drone"))
+				continue;
+			Commands->Send_Custom_Event(obj,o,7043454,0,Commands->Get_Random(0.0f,0.25f));
+		}
+	}
 	if (number == 5437)
 	{
 		LastDistance = 0.0f;
@@ -3391,13 +3387,6 @@ void JMG_CMTB_Ship_Super_Weapon::Timer_Expired(GameObject *obj,int number)
 		Commands->Set_Animation(obj,"CmtBSuperWeapon.CmtBSuperWeapon",0,0,0,89,0);
 		Commands->Create_Sound("SFX.Comet_Busters_Super_Weapon_Fire",Commands->Get_Position(obj),obj);
 		Commands->Start_Timer(obj,this,0.1f,5438);
-		for (int x = 0;x < MaxGamePlayerCount;x++)
-			for (int y = 0;y < 2;y++)
-			{
-				GameObject *Drone = Commands->Find_Object(MiniGamePlayerControlSystem[x].Drones[y]);
-				if (Drone)
-					Commands->Send_Custom_Event(obj,Drone,7043454,0,0.0f);
-			}
 	}
 	if (number == 5438)
 	{
@@ -3511,49 +3500,14 @@ void JMG_CMTB_Powerup_Script::Destroyed(GameObject *obj)
 void JMG_CMTB_Cargo_Ship_Script::Created(GameObject *obj)
 {
 	Commands->Enable_Engine(obj,true);
-	RenCometBustersList += TypeObject(obj,0.0,0.0f,CargoShip);
-	GameObject *SPOT = Commands->Create_Object("Daves Arrow",Vector3(0.0f,0.0f,0.0f));
-	Commands->Set_Model(SPOT,"w_invs");
-	RenCometBustersList += TypeObject(SPOT,2.25f,1.5f,CargoShip);
-	Commands->Attach_To_Object_Bone(SPOT,obj,"Colliders003");
-	Commands->Disable_Physical_Collisions(SPOT);
-	ShipCollideID[0] = Commands->Get_ID(SPOT);
-	SPOT = Commands->Create_Object("Daves Arrow",Vector3(0.0f,0.0f,0.0f));
-	Commands->Set_Model(SPOT,"w_invs");
-	RenCometBustersList += TypeObject(SPOT,2.25f,1.5f,CargoShip);
-	Commands->Attach_To_Object_Bone(SPOT,obj,"Colliders004");
-	Commands->Disable_Physical_Collisions(SPOT);
-	ShipCollideID[1] = Commands->Get_ID(SPOT);
-	SPOT = Commands->Create_Object("Daves Arrow",Vector3(0.0f,0.0f,0.0f));
-	Commands->Set_Model(SPOT,"w_invs");
-	RenCometBustersList += TypeObject(SPOT,2.25f,1.5f,CargoShip);
-	Commands->Attach_To_Object_Bone(SPOT,obj,"Colliders005");
-	Commands->Disable_Physical_Collisions(SPOT);
-	ShipCollideID[2] = Commands->Get_ID(SPOT);
-	SPOT = Commands->Create_Object("Daves Arrow",Vector3(0.0f,0.0f,0.0f));
-	Commands->Set_Model(SPOT,"w_invs");
-	RenCometBustersList += TypeObject(SPOT,20.25f,4.5f,CargoShip);
-	Commands->Attach_To_Object_Bone(SPOT,obj,"Colliders001");
-	Commands->Disable_Physical_Collisions(SPOT);
-	ShipCollideID[3] = Commands->Get_ID(SPOT);
-	SPOT = Commands->Create_Object("Daves Arrow",Vector3(0.0f,0.0f,0.0f));
-	Commands->Set_Model(SPOT,"w_invs");
-	RenCometBustersList += TypeObject(SPOT,20.25f,4.5f,CargoShip);
-	Commands->Attach_To_Object_Bone(SPOT,obj,"Colliders000");
-	Commands->Disable_Physical_Collisions(SPOT);
-	ShipCollideID[4] = Commands->Get_ID(SPOT);
-	SPOT = Commands->Create_Object("Daves Arrow",Vector3(0.0f,0.0f,0.0f));
-	Commands->Set_Model(SPOT,"w_invs");
-	RenCometBustersList += TypeObject(SPOT,20.25f,4.5f,CargoShip);
-	Commands->Attach_To_Object_Bone(SPOT,obj,"Colliders002");
-	Commands->Disable_Physical_Collisions(SPOT);
-	ShipCollideID[5] = Commands->Get_ID(SPOT);
-	SPOT = Commands->Create_Object("Daves Arrow",Vector3(0.0f,0.0f,0.0f));
-	Commands->Set_Model(SPOT,"w_invs");
-	RenCometBustersList += TypeObject(SPOT,2.25f,1.5f,CargoShip);
-	Commands->Attach_To_Object_Bone(SPOT,obj,"Colliders006");
-	Commands->Disable_Physical_Collisions(SPOT);
-	ShipCollideID[6] = Commands->Get_ID(SPOT);
+	RenCometBustersList += TypeObject(obj,0.0,0.0f,CargoShip,Commands->Get_ID(obj));
+	CreateShipCollision(obj,0,"Colliders003",1.5f);
+	CreateShipCollision(obj,1,"Colliders004",1.5f);
+	CreateShipCollision(obj,2,"Colliders005",1.5f);
+	CreateShipCollision(obj,6,"Colliders006",1.5f);
+	CreateShipCollision(obj,3,"Colliders001",4.5f);
+	CreateShipCollision(obj,4,"Colliders000",4.5f);
+	CreateShipCollision(obj,5,"Colliders002",4.5f);
 	
 	GameObject *AAnimation = Commands->Create_Object("Daves Arrow",Commands->Get_Position(obj));//0.431f
 	Commands->Set_Facing(AAnimation,Commands->Get_Random(-180.0f,180.0f));
@@ -3569,7 +3523,8 @@ void JMG_CMTB_Cargo_Ship_Script::Created(GameObject *obj)
 	{
 		char TurretPosName[32];
 		sprintf(TurretPosName,"TrtSpots%03d",x);
-		SPOT = Commands->Create_Object("CMTB_Cargo_Ship_Turret",Vector3(0.0f,0.0f,0.0f));Commands->Attach_Script(SPOT,"JMG_CMTB_Cargo_Ship_Turret","");
+		GameObject *SPOT = Commands->Create_Object("CMTB_Cargo_Ship_Turret",Vector3(0.0f,0.0f,0.0f));
+		Commands->Attach_Script(SPOT,"JMG_CMTB_Cargo_Ship_Turret","");
 		Commands->Attach_To_Object_Bone(SPOT,AAnimation,TurretPosName);
 		Commands->Disable_Physical_Collisions(SPOT);
 		Turrets[x] = Commands->Get_ID(SPOT);
@@ -3690,6 +3645,19 @@ void JMG_CMTB_Cargo_Ship_Script::Destroyed(GameObject *obj)
 	if (Get_Int_Parameter("PlayerNumber") != -1)
 		for (int x = 0;x < 7;x++)
 			MiniGamePlayerControlSystem[Get_Int_Parameter("PlayerNumber")].CargoShipIDs[x] = 0;
+}
+void JMG_CMTB_Cargo_Ship_Script::CreateShipCollision(GameObject *obj,int index,const char *boneName,float size)
+{
+	GameObject *SPOT = Commands->Create_Object("Daves Arrow",Vector3(0.0f,0.0f,0.0f));
+	RenCometBustersList += TypeObject(SPOT,size*size,size,CargoShip,Commands->Get_ID(obj));
+	Commands->Set_Model(SPOT,"w_invs");
+	Commands->Attach_To_Object_Bone(SPOT,obj,boneName);
+	Commands->Disable_Physical_Collisions(SPOT);
+	ShipCollideID[index] = Commands->Get_ID(SPOT);
+	char params[225];
+	sprintf(params,"%d",Commands->Get_ID(obj));
+	Commands->Attach_Script(SPOT,"JMG_CMTB_Cargo_Ship_Child_Script",params);
+	Commands->Disable_Physical_Collisions(SPOT);
 }
 void JMG_CMTB_Cargo_Ship_Turret::Created(GameObject *obj)
 {
@@ -3900,6 +3868,7 @@ void JMG_CMTB_Player_Drone::Created(GameObject *obj)
 	Commands->Start_Timer(obj,this,1.0f,5436);
 	Commands->Start_Timer(obj,this,0.25f,5437);
 	Commands->Start_Timer(obj,this,0.1f,5438);
+	obj->As_PhysicalGameObj()->Peek_Physical_Object()->Set_Collision_Group(Collision_Group_Type::SOLDIER_GHOST_COLLISION_GROUP);
 }
 void JMG_CMTB_Player_Drone::Custom(GameObject *obj,int message,int param,GameObject *sender)
 {
@@ -4431,6 +4400,12 @@ void JMG_CMTB_Poke_Change_Difficulty::Poked(GameObject *obj,GameObject *poker)
 		break;
 	}
 }
+void JMG_CMTB_Cargo_Ship_Child_Script::Killed(GameObject *obj, GameObject *damager)
+{
+	GameObject *parent = Commands->Find_Object(Get_Int_Parameter("ParentId"));
+	if (parent)
+		Commands->Apply_Damage(parent,99999.0,"None",0);
+}
 ScriptRegistrant<JMG_Create_Ship_On_Poke> JMG_Create_Ship_On_Poke_Registrant("JMG_Create_Ship_On_Poke","CreateSpot:vector3,ShipPreset=Comet_Busters_Ship_Blue:string,SpawnSpotExplosion=Explosion_Clear_Spawn_Point:string,InvisibleObject=Invisible_Spectator_Box:string");
 ScriptRegistrant<JMG_Advanced_Bounce_Zone> JMG_Advanced_Bounce_Zone_Registrant("JMG_Advanced_Bounce_Zone","XAmount=0:float,YAmount=0:float,ZAmount=0:float");
 ScriptRegistrant<JMG_Ship_Random_Hyperspace> JMG_Ship_Random_Hyperspace_Registrant("JMG_Ship_Random_Hyperspace","HyperspacingModel=cometbshs:string,HyperSpaceSound=Ship_Teleport:string");
@@ -4468,4 +4443,5 @@ ScriptRegistrant<JMG_CMTB_Player_Drone> JMG_CMTB_Player_Drone_Registrant("JMG_CM
 ScriptRegistrant<JMG_CMTB_Vehicle_Face_Turret> JMG_CMTB_Vehicle_Face_Turret_Registrant("JMG_CMTB_Vehicle_Face_Turret","");
 ScriptRegistrant<JMG_CMTB_Poke_End_Map> JMG_CMTB_Poke_End_Map_Registrant("JMG_CMTB_Poke_End_Map","");
 ScriptRegistrant<JMG_CMTB_Poke_Change_Difficulty> JMG_CMTB_Poke_Change_Difficulty_Registrant("JMG_CMTB_Poke_Change_Difficulty","");
+ScriptRegistrant<JMG_CMTB_Cargo_Ship_Child_Script> JMG_CMTB_Cargo_Ship_Child_Script_Registrant("JMG_CMTB_Cargo_Ship_Child_Script","ParentId:int");
 

@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+  
+  <Type Name="VectorClass&lt;*&gt;">
+    <AlternativeType Name="SimpleVecClass&lt;*&gt;" />
+    <Intrinsic Name="size" Expression="VectorMax" />
+    <DisplayString Condition="size() == 0">[{size()}] {{}}</DisplayString>
+    <DisplayString Condition="size() == 1">[{size()}] {{ {*Vector} }}</DisplayString>
+    <DisplayString Condition="size() == 2">[{size()}] {{ {*Vector}, {*(Vector+1)} }}</DisplayString>
+    <DisplayString Condition="size() == 3">[{size()}] {{ {*Vector}, {*(Vector+1)}, {*(Vector+2)} }}</DisplayString>
+    <DisplayString Condition="size() == 4">[{size()}] {{ {*Vector}, {*(Vector+1)}, {*(Vector+2)}, {*(Vector+3)} }}</DisplayString>
+    <DisplayString Condition="size() == 5">[{size()}] {{ {*Vector}, {*(Vector+1)}, {*(Vector+2)}, {*(Vector+3)}, {*(Vector+4)} }}</DisplayString>
+    <DisplayString Condition="size() == 6">[{size()}] {{ {*Vector}, {*(Vector+1)}, {*(Vector+2)}, {*(Vector+3)}, {*(Vector+4)}, {*(Vector+5)} }}</DisplayString>
+    <DisplayString Condition="size() == 7">[{size()}] {{ {*Vector}, {*(Vector+1)}, {*(Vector+2)}, {*(Vector+3)}, {*(Vector+4)}, {*(Vector+5)}, {*(Vector+6)} }}</DisplayString>
+    <DisplayString Condition="size() == 8">[{size()}] {{ {*Vector}, {*(Vector+1)}, {*(Vector+2)}, {*(Vector+3)}, {*(Vector+4)}, {*(Vector+5)}, {*(Vector+6)}, {*(Vector+7)} }}</DisplayString>
+    <DisplayString Condition="size() &gt; 8">[{size()}] {{ {*Vector}, {*(Vector+1)}, {*(Vector+2)}, {*(Vector+3)}, {*(Vector+4)}, {*(Vector+5)}, {*(Vector+6)}, {*(Vector+7)}, ... }}</DisplayString>
+    <Expand>
+      <Item Name="[size]">size()</Item>
+      <Item Name="[data_ptr]">Vector</Item>
+      <ArrayItems>
+        <Size>size()</Size>
+        <ValuePointer>Vector</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+  
+  <Type Name="DynamicVectorClass&lt;*&gt;">
+    <AlternativeType Name="SimpleDynVecClass&lt;*&gt;" />
+    <Intrinsic Name="size" Expression="ActiveCount" />
+    <Intrinsic Name="capacity" Expression="VectorMax" />
+    <DisplayString Condition="size() == 0">[{size()}] {{}}</DisplayString>
+    <DisplayString Condition="size() == 1">[{size()}] {{ {*Vector} }}</DisplayString>
+    <DisplayString Condition="size() == 2">[{size()}] {{ {*Vector}, {*(Vector+1)} }}</DisplayString>
+    <DisplayString Condition="size() == 3">[{size()}] {{ {*Vector}, {*(Vector+1)}, {*(Vector+2)} }}</DisplayString>
+    <DisplayString Condition="size() == 4">[{size()}] {{ {*Vector}, {*(Vector+1)}, {*(Vector+2)}, {*(Vector+3)} }}</DisplayString>
+    <DisplayString Condition="size() == 5">[{size()}] {{ {*Vector}, {*(Vector+1)}, {*(Vector+2)}, {*(Vector+3)}, {*(Vector+4)} }}</DisplayString>
+    <DisplayString Condition="size() == 6">[{size()}] {{ {*Vector}, {*(Vector+1)}, {*(Vector+2)}, {*(Vector+3)}, {*(Vector+4)}, {*(Vector+5)} }}</DisplayString>
+    <DisplayString Condition="size() == 7">[{size()}] {{ {*Vector}, {*(Vector+1)}, {*(Vector+2)}, {*(Vector+3)}, {*(Vector+4)}, {*(Vector+5)}, {*(Vector+6)} }}</DisplayString>
+    <DisplayString Condition="size() == 8">[{size()}] {{ {*Vector}, {*(Vector+1)}, {*(Vector+2)}, {*(Vector+3)}, {*(Vector+4)}, {*(Vector+5)}, {*(Vector+6)}, {*(Vector+7)} }}</DisplayString>
+    <DisplayString Condition="size() &gt; 8">[{size()}] {{ {*Vector}, {*(Vector+1)}, {*(Vector+2)}, {*(Vector+3)}, {*(Vector+4)}, {*(Vector+5)}, {*(Vector+6)}, {*(Vector+7)}, ... }}</DisplayString>
+    <Expand>
+      <Item Name="[size]">size()</Item>
+      <Item Name="[capacity]">capacity()</Item>
+      <Item Name="[data_ptr]">Vector</Item>
+      <ArrayItems>
+        <Size>size()</Size>
+        <ValuePointer>Vector</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+  
+  <Type Name="StringClass">
+    <Intrinsic Name="get_header" Expression="(StringClass::HEADER*)((char*)m_Buffer - sizeof(StringClass::HEADER))"/>
+    <DisplayString>[{get_header()->length}] {m_Buffer,s}</DisplayString>
+    <StringView>m_Buffer,s</StringView>
+    <Expand>
+      <Item Name="[length]">get_header()->length</Item>
+      <Item Name="[capacity]">get_header()->allocated_length</Item>
+      <Item Name="[value]">m_Buffer,s</Item>
+      <ArrayItems>
+        <Size>get_header()->length</Size>
+        <ValuePointer>m_Buffer</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+
+  <Type Name="WideStringClass">
+    <Intrinsic Name="get_header" Expression="(WideStringClass::HEADER*)((char*)m_Buffer - sizeof(WideStringClass::HEADER))"/>
+    <DisplayString>[{get_header()->length}] {m_Buffer,su}</DisplayString>
+    <StringView>m_Buffer,su</StringView>
+    <Expand>
+      <Item Name="[length]">get_header()->length</Item>
+      <Item Name="[capacity]">get_header()->allocated_length</Item>
+      <Item Name="[value]">m_Buffer,su</Item>
+      <ArrayItems>
+        <Size>get_header()->length</Size>
+        <ValuePointer>m_Buffer</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+
+  <Type Name="GenericMultiListClass">
+    <!-- NOTE: This is a circular linked list. The Head always exists and always owns a nullptr object, so we skip it. -->
+    <Intrinsic Name="is_end" Category="Method" Expression="ptr == &amp;Head">
+      <Parameter Name="ptr" Type="void*"/>
+    </Intrinsic>
+    <Intrinsic Name="is_empty" Expression="is_end(Head.Next)" />
+    <DisplayString Condition="is_empty()">{{ empty }}</DisplayString>
+    <DisplayString Condition="!is_empty() &amp;&amp; !is_end(Head.Next->Next) &amp;&amp; !is_end(Head.Next->Next->Next) &amp;&amp; !is_end(Head.Next->Next->Next->Next) ">{{ {Head.Next->Object, na}, {Head.Next->Next->Object, na}, {Head.Next->Next->Next->Object, na}, ... }}</DisplayString>
+    <DisplayString Condition="!is_empty() &amp;&amp; !is_end(Head.Next->Next) &amp;&amp; !is_end(Head.Next->Next->Next)">{{ {Head.Next->Object, na}, {Head.Next->Next->Object, na}, {Head.Next->Next->Next->Object, na} }}</DisplayString>
+    <DisplayString Condition="!is_empty() &amp;&amp; !is_end(Head.Next->Next)">{{ {Head.Next->Object, na}, {Head.Next->Next->Object, na} }}</DisplayString>
+    <DisplayString Condition="!is_empty()">{{ {Head.Next->Object, na} }}</DisplayString>
+    <Expand>
+      <CustomListItems MaxItemsPerView="200">
+        <Variable Name="size" InitialValue="0" />
+        <Variable Name="it" InitialValue="&amp;Head" />
+        <!-- calculate size first -->
+        <Exec>it = Head.Next</Exec>
+        <Loop>
+          <Break Condition="it == &amp;Head" />
+          <Exec>size++</Exec>
+          <Exec>it = it->Next</Exec>
+        </Loop>
+        <Item Name="[size]">size</Item>
+        <!-- then display items -->
+        <Exec>it = Head.Next</Exec>
+        <Loop>
+          <Break Condition="it == &amp;Head" />
+          <Item>it->Object</Item>
+          <Exec>it = it->Next</Exec>
+        </Loop>
+      </CustomListItems>
+    </Expand>
+  </Type>
+
+  <Type Name="SList&lt;*&gt;">
+    <Intrinsic Name="get_next" Category="Method" Expression="(SLNode&lt;$T1&gt;*)ptr->NodeNext">
+      <Parameter Name="ptr" Type="SLNode&lt;$T1&gt;*"/>
+    </Intrinsic>
+    <Intrinsic Name="get_data" Category="Method" Expression="($T1*)ptr->NodeData">
+      <Parameter Name="ptr" Type="SLNode&lt;$T1&gt;*"/>
+    </Intrinsic>
+    <DisplayString Condition="!HeadNode">{{ empty }}</DisplayString>
+    <DisplayString Condition="HeadNode &amp;&amp; get_next(HeadNode) &amp;&amp; get_next(get_next(HeadNode)) &amp;&amp; get_next(get_next(get_next(HeadNode)))">{{ {get_data(HeadNode), na}, {get_data(get_next(HeadNode)), na}, {get_data(get_next(get_next(HeadNode))), na}, ... }}</DisplayString>
+    <DisplayString Condition="HeadNode &amp;&amp; get_next(HeadNode) &amp;&amp; get_next(get_next(HeadNode))">{{ {get_data(HeadNode), na}, {get_data(get_next(HeadNode)), na}, {get_data(get_next(get_next(HeadNode))), na}  }}</DisplayString>
+    <DisplayString Condition="HeadNode &amp;&amp; get_next(HeadNode)">{{ {get_data(HeadNode), na}, {get_data(get_next(HeadNode)), na} }}</DisplayString>
+    <DisplayString Condition="HeadNode">{{ {get_data(HeadNode), na} }}</DisplayString>
+    <Expand>
+      <CustomListItems MaxItemsPerView="200">
+        <Variable Name="size" InitialValue="0" />
+        <Variable Name="it" InitialValue="HeadNode" />
+        <!--calculate size first-->
+        <Exec>it = HeadNode</Exec>
+        <Loop>
+          <Break Condition="!it" />
+          <Exec>size++</Exec>
+          <Exec>it = get_next(it)</Exec>
+        </Loop>
+        <Item Name="[size]">size</Item>
+        <!--then display items-->
+        <Exec>it = HeadNode</Exec>
+        <Loop>
+          <Break Condition="!it" />
+          <Item>get_data(it)</Item>
+          <Exec>it = get_next(it)</Exec>
+        </Loop>
+      </CustomListItems>
+    </Expand>
+  </Type>
+
+  <Type Name="SLNode&lt;*&gt;">
+    <Intrinsic Name="get_next" Category="Method" Expression="(SLNode&lt;$T1&gt;*)NodeNext"/>
+    <Intrinsic Name="get_data" Category="Method" Expression="($T1*)NodeData"/>
+    <DisplayString>{{ {get_data(), na} }}</DisplayString>
+    <Expand>
+      <Item Name="[data]">get_data(), na</Item>
+      <Item Name="[next]">get_next(), na</Item>
+    </Expand>
+  </Type>
+
+  <Type Name="ReferencerClass">
+    <DisplayString Condition="!ReferenceTarget">{{ null }}</DisplayString>
+    <DisplayString Condition="ReferenceTarget">{{ {ReferenceTarget->ReferenceData} }}</DisplayString>
+    <Expand>
+      <Item Name="[ptr]">ReferenceTarget->ReferenceData</Item>
+      <!-- always calculate number of referencers -->
+      <CustomListItems MaxItemsPerView="200">
+        <Variable Name="size" InitialValue="0" />
+        <Variable Name="it" InitialValue="ReferenceTarget->ReferencerListHead" />
+        <Exec>it = ReferenceTarget->ReferencerListHead</Exec>
+        <Loop>
+          <Break Condition="!it" />
+          <Exec>size++</Exec>
+          <Exec>it = it->TargetReferencerListNext</Exec>
+        </Loop>
+        <Item Name="[num_referencers]">size</Item>
+      </CustomListItems>
+      <!-- only display entire list of referencers in 'detailed' view -->
+      <CustomListItems MaxItemsPerView="200" IncludeView="detailed">
+        <Variable Name="size" InitialValue="0" />
+        <Variable Name="it" InitialValue="ReferenceTarget->ReferencerListHead" />
+        <Exec>it = ReferenceTarget->ReferencerListHead</Exec>
+        <Loop>
+          <Break Condition="!it" />
+          <Item>it</Item>
+          <Exec>it = it->TargetReferencerListNext</Exec>
+        </Loop>
+      </CustomListItems>
+    </Expand>
+  </Type>
+
+</AutoVisualizer>

@@ -457,7 +457,7 @@ void AddPerkTypes()
 	PerkTypeSystem.AddAPerkType(108,"Rapid Energy Regen Ability",25,false,false,false,PerkUnusable,0,"You have unlocked the Rapid Energy Regen ability.");
 	PerkTypeSystem.AddAPerkType(109,"Weapons Upgrade Ability",25,false,false,false,PerkUnusable,0,"You have unlocked the Weapons Upgrade ability.");
 	PerkTypeSystem.AddAPerkType(110,"Drone Ability",50,false,false,false,PerkUnusable,0,"You have unlocked the Drone ability.");
-	PerkTypeSystem.AddAPerkType(111,"High Explosive Warhead Ability",50,false,false,false,PerkUnusable,0,"You have unlocked the High Explosive Warhead ability.");
+	PerkTypeSystem.AddAPerkType(111,"High Yield Warhead Ability",50,false,false,false,PerkUnusable,0,"You have unlocked the High Yield Warhead ability.");
 	PerkTypeSystem.AddAPerkType(112,"SOS Beacon Ability",25,false,false,false,PerkUnusable,0,"You have unlocked the SOS Beacon ability.");
 	PerkTypeSystem.AddAPerkType(113,"Drone Swarm Ability",25,false,false,false,PerkUnusable,0,"You have unlocked the Drone Swarm ability.");
 	for (int x = 114;x < PERKCOUNT;x++)
@@ -1153,9 +1153,9 @@ public:
 		case 13:
 			sprintf(RetChar,"Server Record: %s has destroyed %lu comets total.",High->PlayerName,High->TotalComets);return RetChar;
 		case 14:
-			sprintf(RetChar,"Server Record: %s has acquired %lu Highly Explosive Warhead powerups.",High->PlayerName,High->HEWPowerups);return RetChar;
+			sprintf(RetChar,"Server Record: %s has acquired %lu High Yield Warhead powerups.",High->PlayerName,High->HEWPowerups);return RetChar;
 		case 15:
-			sprintf(RetChar,"Server Record: %s has used %lu Highly Explosive Warheads.",High->PlayerName,High->HEWUsed);return RetChar;
+			sprintf(RetChar,"Server Record: %s has used %lu High Yield Warheads.",High->PlayerName,High->HEWUsed);return RetChar;
 		case 16:
 			sprintf(RetChar,"Server Record: %s has fired a total of %lu rounds.",High->PlayerName,High->RoundsFired);return RetChar;
 		case 17:
@@ -1299,9 +1299,10 @@ RenCometBustersScoreSystem RenCometBustersScoreControl = RenCometBustersScoreSys
 enum ObjectType{NormalPlayerShip=0,UFO=1,Asteroid=2,Mine=3,TheMoon=4,PlayerShield=5,UFOBoss=6,PlayerCloak=7,PlayerSuper=8,CMTPowerup=9,CargoShip=10,MineBoss=11,PlayerDrone=12,PlayerDroneShield=13,PlayerShipJumpable=14,PlayerShipJumping=15,PlayerShipDisrupter=16};
 struct TypeObject
 {
-	GameObject *obj;
+	ReferencerClass obj;
 	float Size;
 	float RealSize;
+	int parentId;
 	ObjectType Type;
 	TypeObject(GameObject *_obj,float _SquaredSize,float _RealSize,ObjectType _Type)
 	{
@@ -1309,19 +1310,29 @@ struct TypeObject
 		Size = _SquaredSize;
 		RealSize = _RealSize;
 		Type = _Type;
+		parentId = 0;
+	};
+	TypeObject(GameObject *obj,float Size,float RealSize,ObjectType Type,int parentId)
+	{
+		this->obj = obj;
+		this->Size = Size;
+		this->RealSize = RealSize;
+		this->Type = Type;
+		this->parentId = parentId;
 	};
 };
 
 struct AnObject
 {
-	GameObject *Object;
+	ReferencerClass Object;
 	float Size;
 	float RealSize;
 	int ObjectID;
 	ObjectType Type;
+	int parentId;
 	int AllowReplaceTime;
 	struct AnObject *next;
-	AnObject(GameObject *obj,float Size,float RealSize,ObjectType Type)
+	AnObject(GameObject *obj,float Size,float RealSize,ObjectType Type,int parentId)
 	{
 		this->AllowReplaceTime = -1;
 		this->Object = obj;
@@ -1330,6 +1341,7 @@ struct AnObject
 		this->RealSize = RealSize;
 		this->Type = Type;
 		this->AllowReplaceTime = 0;
+		this->parentId = parentId;
 		this->next = NULL;
 	};
 };
@@ -1338,9 +1350,9 @@ struct RenCometBustersPlayerNode
 {
 	bool isReady;
 	int NumberOfLives;
-	GameObject *PlayerShip;
-	GameObject *ReplacementShip;
-	GameObject *SpectatorObject;
+	ReferencerClass PlayerShip;
+	ReferencerClass ReplacementShip;
+	ReferencerClass SpectatorObject;
 	int GamePlayerID;
 	int RespawnTime;
 	char PlayerModel[32];
@@ -1451,7 +1463,7 @@ public:
 		AnObject *Current = ObjectsList;
 		if (!ObjectsList)
 		{
-			ObjectsList = new AnObject(obj.obj,obj.Size,obj.RealSize,obj.Type);
+			ObjectsList = new AnObject(obj.obj,obj.Size,obj.RealSize,obj.Type,obj.parentId);
 			return *this;
 		}
 		while (Current)
@@ -1465,6 +1477,7 @@ public:
 				Current->RealSize = obj.RealSize;
 				Current->Type = obj.Type;
 				Current->AllowReplaceTime = 0;
+				Current->parentId = obj.parentId;
 				return *this;
 			}
 			if (!Current->AllowReplaceTime && Current->Object == obj.obj)
@@ -1474,7 +1487,7 @@ public:
 			}
 			if (!Current->next)
 			{
-				Current->next = new AnObject(obj.obj,obj.Size,obj.RealSize,obj.Type);
+				Current->next = new AnObject(obj.obj,obj.Size,obj.RealSize,obj.Type,obj.parentId);
 				return *this;
 			}
 			Current = Current->next;
@@ -1536,15 +1549,15 @@ public:
 	{
 		if (!Obj || !OtherObj || Obj->AllowReplaceTime || OtherObj->AllowReplaceTime)
 			return false;
-		GameObject *Hitter = Obj->Object;
-		GameObject *Other = OtherObj->Object;
+		ReferencerClass Hitter = Obj->Object;
+		ReferencerClass Other = OtherObj->Object;
 		if (Obj->Type == PlayerDroneShield && OtherObj->Type == PlayerDroneShield)
 			return false;
 		if (OtherObj->Type == PlayerShipJumping || Obj->Type == PlayerShipJumping)
 			return false;
 		if (Obj->Type == CargoShip && OtherObj->Type == TheMoon)
 		{
-			if (JmgUtility::SimpleDistance(Commands->Get_Position(Hitter),Commands->Get_Position(Other)) <= Obj->Size+OtherObj->Size-225.0f)
+			if (JmgUtility::SimpleDistance(Commands->Get_Position(Hitter),Commands->Get_Position(Other)) <= Obj->Size+OtherObj->Size-200.0f)
 			{
 				Commands->Apply_Damage(Hitter,99999.9f,"BlamoKiller",Other);
 				return true;
@@ -1553,6 +1566,12 @@ public:
 		}
 		if (JmgUtility::SimpleDistance(Commands->Get_Position(Hitter),Commands->Get_Position(Other)) <= Obj->Size+OtherObj->Size)
 		{
+			if (Obj->Type == CargoShip && OtherObj->Type == CargoShip && Obj->parentId != OtherObj->parentId)
+			{
+				Commands->Apply_Damage(Hitter,99999.9f,"BlamoKiller",Other);
+				Commands->Apply_Damage(Other,99999.9f,"BlamoKiller",Hitter);
+				return true;
+			}
 			if (Obj->Type == TheMoon && OtherObj->Type == CargoShip)
 				return false;
 			if (OtherObj->Type == PlayerShipJumpable || Obj->Type == PlayerShipJumpable)
@@ -1633,7 +1652,7 @@ public:
 					if (OtherObj->Type == PlayerShield || OtherObj->Type == PlayerDroneShield)
 						Commands->Send_Custom_Event(Other,Other,7043453,10,0.0f);
 				}
-				if (OtherObj->Type != PlayerShield && OtherObj->Type != PlayerSuper && OtherObj->Type != PlayerDroneShield && OtherObj->Type != TheMoon)
+				if (OtherObj->Type != PlayerShield && OtherObj->Type != PlayerSuper && OtherObj->Type != PlayerDroneShield && OtherObj->Type != TheMoon && OtherObj->Type != CargoShip)
 					SpecialApplyDamage(Other,99999.9f,"BlamoKiller",Hitter);
 				else
 					if (Obj->Type == NormalPlayerShip || Obj->Type == PlayerCloak || Obj->Type == PlayerShipJumpable || Obj->Type == PlayerShipDisrupter)
@@ -1656,8 +1675,8 @@ public:
 	{
 		if (!Obj || !OtherObj || Obj->AllowReplaceTime || OtherObj->AllowReplaceTime)
 			return true;
-		GameObject *Hitter = Obj->Object;
-		GameObject *Other = OtherObj->Object;
+		ReferencerClass Hitter = Obj->Object;
+		ReferencerClass Other = OtherObj->Object;
 		if (JmgUtility::SimpleDistance(Commands->Get_Position(Hitter),Commands->Get_Position(Other)) <= Obj->Size+OtherObj->Size)
 		{
 			Commands->Apply_Damage(Hitter,99999.9f,"BlamoKiller",Other);
@@ -1689,7 +1708,9 @@ UpdateCollisions:
 					AnObject *OtherObjs = ObjectsList;
 					while (OtherObjs)
 					{
-						if (Current->Type == CargoShip && OtherObjs->Type == TheMoon)
+						if (Current->Type == CargoShip && OtherObjs->Type == CargoShip && Current->parentId != OtherObjs->parentId)
+							DoesCollide(Current,OtherObjs);
+						else if (Current->Type == CargoShip && OtherObjs->Type == TheMoon)
 							DoesCollide(Current,OtherObjs);
 						else if (!OtherObjs->AllowReplaceTime && (OtherObjs->Type != PlayerDrone && OtherObjs->Type != PlayerDroneShield) || (Current->Type == CargoShip || Current->Type == TheMoon))
 							if (Current != OtherObjs && OtherObjs->Type != TheMoon && OtherObjs->Type != CargoShip && OtherObjs->Type != CMTPowerup)
@@ -2077,7 +2098,7 @@ KillInRangeCheckStart:
 		while (Current)
 		{
 			int TempID = Current->ObjectID;
-			GameObject *Target = Current->Object;
+			ReferencerClass Target = Current->Object;
 			if (Target && !Current->AllowReplaceTime && (Obj != Target && Current->Type != PlayerDrone && Current->Type != PlayerDroneShield && Current->Type != CMTPowerup && Current->Type != NormalPlayerShip && Current->Type != PlayerShield && Current->Type != PlayerCloak && Current->Type != PlayerSuper && Current->Type != PlayerShipJumpable && Current->Type != PlayerShipDisrupter))
 			{
 				float Dist = JmgUtility::SimpleDistance(*Position,Commands->Get_Position(Target))-Current->Size;
@@ -2156,6 +2177,7 @@ class JMG_CMTB_Main_Game_Control : public ScriptImpClass {
 	void DisableGun(GameObject *obj);
 	void FadeMusic(const char *music);
 public:
+	static int MoonID;
 	static int MoonHolderID;
 	static bool GameInProgress;
 	static unsigned int CMTBLevel;
@@ -2166,6 +2188,7 @@ public:
 	static float DifficultyMultiplierMine;
 	static float DifficultyMultiplierInv;
 };
+int JMG_CMTB_Main_Game_Control::MoonID = 0;
 int JMG_CMTB_Main_Game_Control::MoonHolderID = 0;
 bool JMG_CMTB_Main_Game_Control::GameInProgress = false;
 unsigned int JMG_CMTB_Main_Game_Control::CMTBLevel = 0;
@@ -2268,7 +2291,6 @@ class JMG_CMTB_Motion_Mine : public ScriptImpClass {
 };
 
 class JMG_CMTB_The_Moon_Script : public ScriptImpClass {
-	bool moonKilled;
 	bool SpawnPoints[16];
 	float lastHealth;
 	void Created(GameObject *obj);
@@ -2302,6 +2324,7 @@ class JMG_CMTB_Cargo_Ship_Script : public ScriptImpClass {
 	void Damaged(GameObject *obj,GameObject *damager,float damage);
 	void Killed(GameObject *obj, GameObject *damager);
 	void Destroyed(GameObject *obj);
+	void CreateShipCollision(GameObject *obj,int index,const char *boneName,float size);
 };
 
 class JMG_CMTB_Cargo_Ship_Turret : public ScriptImpClass {
@@ -2506,4 +2529,8 @@ class JMG_CMTB_Poke_Change_Difficulty : public ScriptImpClass {
 	int difficulty;
 	void Created(GameObject *obj);
 	void Poked(GameObject *obj,GameObject *poker);
+};
+
+class JMG_CMTB_Cargo_Ship_Child_Script : public ScriptImpClass {
+	void Killed(GameObject *obj, GameObject *damager);
 };

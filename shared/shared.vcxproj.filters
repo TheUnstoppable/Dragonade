@@ -56,4 +56,7 @@
       <Filter>01. Sources</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="w3d_types.natvis" />
+  </ItemGroup>
 </Project>
