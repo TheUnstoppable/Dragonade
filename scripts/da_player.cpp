@@ -1802,7 +1802,7 @@ class DAUnstuckObserverClass : public DAGameObjObserverClass {
 
 class DAUnStuckChatCommandClass : public DAChatCommandClass {
 	bool Activate(cPlayer *Player,const DATokenClass &Text,TextMessageEnum ChatType) {
-		if (ChatType != TEXT_MESSAGE_KEYHOOK && !Player->Get_GameObj()->Find_Observer("DAUnstuckObserverClass")) {
+		if ((ChatType == TEXT_MESSAGE_PUBLIC || ChatType == TEXT_MESSAGE_TEAM) && !Player->Get_GameObj()->Find_Observer("DAUnstuckObserverClass")) {
 			Player->Get_GameObj()->Add_Observer(new DAUnstuckObserverClass);
 			DA::Page_Player(Player,"You will be unstuck in 10 seconds. Moving will cancel this.");
 		}
