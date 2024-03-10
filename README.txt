@@ -1,4 +1,4 @@
-Dragonade 1.10.8
+Dragonade 1.10.9
 Created by Whitedragon and Black-Cell.net
 
 Special thanks to:
@@ -26,9 +26,17 @@ Installation:
 
 Update History:
 
+Version 1.10.9
+  Additions:
+   - Updated to TT 4.8.2.
+
+  Changes:
+   - Restricted !stuck command to Public and Team chat only, to prevent people abusing it secretly.
+   - Added CrateModel keyword into da_crates.ini (The feature was there, but configuration option was missing.)
+
 Version 1.10.8
   Additions:
-   - Updates to TT 4.8.1.
+   - Updated to TT 4.8.1.
 
   Changes:
    - Added Hardware ID support for bans, ForceTT and connection refusal messages.
