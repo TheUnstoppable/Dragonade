@@ -69,7 +69,7 @@ DA_API DA_gdv Get_Dragonade_Version;
 DA_API DA_gdr Get_Dragonade_Revision;
 
 const char *DA::Get_Version() {
-	return "1.10.8";
+	return "1.10.9";
 }
 
 void DA::Init() {
