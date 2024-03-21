@@ -31,6 +31,17 @@ enum AnnouncementEnum
 	ANNOUNCE_TEAM,
 	ANNOUNCE_PRIVATE,
 };
+enum PurchaseStatus
+{
+	PurchaseStatus_AllowNoSpawn = -3, // Purchase is allowed as normal, without spawning the vehicle. (only for VehiclePurchaseHook)
+	PurchaseStatus_AllowFree = -2, // Purchase is allowed as normal, without charging the player.
+	PurchaseStatus_Allow = -1, // Purchase is allowed as normal.
+	PurchaseStatus_Granted, // "Purchase request granted."
+	PurchaseStatus_Pending, // "Transaction pending."
+	PurchaseStatus_InsufficientFunds, // "You have insufficient funds for this purchase."
+	PurchaseStatus_FactoryUnavailable, // "The factory is not presently available."
+	PurchaseStatus_OutOfStock, // "This item is not presently in stock."
+};
 enum DialogMessageType
 {
 	MESSAGE_TYPE_DIALOG_SHOW, // gets called when the dialog is shown
@@ -48,7 +59,7 @@ typedef void (*PlayerJoin) (int PlayerID,const char *PlayerName);
 typedef void (*PlayerLeave) (int PlayerID);
 typedef void (*LoadLevelHook) ();
 typedef void (*ConsoleOutputHook) (const char *output);
-typedef int (*PurchaseHook) (BaseControllerClass *base,GameObject *purchaser,unsigned int cost,unsigned int preset,const char *data);
+typedef PurchaseStatus(*PurchaseHook) (BaseControllerClass *base,GameObject *purchaser,unsigned int cost,unsigned int preset,const char *data);
 typedef void (*PurchaseMonHook) (BaseControllerClass *base,GameObject *purchaser,unsigned int cost,unsigned int preset,unsigned int purchaseret,const char *data);
 typedef bool (*RefillHook) (GameObject *purchaser);
 typedef bool (*RadioHook) (int PlayerType, int PlayerID, int AnnouncementID, int IconID, AnnouncementEnum AnnouncementType);

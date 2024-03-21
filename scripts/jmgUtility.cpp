@@ -10342,16 +10342,22 @@ void JMG_Utility_Custom_Send_Custom_To_All_Objects::Created(GameObject *obj)
 	custom = Get_Int_Parameter("SendCustom");
 	Param = Get_Int_Parameter("Param");
 	delay = Get_Float_Parameter("Delay");
+	maxDistance = Get_Float_Parameter("MaxDistance")*Get_Float_Parameter("MaxDistance");
 }
 void JMG_Utility_Custom_Send_Custom_To_All_Objects::Custom(GameObject *obj,int message,int param,GameObject *sender)
 {
 	if (message == recieveMessage)
 	{
+		Vector3 pos = Commands->Get_Position(obj);
 		for (SLNode<BaseGameObj> *current = GameObjManager::GameObjList.Head();current;current = current->Next())
 		{
 			GameObject* o = current->Data()->As_ScriptableGameObj();
 			if (o && (team == 2 || CheckPlayerType(o,team)))
+			{
+				if (maxDistance && JmgUtility::SimpleDistance(pos,Commands->Get_Position(o)) > maxDistance)
+					continue;
  				Commands->Send_Custom_Event(obj,o,custom,Param == -1 ? param : Param,delay);
+			}
 		}
 	}
 }
@@ -18434,7 +18440,73 @@ void JMG_Utility_Send_Custom_When_Moved_Distance_From_Spawn::Timer_Expired(GameO
 		Commands->Start_Timer(obj,this,0.1f,2);
 	}
 }
+void JMG_Utility_Killed_Send_Custom::Killed(GameObject *obj,GameObject *killer)
+{
+	int id = Get_Int_Parameter("ID");
+	GameObject *object = id ? (id == -1 ? killer : Commands->Find_Object(id)) : obj;
+	Commands->Send_Custom_Event(obj,object,Get_Int_Parameter("Custom"),Get_Int_Parameter("Param"),Get_Float_Parameter("Delay"));
+	Destroy_Script();
+}
+void JMG_Utility_Killed_Send_Custom_Killer::Killed(GameObject *obj,GameObject *killer)
+{
+	int id = Get_Int_Parameter("ID");
+	GameObject *object = id ? (id == -1 ? killer : Commands->Find_Object(id)) : obj;
+	Commands->Send_Custom_Event(killer,object,Get_Int_Parameter("Custom"),Get_Int_Parameter("Param"),Get_Float_Parameter("Delay"));
+	Destroy_Script();
+}
+void JMG_Utility_Custom_Send_Custom_To_All_Objects_Sender::Created(GameObject *obj)
+{
+	recieveMessage = Get_Int_Parameter("Custom");
+	team = Get_Int_Parameter("Team");
+	custom = Get_Int_Parameter("SendCustom");
+	Param = Get_Int_Parameter("Param");
+	delay = Get_Float_Parameter("Delay");
+	maxDistance = Get_Float_Parameter("MaxDistance")*Get_Float_Parameter("MaxDistance");
+}
+void JMG_Utility_Custom_Send_Custom_To_All_Objects_Sender::Custom(GameObject *obj,int message,int param,GameObject *sender)
+{
+	if (message == recieveMessage)
+	{
+		Vector3 pos = Commands->Get_Position(obj);
+		for (SLNode<BaseGameObj> *current = GameObjManager::GameObjList.Head();current;current = current->Next())
+		{
+			GameObject* o = current->Data()->As_ScriptableGameObj();
+			if (o && (team == 2 || CheckPlayerType(o,team)))
+			{
+				if (maxDistance && JmgUtility::SimpleDistance(pos,Commands->Get_Position(o)) > maxDistance)
+					continue;
+ 				Commands->Send_Custom_Event(sender,o,custom,Param == -1 ? param : Param,delay);
+			}
+		}
+	}
+}
 
+void JMG_Utility_Created_Fire_Randomly::Created(GameObject *obj)
+{
+	rate = Get_Float_Parameter("UpdateRate");
+	angle = Get_Float_Parameter("FireAngle")*0.5f;
+	minHeight = Get_Float_Parameter("MinHeight");
+	maxHeight = Get_Float_Parameter("MaxHeight");
+	useFacing = Get_Float_Parameter("UseFacing");
+	Commands->Start_Timer(obj,this,rate,1);
+}
+void JMG_Utility_Created_Fire_Randomly::Timer_Expired(GameObject *obj,int number)
+{
+	if (number == 1)
+	{
+		ActionParamsStruct params;
+		Commands->Get_Action_Params(obj,params);
+		Vector3 pos = Commands->Get_Position(obj);
+		float turretAngle = (angle > 0 ? Commands->Get_Random(-angle,angle) : 0.0f)+(useFacing != -999.0f ? useFacing : Commands->Get_Facing(obj));
+		pos.X += cos(turretAngle*PI180)*100.0f;
+		pos.Y += sin(turretAngle*PI180)*100.0f;
+		pos.Z += minHeight < maxHeight ? Commands->Get_Random(minHeight,maxHeight) : minHeight;
+		params.AttackLocation = pos;
+		params.AttackForceFire = true;
+		Commands->Action_Attack(obj,params);
+		Commands->Start_Timer(obj,this,rate,1);
+	}
+}
 ScriptRegistrant<JMG_Utility_Check_If_Script_Is_In_Library> JMG_Utility_Check_If_Script_Is_In_Library_Registrant("JMG_Utility_Check_If_Script_Is_In_Library","ScriptName:string,CppName:string");
 ScriptRegistrant<JMG_Send_Custom_When_Custom_Sequence_Matched> JMG_Send_Custom_When_Custom_Sequence_Matched_Registrant("JMG_Send_Custom_When_Custom_Sequence_Matched","Success_Custom=0:int,Correct_Step_Custom=0:int,Partial_Failure_Custom=0:int,Failure_Custom=0:int,Send_To_ID=0:int,Custom_0=0:int,Custom_1=0:int,Custom_2=0:int,Custom_3=0:int,Custom_4=0:int,Custom_5=0:int,Custom_6=0:int,Custom_7=0:int,Custom_8=0:int,Custom_9=0:int,Disable_On_Success=1:int,Disable_On_Failure=0:int,Starts_Enabled=1:int,Enable_Custom=0:int,Correct_Step_Saftey=0:int,Failure_Saftey=1:int,Max_Failures=1:int");
 ScriptRegistrant<JMG_Utility_Change_Model_On_Timer> JMG_Utility_Change_Model_On_Timer_Registrant("JMG_Utility_Change_Model_On_Timer","Model=null:string,Time=0:float");
@@ -18678,7 +18750,7 @@ ScriptRegistrant<JMG_Utility_Send_Custom_Player_Count_Matches_Preset_Count> JMG_
 ScriptRegistrant<JMG_Utility_Custom_Set_Position> JMG_Utility_Custom_Set_Position_Registrant("JMG_Utility_Custom_Set_Position","Custom:int,Position:Vector3,ID=0:int");
 ScriptRegistrant<JMG_Utility_Custom_Delay_Send_Custom> JMG_Utility_Custom_Delay_Send_Custom_Registrant("JMG_Utility_Custom_Delay_Send_Custom","Custom:int,ID=0:int,SendCustom:int,Param:int,Delay:float,RandomDelay:float,CancelCustom=0:int");
 ScriptRegistrant<JMG_Utility_Scale_HP_By_Player_Count> JMG_Utility_Scale_HP_By_Player_Count_Registrant("JMG_Utility_Scale_HP_By_Player_Count","Health_Multiplier=1.0:float,Armor_Multiplier=1.0:float,Max_Player_Count=-1:int,Repeat=1:int,UpdateScaleCustom=0:int");
-ScriptRegistrant<JMG_Utility_Custom_Send_Custom_To_All_Objects> JMG_Utility_Custom_Send_Custom_To_All_Objects_Registrant("JMG_Utility_Custom_Send_Custom_To_All_Objects","Custom:int,SendCustom:int,Param:int,Team=2:int,Delay=0.0:float");
+ScriptRegistrant<JMG_Utility_Custom_Send_Custom_To_All_Objects> JMG_Utility_Custom_Send_Custom_To_All_Objects_Registrant("JMG_Utility_Custom_Send_Custom_To_All_Objects","Custom:int,SendCustom:int,Param:int,Team=2:int,Delay=0.0:float,MaxDistance=0.0:float");
 ScriptRegistrant<JMG_Utility_Enemy_Seen_Send_Custom_Ignore> JMG_Utility_Enemy_Seen_Send_Custom_Ignore_Registrant("JMG_Utility_Enemy_Seen_Send_Custom_Ignore","");
 ScriptRegistrant<JMG_Utility_In_Line_Of_Sight_Send_Custom> JMG_Utility_In_Line_Of_Sight_Send_Custom_Registrant("JMG_Utility_In_Line_Of_Sight_Send_Custom","Enemy_Preset_ID:int,ID:int,Visible_Message:int,Visible_Param:int,Not_Visible_Message:int,Not_Visible_Param:int,Scan_Rate=0.1:float,Enemy_Only=1:int");
 ScriptRegistrant<JMG_Utility_In_Line_Of_Sight_Send_Custom_Ignore> JMG_Utility_In_Line_Of_Sight_Send_Custom_Ignore_Registrant("JMG_Utility_In_Line_Of_Sight_Send_Custom_Ignore","");
@@ -18883,3 +18955,7 @@ ScriptRegistrant<JMG_Utility_Animate_While_Moving_Idle_Or_Dead> JMG_Utility_Anim
 ScriptRegistrant<JMG_Utility_Send_Custom_When_HP_Crosses_Threshold> JMG_Utility_Send_Custom_When_HP_Crosses_Threshold_Registrant("JMG_Utility_Send_Custom_When_HP_Crosses_Threshold","TargetRatio:float,ID:int,AboveCustom:int,AboveParam:int,BelowCustom:int,BelowParam:int");
 ScriptRegistrant<JMG_Utility_Change_SkinType_To_Blamo_Until_Damaged> JMG_Utility_Change_SkinType_To_Blamo_Until_Damaged_Registrant("JMG_Utility_Change_SkinType_To_Blamo_Until_Damaged","MinHealthRatio=1.0:float");
 ScriptRegistrant<JMG_Utility_Send_Custom_When_Moved_Distance_From_Spawn> JMG_Utility_Send_Custom_When_Moved_Distance_From_Spawn_Registrant("JMG_Utility_Send_Custom_When_Moved_Distance_From_Spawn","Distance:float,ID:int,Custom:int,Param:int,StartDelay=0.0:float,RequireInPathfind=0:int");
+ScriptRegistrant<JMG_Utility_Killed_Send_Custom> JMG_Utility_Killed_Send_Custom_Registrant("JMG_Utility_Killed_Send_Custom","ID:int,Custom:int,Param:int,Delay:float");
+ScriptRegistrant<JMG_Utility_Killed_Send_Custom_Killer> JMG_Utility_Killed_Send_Custom_Killer_Registrant("JMG_Utility_Killed_Send_Custom_Killer","ID:int,Custom:int,Param:int,Delay:float");
+ScriptRegistrant<JMG_Utility_Custom_Send_Custom_To_All_Objects_Sender> JMG_Utility_Custom_Send_Custom_To_All_Objects_Sender_Registrant("JMG_Utility_Custom_Send_Custom_To_All_Objects_Sender","Custom:int,SendCustom:int,Param:int,Team=2:int,Delay=0.0:float,MaxDistance=0.0:float");
+ScriptRegistrant<JMG_Utility_Created_Fire_Randomly> JMG_Utility_Created_Fire_Randomly_Registrant("JMG_Utility_Created_Fire_Randomly","FireAngle=45.0:float,MinHeight=0:float,MaxHeight=0:float,UpdateRate=1.5:float,UseFacing=-999.0:float");

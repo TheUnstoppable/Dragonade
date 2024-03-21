@@ -21,9 +21,9 @@ class DAExamplePlayerObserverClass : public DAPlayerObserverClass {
 	virtual void Init();
 	void Refill_Key_Hook();
 	virtual const char *Get_Observer_Name() { return "DAPlayerObserverExampleClass"; } //This is required.
-	virtual int Character_Purchase_Request(float &Cost,const SoldierGameObjDef *Item);
-	virtual int Vehicle_Purchase_Request(float &Cost,const VehicleGameObjDef *Item);
-	virtual int PowerUp_Purchase_Request(float &Cost,const PowerUpGameObjDef *Item);
+	virtual PurchaseStatus Character_Purchase_Request(float &Cost,const SoldierGameObjDef *Item);
+	virtual PurchaseStatus Vehicle_Purchase_Request(float &Cost,const VehicleGameObjDef *Item);
+	virtual PurchaseStatus PowerUp_Purchase_Request(float &Cost,const PowerUpGameObjDef *Item);
 	virtual bool Vehicle_Entry_Request(VehicleGameObj *Vehicle,int &Seat);
 	virtual void Vehicle_Enter(VehicleGameObj *Vehicle,int Seat);
 	virtual void Vehicle_Exit(VehicleGameObj *Vehicle,int Seat);

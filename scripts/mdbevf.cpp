@@ -915,16 +915,16 @@ void ExpVehFacClass::Clear()
 	Flying_Landing_Positions = 0;
 	Loaded = false;
 }
-int ExpVehFacClass::Purchase_Hook(BaseControllerClass *base, GameObject *purchaser, unsigned int cost, unsigned int preset,const char *data)
+PurchaseStatus ExpVehFacClass::Purchase_Hook(BaseControllerClass *base, GameObject *purchaser, unsigned int cost, unsigned int preset,const char *data)
 {
 	int Team = Get_Object_Type(purchaser);
 	if (!ExpVehFac[Team] || !ExpVehFac[Team]->Loaded)
 	{
-		return -1;
+		return PurchaseStatus_Allow;
 	}
 	if (!Can_Team_Build_Vehicle(Team) || cost >= 100000 || !preset)
 	{
-		return 3;
+		return PurchaseStatus_FactoryUnavailable;
 	}
 	UnitInfo *Temp = ExpVehFac[Team]->Get_Unit_Info(preset);
 	if (Temp->VehType == VEHTYPE_NAVAL)
@@ -934,17 +934,17 @@ int ExpVehFacClass::Purchase_Hook(BaseControllerClass *base, GameObject *purchas
 			if (ExpVehFac[Team]->Support_Limit && ExpVehFac[Team]->Support_Amount >= ExpVehFac[Team]->Support_Limit)
 			{
 				Send_Message_Player(purchaser,255,255,255,"The limit for Support vehicles has been reached.");
-				return 3;
+				return PurchaseStatus_FactoryUnavailable;
 			}
 		}
 		else if (ExpVehFac[Team]->Naval_Limit && ExpVehFac[Team]->Naval_Amount >= ExpVehFac[Team]->Naval_Limit)
 		{
 			Send_Message_Player(purchaser,255,255,255,"The limit for Naval vehicles has been reached.");
-			return 3;
+			return PurchaseStatus_FactoryUnavailable;
 		}
 		if (ExpVehFac[Team]->Is_Naval_Building)
 		{
-			return 3;
+			return PurchaseStatus_FactoryUnavailable;
 		}
 		else if (Purchase_Item(purchaser,cost))
 		{
@@ -965,9 +965,9 @@ int ExpVehFacClass::Purchase_Hook(BaseControllerClass *base, GameObject *purchas
 			GameObject *Veh = Commands->Create_Object(Get_Definition_Name(preset),Pos);
 			Commands->Set_Facing(Veh,Commands->Get_Facing(obj));
 			Commands->Send_Custom_Event(Veh,Veh,CUSTOM_EVENT_VEHICLE_OWNER,Commands->Get_ID(purchaser),0);
-			return 0;
+			return PurchaseStatus_Granted;
 		}
-		return 2;
+		return PurchaseStatus_InsufficientFunds;
 	}
 	else if (Temp->VehType == VEHTYPE_FLYING)
 	{
@@ -976,17 +976,17 @@ int ExpVehFacClass::Purchase_Hook(BaseControllerClass *base, GameObject *purchas
 			if (ExpVehFac[Team]->Support_Limit && ExpVehFac[Team]->Support_Amount >= ExpVehFac[Team]->Support_Limit)
 			{
 				Send_Message_Player(purchaser,255,255,255,"The limit for Support vehicles has been reached.");
-				return 3;
+				return PurchaseStatus_FactoryUnavailable;
 			}
 		}
 		else if (ExpVehFac[Team]->Flying_Limit && ExpVehFac[Team]->Flying_Amount >= ExpVehFac[Team]->Flying_Limit)
 		{
 			Send_Message_Player(purchaser,255,255,255,"The limit for Flying vehicles has been reached.");
-			return 3;
+			return PurchaseStatus_FactoryUnavailable;
 		}
 		if (ExpVehFac[Team]->Is_Flying_Building)
 		{
-			return 3;
+			return PurchaseStatus_FactoryUnavailable;
 		}
 		else if (Purchase_Item(purchaser,cost))
 		{
@@ -1003,9 +1003,9 @@ int ExpVehFacClass::Purchase_Hook(BaseControllerClass *base, GameObject *purchas
 			ExpVehFac[Team]->LastFlyVehID = preset;
 			ExpVehFac[Team]->LastFlyVehOwner = Commands->Get_ID(purchaser);
 			Commands->Attach_Script(Commands->Create_Object("Invisible_Object",ExpVehFac[Team]->Get_Flying_Landing_Position()),"Test_Cinematic",Team?"ExpVehFac_1.txt":"ExpVehFac_0.txt");
-			return 0;
+			return PurchaseStatus_Granted;
 		}
-		return 2;
+		return PurchaseStatus_InsufficientFunds;
 	}
 	else
 	{
@@ -1014,17 +1014,17 @@ int ExpVehFacClass::Purchase_Hook(BaseControllerClass *base, GameObject *purchas
 			if (ExpVehFac[Team]->Support_Limit && ExpVehFac[Team]->Support_Amount >= ExpVehFac[Team]->Support_Limit)
 			{
 				Send_Message_Player(purchaser,255,255,255,"The limit for Support vehicles has been reached.");
-				return 3;
+				return PurchaseStatus_FactoryUnavailable;
 			}
 		}
 		else if (ExpVehFac[Team]->Ground_Limit && ExpVehFac[Team]->Ground_Amount >= ExpVehFac[Team]->Ground_Limit)
 		{
 			Send_Message_Player(purchaser,255,255,255,"The limit for Ground vehicles has been reached.");
-			return 3;
+			return PurchaseStatus_FactoryUnavailable;
 		}
 		if (ExpVehFac[Team]->Is_Ground_Building)
 		{
-			return 3;
+			return PurchaseStatus_FactoryUnavailable;
 		}
 		else if (Purchase_Item(purchaser,cost))
 		{
@@ -1039,9 +1039,9 @@ int ExpVehFacClass::Purchase_Hook(BaseControllerClass *base, GameObject *purchas
 				ExpVehFac[Team]->Set_Ground_Currently_Building(true);
 				Commands->Send_Custom_Event(0,ExpVehFac[Team]->Script,129313,Team,ExpVehFac[Team]->Ground_Build_Time[1]);
 			}
-			return 0;
+			return PurchaseStatus_Granted;
 		}
-		return 2;
+		return PurchaseStatus_InsufficientFunds;
 	}
 }
 void ExpVehFacClass::Object_Hook(void *,GameObject *obj)

@@ -463,6 +463,8 @@ bool SCRIPTSAPI Set_Script_Commands(ScriptCommandsClass* commands)
 	Get_Time_Of_Day = (gtod)Address(tt, "Get_Time_Of_Day");
 	Set_Time_Of_Day = (stod)Address(tt, "Set_Time_Of_Day");
 	Is_Connection_Bad = (icbad)Address(tt, "Is_Connection_Bad");
+	Forward_Server = (fws)Address(tt, "Forward_Server");
+	Add_Shadow_Message = (asmsg)Address(tt, "Add_Shadow_Message");
 
 	DA::Init();
 

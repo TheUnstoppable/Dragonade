@@ -7232,6 +7232,7 @@ class JMG_Utility_Scale_HP_By_Player_Count : public ScriptImpClass {
 * \SendCustom - custom to send
 * \Param - param to send (-1 sends the param that was received)
 * \Delay - delay to add
+* \MaxDistance - 0 send to everyone, otherwise they must be in the range of the attached object
 * \author jgray
 * \ingroup JmgUtility
 */
@@ -7241,6 +7242,7 @@ class JMG_Utility_Custom_Send_Custom_To_All_Objects : public ScriptImpClass {
 	int custom;
 	int Param;
 	float delay;
+	float maxDistance;
 	void Created(GameObject *obj);
 	void Custom(GameObject *obj,int message,int param,GameObject *sender);
 };
@@ -12254,6 +12256,74 @@ class JMG_Utility_Send_Custom_When_Moved_Distance_From_Spawn : public ScriptImpC
 	Vector3 location;
 	float distance;
 	bool requireInPathfind;
+	void Created(GameObject *obj);
+	void Timer_Expired(GameObject *obj,int number);
+};
+
+/*!
+* \brief Sends a custom message when killed
+* \ID - Id of the object to send the custom to, 0 sends to itself, -1 to killer
+* \Message - Custom to send
+* \Param - parameter to send with the custom
+* \Delay - Time amount to wait before sending the custom
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Killed_Send_Custom : public ScriptImpClass {
+	void Killed(GameObject *obj,GameObject *killer);
+};
+
+/*!
+* \brief Sends a custom message when killed from the killer
+* \ID - Id of the object to send the custom to, 0 sends to itself, -1 to killer
+* \Message - Custom to send
+* \Param - parameter to send with the custom
+* \Delay - Time amount to wait before sending the custom
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Killed_Send_Custom_Killer : public ScriptImpClass {
+	void Killed(GameObject *obj,GameObject *killer);
+};
+
+/*!
+* \brief Sends a to all objects on the map sends from the sender
+* \Custom - Custom to watch for
+* \Team - Required team to send to, 2 for any
+* \SendCustom - custom to send
+* \Param - param to send (-1 sends the param that was received)
+* \Delay - delay to add
+* \MaxDistance - 0 send to everyone, otherwise they must be in the range of the attached object
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Custom_Send_Custom_To_All_Objects_Sender : public ScriptImpClass {
+	int recieveMessage;
+	int team;
+	int custom;
+	int Param;
+	float delay;
+	float maxDistance;
+	void Created(GameObject *obj);
+	void Custom(GameObject *obj,int message,int param,GameObject *sender);
+};
+
+/*!
+* \brief Sends a custom message when the attached object moves a distance from its initial spawn location
+* \FireAngle - Random angle off the objects current facing to fire at
+* \MinHeight - Lowest point off the current position to aim at
+* \MaxHeight - Highest point off the current position to aim at
+* \UpdateRate - How long between each aim update to wait
+* \UseFacing - If -999 it will use the current rotation, otherwise the math will be done off the facing you enter here
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Created_Fire_Randomly : public ScriptImpClass {
+	float rate;
+	float angle;
+	float minHeight;
+	float maxHeight;
+	float useFacing;
 	void Created(GameObject *obj);
 	void Timer_Expired(GameObject *obj,int number);
 };

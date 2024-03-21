@@ -89,7 +89,7 @@ public:
 	UnitInfo *Get_Unit_Info(unsigned int Preset);
 	void Load(const char *NavalVehicles, const char *NavalCreationPresets,GameObject *script,const char *SupportVehicles = 0);
 	void Clear();
-	static int Purchase_Hook(BaseControllerClass *base, GameObject *purchaser, unsigned int cost, unsigned int preset,const char *data);
+	static PurchaseStatus Purchase_Hook(BaseControllerClass *base, GameObject *purchaser, unsigned int cost, unsigned int preset,const char *data);
 	static void Object_Hook(void *,GameObject *obj);
 };
 

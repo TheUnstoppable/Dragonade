@@ -27,7 +27,7 @@ private:
 	virtual void Settings_Loaded_Event();
 	virtual void Object_Created_Event(GameObject *obj);
 	virtual void Kill_Event(DamageableGameObj *Victim,ArmedGameObj *Killer,float Damage,unsigned int Warhead,float Scale,DADamageType::Type Type);
-	virtual int Character_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const SoldierGameObjDef *Item);
+	virtual PurchaseStatus Character_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const SoldierGameObjDef *Item);
 
 	//Settings
 	HashTemplateClass<unsigned int,DynamicVectorClass<const WeaponDefinitionClass*>> GrantWeapons; //SoldierGameObjDef*,WeaponDefinitionClass*

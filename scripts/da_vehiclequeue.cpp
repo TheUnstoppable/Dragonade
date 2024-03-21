@@ -76,26 +76,26 @@ void DAVehicleQueueGameFeatureClass::Level_Loaded_Event() {
 	Clear(1);
 }
 
-int DAVehicleQueueGameFeatureClass::Vehicle_Purchase_Request_Event(BaseControllerClass* Base, cPlayer* Player, float& Cost, const VehicleGameObjDef* Item) {
+PurchaseStatus DAVehicleQueueGameFeatureClass::Vehicle_Purchase_Request_Event(BaseControllerClass* Base, cPlayer* Player, float& Cost, const VehicleGameObjDef* Item) {
 	int Team = Base->Get_Player_Type();
 	if (Team == 0 || Team == 1) {
 		if ((unsigned int)Player->Get_Money() < Cost) {
-			return 2;
+			return PurchaseStatus_InsufficientFunds;
 		}
 		else if (!Is_Building(Team)) { //Build if VF is free.
 			Player->Purchase_Item(Cost);
 			Spawn_Vehicle(Team, Player, Item, Cost, 0);
-			return 0;
+			return PurchaseStatus_Granted;
 		}
 		else if (Building[Team]->Player == Player) {
-			return 3;
+			return PurchaseStatus_FactoryUnavailable;
 		}
 		else { //Add to queue if VF is busy.
 			Add(Team, Player, Item, Cost, 0);
-			return 1;
+			return PurchaseStatus_Pending;
 		}
 	}
-	return -1;
+	return PurchaseStatus_Allow;
 }
 
 bool DAVehicleQueueGameFeatureClass::Request_Vehicle_Event(VehicleFactoryGameObj *Factory,const VehicleGameObjDef *Vehicle,cPlayer *Player,float Delay,SoldierGameObj *Owner) {

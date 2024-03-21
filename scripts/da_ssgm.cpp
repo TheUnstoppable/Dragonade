@@ -198,34 +198,34 @@ void DASSGMPluginManager::Game_Over_Event() {
 	}
 }
 
-int DASSGMPluginManager::Character_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const SoldierGameObjDef *Item) {
+PurchaseStatus DASSGMPluginManager::Character_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const SoldierGameObjDef *Item) {
 	for (int i = Events[EVENT_CHARACTER_PURCHASE_HOOK].Count()-1;i >= 0;i--) {
-		int Return = Events[EVENT_CHARACTER_PURCHASE_HOOK][i]->OnCharacterPurchase(Base,Player->Get_GameObj(),(unsigned int)Cost,Item->Get_ID(),0);
+		PurchaseStatus Return = Events[EVENT_CHARACTER_PURCHASE_HOOK][i]->OnCharacterPurchase(Base,Player->Get_GameObj(),(unsigned int)Cost,Item->Get_ID(),0);
 		if (Return != -1) {
 			return Return;
 		}
 	}
-	return -1;
+	return PurchaseStatus_Allow;
 }
 
-int DASSGMPluginManager::Vehicle_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const VehicleGameObjDef *Item) {
+PurchaseStatus DASSGMPluginManager::Vehicle_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const VehicleGameObjDef *Item) {
 	for (int i = Events[EVENT_VEHICLE_PURCHASE_HOOK].Count()-1;i >= 0;i--) {
-		int Return = Events[EVENT_VEHICLE_PURCHASE_HOOK][i]->OnVehiclePurchase(Base,Player->Get_GameObj(),(unsigned int)Cost,Item->Get_ID(),0);
+		PurchaseStatus Return = Events[EVENT_VEHICLE_PURCHASE_HOOK][i]->OnVehiclePurchase(Base,Player->Get_GameObj(),(unsigned int)Cost,Item->Get_ID(),0);
 		if (Return != -1) {
 			return Return;
 		}
 	}
-	return -1;
+	return PurchaseStatus_Allow;
 }
 
-int DASSGMPluginManager::PowerUp_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const PowerUpGameObjDef *Item) {
+PurchaseStatus DASSGMPluginManager::PowerUp_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const PowerUpGameObjDef *Item) {
 	for (int i = Events[EVENT_POWERUP_PURCHASE_HOOK].Count()-1;i >= 0;i--) {
-		int Return = Events[EVENT_POWERUP_PURCHASE_HOOK][i]->OnPowerupPurchase(Base,Player->Get_GameObj(),(unsigned int)Cost,Item->Get_ID(),0);
+		PurchaseStatus Return = Events[EVENT_POWERUP_PURCHASE_HOOK][i]->OnPowerupPurchase(Base,Player->Get_GameObj(),(unsigned int)Cost,Item->Get_ID(),0);
 		if (Return != -1) {
 			return Return;
 		}
 	}
-	return -1;
+	return PurchaseStatus_Allow;
 }
 
 bool DASSGMPluginManager::Refill_Event(cPlayer *Player) {

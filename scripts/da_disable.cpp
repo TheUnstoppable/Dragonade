@@ -312,25 +312,25 @@ void DADisableListManager::Object_Created_Event(GameObject *obj) {
 	}
 }
 
-int DADisableListManager::Character_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const SoldierGameObjDef *Item) {
+PurchaseStatus DADisableListManager::Character_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const SoldierGameObjDef *Item) {
 	if (Is_Preset_Disabled(Item)) {
-		return 4;
+		return PurchaseStatus_OutOfStock;
 	}
-	return -1;
+	return PurchaseStatus_Allow;
 }
 
-int DADisableListManager::Vehicle_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const VehicleGameObjDef *Item) {
+PurchaseStatus DADisableListManager::Vehicle_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const VehicleGameObjDef *Item) {
 	if (Is_Preset_Disabled(Item)) {
-		return 4;
+		return PurchaseStatus_OutOfStock;
 	}
-	return -1;
+	return PurchaseStatus_Allow;
 }
 
-int DADisableListManager::PowerUp_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const PowerUpGameObjDef *Item) {	
+PurchaseStatus DADisableListManager::PowerUp_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const PowerUpGameObjDef *Item) {
 	if (Is_Preset_Disabled(Item) || Is_Preset_Disabled_For_Character(&Player->Get_GameObj()->Get_Definition(),Item)) {
-		return 4;
+		return PurchaseStatus_OutOfStock;
 	}
-	return -1;
+	return PurchaseStatus_Allow;
 }
 
 bool DADisableListManager::PowerUp_Grant_Request_Event(cPlayer *Player,const PowerUpGameObjDef *PowerUp,PowerUpGameObj *PowerUpObj) {

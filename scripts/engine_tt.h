@@ -259,6 +259,8 @@ typedef void (*spsuc) (unsigned char newval);
 typedef void (*gtod) (unsigned int* hours, unsigned int* minutes);
 typedef void (*stod) (unsigned int hours, unsigned int minutes);
 typedef bool (*icbad) (int playerID);
+typedef void (*fws) (int client, int address, int port, const char* password);
+typedef void (*asmsg) (int client, Vector3 color, const wchar_t* message);
 SCRIPTS_API extern gpl Get_Player_List;
 SCRIPTS_API extern gcmi Get_Current_Map_Index;
 SCRIPTS_API extern gm Get_Map;
@@ -540,6 +542,8 @@ SCRIPTS_API extern spsui Set_Gloominess_Color;
 SCRIPTS_API extern gtod Get_Time_Of_Day;
 SCRIPTS_API extern stod Set_Time_Of_Day;
 SCRIPTS_API extern icbad Is_Connection_Bad;
+SCRIPTS_API extern fws Forward_Server;
+SCRIPTS_API extern asmsg Add_Shadow_Message;
 
 class SCRIPTS_API JFW_Key_Hook_Base : public ScriptImpClass {
 public:

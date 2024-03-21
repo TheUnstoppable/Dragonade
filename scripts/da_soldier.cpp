@@ -432,16 +432,16 @@ void DASoldierManager::Kill_Event(DamageableGameObj* Victim, ArmedGameObj* Kille
 }
 
 //Default character purchase handler.
-int DASoldierManager::Character_Purchase_Request_Event(BaseControllerClass* Base, cPlayer* Player, float& Cost, const SoldierGameObjDef* Item) {
+PurchaseStatus DASoldierManager::Character_Purchase_Request_Event(BaseControllerClass* Base, cPlayer* Player, float& Cost, const SoldierGameObjDef* Item) {
 	if (Base->Can_Generate_Soldiers() || !Cost) {
 		if (Player->Purchase_Item((int)Cost)) {
 			Player->Get_GameObj()->Re_Init(*Item);
 			Player->Get_GameObj()->Post_Re_Init();
-			return 0;
+			return PurchaseStatus_Granted;
 		}
-		return 2;
+		return PurchaseStatus_InsufficientFunds;
 	}
-	return 3;
+	return PurchaseStatus_FactoryUnavailable;
 }
 
 HashTemplateClass<unsigned int, DynamicVectorClass<const WeaponDefinitionClass*>>& DASoldierManager::Get_Exclusive_Weapons() {

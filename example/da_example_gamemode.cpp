@@ -45,12 +45,12 @@ void DAExampleGameModeClass::Init() {
 	Register_Chat_Command((DAECC)&DAExampleGameModeClass::Example4_Chat_Command,"!example4"); //Short version with defaults.
 }
 
-int DAExampleGameModeClass::Character_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const SoldierGameObjDef *Item) {
-	return 4; //Since this is supposed to be vehicles only block all character purchases. 4 is "Item not in stock."
+PurchaseStatus DAExampleGameModeClass::Character_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const SoldierGameObjDef *Item) {
+	return PurchaseStatus_OutOfStock; //Since this is supposed to be vehicles only block all character purchases. 4 is "Item not in stock."
 }
 
-int DAExampleGameModeClass::PowerUp_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const PowerUpGameObjDef *Item) {
-	return 4; //Since this is supposed to be vehicles only block all powerup purchases. 4 is "Item not in stock."
+PurchaseStatus DAExampleGameModeClass::PowerUp_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const PowerUpGameObjDef *Item) {
+	return PurchaseStatus_OutOfStock; //Since this is supposed to be vehicles only block all powerup purchases. 4 is "Item not in stock."
 }
 
 bool DAExampleGameModeClass::Add_Weapon_Request_Event(cPlayer *Player,const WeaponDefinitionClass *Weapon) {

@@ -269,66 +269,66 @@ void DAVehicleManager::Object_Created_Event(GameObject *obj) {
 }
 
 //Limit checking is done here for per-player and per-team limits(NYI)
-int DAVehicleManager::Vehicle_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const VehicleGameObjDef *Item) {
+PurchaseStatus DAVehicleManager::Vehicle_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const VehicleGameObjDef *Item) {
 	VehicleFactoryGameObj *VF = (VehicleFactoryGameObj*)Base->Find_Building(BuildingConstants::TYPE_VEHICLE_FACTORY);
 	AirFactoryGameObj *AF = (AirFactoryGameObj*)Base->Find_Building(BuildingConstants::TYPE_HELIPAD);
 	NavalFactoryGameObj *NF = (NavalFactoryGameObj*)Base->Find_Building(BuildingConstants::TYPE_NAVAL_FACTORY);
 	if (AF && Item->Get_Type() == VEHICLE_TYPE_FLYING) { //Flying vehicle
 		if ((unsigned int)Get_Air_Vehicle_Count(Base->Get_Player_Type()) >= Get_Air_Vehicle_Limit()) {
-			return 4;
+			return PurchaseStatus_OutOfStock;
 		}
 		else {
-			return -1;
+			return PurchaseStatus_Allow;
 		}
 	}
 	else if (NF && Item->Get_Type() == VEHICLE_TYPE_BOAT || Item->Get_Type() == VEHICLE_TYPE_SUB) { //Naval vehicle
 		if ((unsigned int)Get_Naval_Vehicle_Count(Base->Get_Player_Type()) >= Get_Naval_Vehicle_Limit()) {
-			return 4;
+			return PurchaseStatus_OutOfStock;
 		}
 		else {
-			return -1;
+			return PurchaseStatus_Allow;
 		}
 	}
 	else if (VF) { //Ground vehicle
 		if (!Check_Limit_For_Player(Player)) {
-			return 4;
+			return PurchaseStatus_OutOfStock;
 		}
 		else {
-			return -1;
+			return PurchaseStatus_Allow;
 		}
 	}
-	return 3;
+	return PurchaseStatus_FactoryUnavailable;
 }
 
 //Default vehicle purchase handler.
 //Seperate from the above so the vehicle purchase event can be overloaded.
-int DAVehicleManager::DefaultPurchaseEvent::Vehicle_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const VehicleGameObjDef *Item) {
+PurchaseStatus DAVehicleManager::DefaultPurchaseEvent::Vehicle_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const VehicleGameObjDef *Item) {
 	VehicleFactoryGameObj *VF = (VehicleFactoryGameObj*)Base->Find_Building(BuildingConstants::TYPE_VEHICLE_FACTORY);
 	AirFactoryGameObj *AF = (AirFactoryGameObj*)Base->Find_Building(BuildingConstants::TYPE_HELIPAD);
 	NavalFactoryGameObj *NF = (NavalFactoryGameObj*)Base->Find_Building(BuildingConstants::TYPE_NAVAL_FACTORY);
 	if (AF && Item->Get_Type() == VEHICLE_TYPE_FLYING) { //Flying vehicle
 		if (!AF->Is_Available()) {
-			return 3;
+			return PurchaseStatus_FactoryUnavailable;
 		}
 		else if (Player->Purchase_Item((int)Cost)) {
 			AF->Create_Vehicle(Item->Get_ID(),Player->Get_GameObj());
-			return 0;
+			return PurchaseStatus_Granted;
 		}
-		return 2;
+		return PurchaseStatus_InsufficientFunds;
 	}
 	else if (NF && Item->Get_Type() == VEHICLE_TYPE_BOAT || Item->Get_Type() == VEHICLE_TYPE_SUB) { //Naval vehicle
 		if (!NF->Is_Available() || !NF->Can_Spawn(Item->Get_ID())) {
-			return 3;
+			return PurchaseStatus_FactoryUnavailable;
 		}
 		else if (Player->Purchase_Item((int)Cost)) {
 			NF->Create_Vehicle(Item->Get_ID(),Player->Get_GameObj());
-			return 0;
+			return PurchaseStatus_Granted;
 		}
-		return 2;
+		return PurchaseStatus_InsufficientFunds;
 	}
 	else if (VF) { //Ground vehicle
 		if (!VF->Is_Available()) {
-			return 3;
+			return PurchaseStatus_FactoryUnavailable;
 		}
 		else if (Player->Purchase_Item((int)Cost)) {
 			float Delay = 5.0f;
@@ -336,11 +336,11 @@ int DAVehicleManager::DefaultPurchaseEvent::Vehicle_Purchase_Request_Event(BaseC
 				Delay *= Get_Build_Time_Multiplier(Base->Get_Player_Type());
 			}
 			VF->Request_Vehicle(Item->Get_ID(),Delay,Player->Get_GameObj());
-			return 0;
+			return PurchaseStatus_Granted;
 		}
-		return 2;
+		return PurchaseStatus_InsufficientFunds;
 	}
-	return 3;
+	return PurchaseStatus_FactoryUnavailable;
 }
 
 void DAVehicleManager::Kill_Event(DamageableGameObj *Victim,ArmedGameObj *Killer,float Damage,unsigned int Warhead,float Scale,DADamageType::Type Type) {

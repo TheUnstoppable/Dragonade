@@ -28,7 +28,7 @@ private:
 	virtual void C4_Detonate_Event(C4GameObj *C4);
 	virtual void Poke_Event(cPlayer *Player,PhysicalGameObj *obj);
 	virtual void Kill_Event(DamageableGameObj *Victim,ArmedGameObj *Killer,float Damage,unsigned int Warhead,float Scale,DADamageType::Type Type);
-	virtual int PowerUp_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const PowerUpGameObjDef *Item);
+	virtual PurchaseStatus PowerUp_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const PowerUpGameObjDef *Item);
 	
 	bool BlockFakeBeacons;
 };

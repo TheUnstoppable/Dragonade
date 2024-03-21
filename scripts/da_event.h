@@ -292,10 +292,10 @@ public:
 	static void Console_Output_Event(const char *Output);
 	static void Ren_Log_Event(const char *Output);
 	static void DA_Log_Event(const char *Header,const char *Output);
-	static int Character_Purchase_Request_Event(BaseControllerClass *Base,SoldierGameObj *Soldier,unsigned int Cost,unsigned int Preset,const char *Data);
-	static int Vehicle_Purchase_Request_Event(BaseControllerClass *Base,SoldierGameObj *Soldier,unsigned int Cost,unsigned int Preset,const char *Data);
-	static int PowerUp_Purchase_Request_Event(BaseControllerClass *Base,SoldierGameObj *Soldier,unsigned int Cost,unsigned int Preset,const char *Data);
-	static int Custom_Purchase_Request_Event(BaseControllerClass *Base,SoldierGameObj *Soldier,unsigned int Cost,unsigned int Preset);
+	static PurchaseStatus Character_Purchase_Request_Event(BaseControllerClass *Base,SoldierGameObj *Soldier,unsigned int Cost,unsigned int Preset,const char *Data);
+	static PurchaseStatus Vehicle_Purchase_Request_Event(BaseControllerClass *Base,SoldierGameObj *Soldier,unsigned int Cost,unsigned int Preset,const char *Data);
+	static PurchaseStatus PowerUp_Purchase_Request_Event(BaseControllerClass *Base,SoldierGameObj *Soldier,unsigned int Cost,unsigned int Preset,const char *Data);
+	static PurchaseStatus Custom_Purchase_Request_Event(BaseControllerClass *Base,SoldierGameObj *Soldier,unsigned int Cost,unsigned int Preset);
 	static void Character_Purchase_Event(cPlayer *Player,float Cost,const SoldierGameObjDef *Def);
 	static void Vehicle_Purchase_Event(cPlayer *Player,float Cost,const VehicleGameObjDef *Def);
 	static void PowerUp_Purchase_Event(cPlayer *Player,float Cost,const PowerUpGameObjDef *Def);
@@ -436,10 +436,10 @@ public:
 	virtual void Console_Output_Event(const char *Output) { }
 	virtual void Ren_Log_Event(const char *Output) { }
 	virtual void DA_Log_Event(const char *Header,const char *Output) { }
-	virtual int Character_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const SoldierGameObjDef *Item) { return -1; }
-	virtual int Vehicle_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const VehicleGameObjDef *Item) { return -1; }
-	virtual int PowerUp_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const PowerUpGameObjDef *Item) { return -1; }
-	virtual int Custom_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,unsigned int ID) { return -1; }
+	virtual PurchaseStatus Character_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const SoldierGameObjDef *Item) { return PurchaseStatus_Allow; }
+	virtual PurchaseStatus Vehicle_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const VehicleGameObjDef *Item) { return PurchaseStatus_Allow; }
+	virtual PurchaseStatus PowerUp_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const PowerUpGameObjDef *Item) { return PurchaseStatus_Allow; }
+	virtual PurchaseStatus Custom_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,unsigned int ID) { return PurchaseStatus_Allow; }
 	virtual void Character_Purchase_Event(cPlayer *Player,float Cost,const SoldierGameObjDef *Item) { }
 	virtual void Vehicle_Purchase_Event(cPlayer *Player,float Cost,const VehicleGameObjDef *Item) { }
 	virtual void PowerUp_Purchase_Event(cPlayer *Player,float Cost,const PowerUpGameObjDef *Item) { }

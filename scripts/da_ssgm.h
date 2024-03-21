@@ -69,9 +69,9 @@ public:
 	virtual void OnPlayerJoin(int PlayerID,const char *PlayerName) { };
 	virtual void OnPlayerLeave(int PlayerID) { };
 	virtual bool OnRefill(GameObject *purchaser) { return true; };
-	virtual int OnPowerupPurchase(BaseControllerClass *base,GameObject *Purchaser,unsigned int cost,unsigned int preset,const char *data) { return -1; };
-	virtual int OnVehiclePurchase(BaseControllerClass *base,GameObject *Purchaser,unsigned int cost,unsigned int preset,const char *data) { return -1; };
-	virtual int OnCharacterPurchase(BaseControllerClass *base,GameObject *Purchaser,unsigned int cost,unsigned int preset,const char *data) { return -1; };
+	virtual PurchaseStatus OnPowerupPurchase(BaseControllerClass *base,GameObject *Purchaser,unsigned int cost,unsigned int preset,const char *data) { return PurchaseStatus_Allow; };
+	virtual PurchaseStatus OnVehiclePurchase(BaseControllerClass *base,GameObject *Purchaser,unsigned int cost,unsigned int preset,const char *data) { return PurchaseStatus_Allow; };
+	virtual PurchaseStatus OnCharacterPurchase(BaseControllerClass *base,GameObject *Purchaser,unsigned int cost,unsigned int preset,const char *data) { return PurchaseStatus_Allow; };
 	virtual void OnThink() { };
 	virtual bool OnRadioCommand(int PlayerType, int PlayerID, int AnnouncementID, int IconID, AnnouncementEnum AnnouncementType) { return true; }
 	virtual bool OnStockDamage(PhysicalGameObj* damager, PhysicalGameObj* target, float damage, uint warheadId) { return true; }
@@ -94,9 +94,9 @@ private:
 	virtual void Level_Loaded_Event();
 	virtual void Settings_Loaded_Event();
 	virtual void Game_Over_Event();
-	virtual int Character_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const SoldierGameObjDef *Item);
-	virtual int Vehicle_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const VehicleGameObjDef *Item);
-	virtual int PowerUp_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const PowerUpGameObjDef *Item);
+	virtual PurchaseStatus Character_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const SoldierGameObjDef *Item);
+	virtual PurchaseStatus Vehicle_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const VehicleGameObjDef *Item);
+	virtual PurchaseStatus PowerUp_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const PowerUpGameObjDef *Item);
 	virtual bool Refill_Event(cPlayer *Player);
 	virtual bool Stock_Client_Damage_Request_Event(DamageableGameObj *Victim,ArmedGameObj *Damager,float Damage, uint Warhead);
 	virtual bool TT_Client_Damage_Request_Event(DamageableGameObj *Victim,ArmedGameObj *Damager,const AmmoDefinitionClass *Ammo,const char *Bone);

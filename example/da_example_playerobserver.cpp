@@ -39,19 +39,19 @@ void DAExamplePlayerObserverClass::Refill_Key_Hook() {
 	Grant_Refill(Get_GameObj());
 }
 
-int DAExamplePlayerObserverClass::Character_Purchase_Request(float &Cost,const SoldierGameObjDef *Item) {
+PurchaseStatus DAExamplePlayerObserverClass::Character_Purchase_Request(float &Cost,const SoldierGameObjDef *Item) {
 	Cost *= 0.9f; //10% discount on characters.
-	return -1;
+	return PurchaseStatus_Allow;
 }
 
-int DAExamplePlayerObserverClass::Vehicle_Purchase_Request(float &Cost,const VehicleGameObjDef *Item) {
+PurchaseStatus DAExamplePlayerObserverClass::Vehicle_Purchase_Request(float &Cost,const VehicleGameObjDef *Item) {
 	Cost *= 0.8f; //20% discount on vehicles.
-	return -1;
+	return PurchaseStatus_Allow;
 }
 
-int DAExamplePlayerObserverClass::PowerUp_Purchase_Request(float &Cost,const PowerUpGameObjDef *Item) {
+PurchaseStatus DAExamplePlayerObserverClass::PowerUp_Purchase_Request(float &Cost,const PowerUpGameObjDef *Item) {
 	Cost *= 0.7f; //30% discount on powerups.
-	return -1;
+	return PurchaseStatus_Allow;
 }
 
 bool DAExamplePlayerObserverClass::Vehicle_Entry_Request(VehicleGameObj *Vehicle,int &Seat) {

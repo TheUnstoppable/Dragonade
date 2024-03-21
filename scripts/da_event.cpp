@@ -313,7 +313,7 @@ void DAEventManager::DA_Log_Event(const char *Header,const char *Output) {
 	}
 }
 
-int DAEventManager::Character_Purchase_Request_Event(BaseControllerClass *Base,SoldierGameObj *Soldier,unsigned int Cost,unsigned int Preset,const char *Data) {
+PurchaseStatus DAEventManager::Character_Purchase_Request_Event(BaseControllerClass *Base,SoldierGameObj *Soldier,unsigned int Cost,unsigned int Preset,const char *Data) {
 	DefinitionClass *Def = Find_Definition(Preset);
 	if (Def) { //Check the class ID and pass to the proper purchase function. This allows any type of preset to be in any menu.
 		if (Def->Get_Class_ID() == CID_Vehicle) {
@@ -325,7 +325,7 @@ int DAEventManager::Character_Purchase_Request_Event(BaseControllerClass *Base,S
 		else if (Def->Get_Class_ID() == CID_Soldier) {
 			float NewCost = (float)Cost;
 			for (int i = 0;i < Events[DAEvent::CHARACTERPURCHASEREQUEST].Count();i++) {
-				int Return = Events[DAEvent::CHARACTERPURCHASEREQUEST][i]->Base->Character_Purchase_Request_Event(Base,Soldier->Get_Player(),NewCost,(SoldierGameObjDef*)Def);
+				PurchaseStatus Return = Events[DAEvent::CHARACTERPURCHASEREQUEST][i]->Base->Character_Purchase_Request_Event(Base,Soldier->Get_Player(),NewCost,(SoldierGameObjDef*)Def);
 				NewCost = Round(NewCost);
 				if (Return != -1) {
 					if (!Return) {
@@ -339,10 +339,10 @@ int DAEventManager::Character_Purchase_Request_Event(BaseControllerClass *Base,S
 			return Custom_Purchase_Request_Event(Base,Soldier,Cost,Preset);
 		}
 	}
-	return -1;
+	return PurchaseStatus_Allow;
 }
 
-int DAEventManager::Vehicle_Purchase_Request_Event(BaseControllerClass *Base,SoldierGameObj *Soldier,unsigned int Cost,unsigned int Preset,const char *Data) {
+PurchaseStatus DAEventManager::Vehicle_Purchase_Request_Event(BaseControllerClass *Base,SoldierGameObj *Soldier,unsigned int Cost,unsigned int Preset,const char *Data) {
 	DefinitionClass *Def = Find_Definition(Preset);
 	if (Def) {
 		if (Def->Get_Class_ID() == CID_Soldier) {
@@ -354,7 +354,7 @@ int DAEventManager::Vehicle_Purchase_Request_Event(BaseControllerClass *Base,Sol
 		else if (Def->Get_Class_ID() == CID_Vehicle) {
 			float NewCost = (float)Cost;
 			for (int i = 0;i < Events[DAEvent::VEHICLEPURCHASEREQUEST].Count();i++) {
-				int Return = Events[DAEvent::VEHICLEPURCHASEREQUEST][i]->Base->Vehicle_Purchase_Request_Event(Base,Soldier->Get_Player(),NewCost,(VehicleGameObjDef*)Def);
+				PurchaseStatus Return = Events[DAEvent::VEHICLEPURCHASEREQUEST][i]->Base->Vehicle_Purchase_Request_Event(Base,Soldier->Get_Player(),NewCost,(VehicleGameObjDef*)Def);
 				NewCost = Round(NewCost);
 				if (Return != -1) {
 					if (!Return) {
@@ -368,10 +368,10 @@ int DAEventManager::Vehicle_Purchase_Request_Event(BaseControllerClass *Base,Sol
 			return Custom_Purchase_Request_Event(Base,Soldier,Cost,Preset);
 		}
 	}
-	return -1;
+	return PurchaseStatus_Allow;
 }
 
-int DAEventManager::PowerUp_Purchase_Request_Event(BaseControllerClass *Base,SoldierGameObj *Soldier,unsigned int Cost,unsigned int Preset,const char *Data) {
+PurchaseStatus DAEventManager::PowerUp_Purchase_Request_Event(BaseControllerClass *Base,SoldierGameObj *Soldier,unsigned int Cost,unsigned int Preset,const char *Data) {
 	DefinitionClass *Def = Find_Definition(Preset);
 	if (Def) {
 		if (Def->Get_Class_ID() == CID_Vehicle) {
@@ -383,9 +383,9 @@ int DAEventManager::PowerUp_Purchase_Request_Event(BaseControllerClass *Base,Sol
 		else if (Def->Get_Class_ID() == CID_PowerUp) {
 			float NewCost = (float)Cost;
 			for (int i = 0;i < Events[DAEvent::POWERUPPURCHASEREQUEST].Count();i++) {
-				int Return = Events[DAEvent::POWERUPPURCHASEREQUEST][i]->Base->PowerUp_Purchase_Request_Event(Base,Soldier->Get_Player(),NewCost,(PowerUpGameObjDef*)Def);
+				PurchaseStatus Return = Events[DAEvent::POWERUPPURCHASEREQUEST][i]->Base->PowerUp_Purchase_Request_Event(Base,Soldier->Get_Player(),NewCost,(PowerUpGameObjDef*)Def);
 				NewCost = Round(NewCost);
-				if (Return != -1) {
+				if (Return != PurchaseStatus_Allow) {
 					if (!Return) {
 						PowerUp_Purchase_Event(Soldier->Get_Player(),NewCost,(PowerUpGameObjDef*)Def);
 					}
@@ -397,22 +397,22 @@ int DAEventManager::PowerUp_Purchase_Request_Event(BaseControllerClass *Base,Sol
 			return Custom_Purchase_Request_Event(Base,Soldier,Cost,Preset);
 		}
 	}
-	return -1;
+	return PurchaseStatus_Allow;
 }
 
-int DAEventManager::Custom_Purchase_Request_Event(BaseControllerClass *Base,SoldierGameObj *Soldier,unsigned int Cost,unsigned int Preset) {
+PurchaseStatus DAEventManager::Custom_Purchase_Request_Event(BaseControllerClass *Base,SoldierGameObj *Soldier,unsigned int Cost,unsigned int Preset) {
 	float NewCost = (float)Cost;
 	for (int i = 0;i < Events[DAEvent::CUSTOMPURCHASEREQUEST].Count();i++) {
-		int Return = Events[DAEvent::CUSTOMPURCHASEREQUEST][i]->Base->Custom_Purchase_Request_Event(Base,Soldier->Get_Player(),NewCost,Preset);
+		PurchaseStatus Return = Events[DAEvent::CUSTOMPURCHASEREQUEST][i]->Base->Custom_Purchase_Request_Event(Base,Soldier->Get_Player(),NewCost,Preset);
 		NewCost = Round(NewCost);
-		if (Return != -1) {
+		if (Return != PurchaseStatus_Allow) {
 			if (!Return) {
 				Custom_Purchase_Event(Soldier->Get_Player(),NewCost,Preset);
 			}
 			return Return;
 		}
 	}
-	return 3;
+	return PurchaseStatus_FactoryUnavailable;
 }
 
 void DAEventManager::Character_Purchase_Event(cPlayer *Player,float Cost,const SoldierGameObjDef *Def) {

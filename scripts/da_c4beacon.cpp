@@ -268,17 +268,17 @@ void DAC4BeaconManager::Kill_Event(DamageableGameObj *Victim,ArmedGameObj *Kille
 }
 
 //Default powerup purchase handler.
-int DAC4BeaconManager::PowerUp_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const PowerUpGameObjDef *Item) {
+PurchaseStatus DAC4BeaconManager::PowerUp_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const PowerUpGameObjDef *Item) {
 	if (Player->Get_Money() >= Cost) {
 		if (Item->Grant(Player->Get_GameObj())) {
 			Player->Purchase_Item((int)Cost);
-			return 0;
+			return PurchaseStatus_Granted;
 		}
 		else {
-			return 4;
+			return PurchaseStatus_OutOfStock;
 		}
 	}
-	return 2;
+	return PurchaseStatus_InsufficientFunds;
 }
 
 

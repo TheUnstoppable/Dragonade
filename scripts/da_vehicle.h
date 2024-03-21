@@ -67,12 +67,12 @@ public:
 	
 private:
 	class DefaultPurchaseEvent : public DAEventClass {
-		virtual int Vehicle_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const VehicleGameObjDef *Item);
+		virtual PurchaseStatus Vehicle_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const VehicleGameObjDef *Item);
 	};
 	virtual void Level_Loaded_Event();
 	virtual void Settings_Loaded_Event();
 	virtual void Object_Created_Event(GameObject *obj);
-	virtual int Vehicle_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const VehicleGameObjDef *Item);
+	virtual PurchaseStatus Vehicle_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const VehicleGameObjDef *Item);
 	virtual void Kill_Event(DamageableGameObj *Victim,ArmedGameObj *Killer,float Damage,unsigned int Warhead,float Scale,DADamageType::Type Type);
 	virtual bool Vehicle_Flip_Event(VehicleGameObj *Vehicle);
 	virtual bool Vehicle_Entry_Request_Event(VehicleGameObj *Vehicle,cPlayer *Player,int &Seat);

@@ -132,10 +132,10 @@ public:
 	bool Radio(int PlayerType,int AnnouncementID,int IconID,AnnouncementEnum AnnouncementType);
 	bool Key_Hook(const StringClass &Key);
 	void Team_Change();
-	int Character_Purchase_Request(float &Cost,const SoldierGameObjDef *Item);
-	int Vehicle_Purchase_Request(float &Cost,const VehicleGameObjDef *Item);
-	int PowerUp_Purchase_Request(float &Cost,const PowerUpGameObjDef *Item);
-	int Custom_Purchase_Request(float &Cost,unsigned int ID);
+	PurchaseStatus Character_Purchase_Request(float &Cost,const SoldierGameObjDef *Item);
+	PurchaseStatus Vehicle_Purchase_Request(float &Cost,const VehicleGameObjDef *Item);
+	PurchaseStatus PowerUp_Purchase_Request(float &Cost,const PowerUpGameObjDef *Item);
+	PurchaseStatus Custom_Purchase_Request(float &Cost,unsigned int ID);
 	void Character_Purchase(float Cost,const SoldierGameObjDef *Item);
 	void Vehicle_Purchase(float Cost,const VehicleGameObjDef *Item);
 	void PowerUp_Purchase(float Cost,const PowerUpGameObjDef *Item);
@@ -306,10 +306,10 @@ public:
 	virtual void Player_Loaded() { } //Called after the player has loaded the map and spawned.
 	virtual void Name_Change() { } //Called after the player's name is changed for fake color messaging.
 	virtual void Team_Change() { } //Called when the player changes teams.
-	virtual int Character_Purchase_Request(float &Cost,const SoldierGameObjDef *Item) { return -1; } //Called when the player tries to buy a character.
-	virtual int Vehicle_Purchase_Request(float &Cost,const VehicleGameObjDef *Item) { return -1; } //Called when the player tries to buy a vehicle.
-	virtual int PowerUp_Purchase_Request(float &Cost,const PowerUpGameObjDef *Item) { return -1; } //Called when the player tries to buy a powerup.
-	virtual int Custom_Purchase_Request(float &Cost,unsigned int ID) { return -1; } //Called when the player tries to buy a custom object.
+	virtual PurchaseStatus Character_Purchase_Request(float &Cost,const SoldierGameObjDef *Item) { return PurchaseStatus_Allow; } //Called when the player tries to buy a character.
+	virtual PurchaseStatus Vehicle_Purchase_Request(float &Cost,const VehicleGameObjDef *Item) { return PurchaseStatus_Allow; } //Called when the player tries to buy a vehicle.
+	virtual PurchaseStatus PowerUp_Purchase_Request(float &Cost,const PowerUpGameObjDef *Item) { return PurchaseStatus_Allow; } //Called when the player tries to buy a powerup.
+	virtual PurchaseStatus Custom_Purchase_Request(float &Cost,unsigned int ID) { return PurchaseStatus_Allow; } //Called when the player tries to buy a custom object.
 	virtual void Character_Purchase(float Cost,const SoldierGameObjDef *Item) { } //Called after the player has bought a character.
 	virtual void Vehicle_Purchase(float Cost,const VehicleGameObjDef *Item) { } //Called after the player has bought a vehicle.
 	virtual void PowerUp_Purchase(float Cost,const PowerUpGameObjDef *Item) { } //Called after the player has bought a powerup.
@@ -467,10 +467,10 @@ private:
 	virtual void Player_Leave_Event(cPlayer *Player);
 	virtual void Player_Loaded_Event(cPlayer *Player);
 	virtual void Name_Change_Event(cPlayer *Player);
-	virtual int Character_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const SoldierGameObjDef *Item);
-	virtual int Vehicle_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const VehicleGameObjDef *Item);
-	virtual int PowerUp_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const PowerUpGameObjDef *Item);
-	virtual int Custom_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,unsigned int ID);
+	virtual PurchaseStatus Character_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const SoldierGameObjDef *Item);
+	virtual PurchaseStatus Vehicle_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const VehicleGameObjDef *Item);
+	virtual PurchaseStatus PowerUp_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const PowerUpGameObjDef *Item);
+	virtual PurchaseStatus Custom_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,unsigned int ID);
 	virtual void Character_Purchase_Event(cPlayer *Player,float Cost,const SoldierGameObjDef *Item);
 	virtual void Vehicle_Purchase_Event(cPlayer *Player,float Cost,const VehicleGameObjDef *Item);
 	virtual void PowerUp_Purchase_Event(cPlayer *Player,float Cost,const PowerUpGameObjDef *Item);

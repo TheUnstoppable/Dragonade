@@ -1297,13 +1297,13 @@ JFW_Beacon_Building::~JFW_Beacon_Building()
 	}
 }
 
-int JFW_Beacon_Building::PowerupPurchaseHook(BaseControllerClass *base,GameObject *purchaser,unsigned int cost,unsigned int preset,const char *data)
+PurchaseStatus JFW_Beacon_Building::PowerupPurchaseHook(BaseControllerClass *base,GameObject *purchaser,unsigned int cost,unsigned int preset,const char *data)
 {
 	if (((GameObject *)data)->As_BuildingGameObj() && ((GameObject *)data)->As_BuildingGameObj()->Is_Destroyed() && ((GameObject *)data)->As_BuildingGameObj()->Get_Player_Type() == Commands->Get_Player_Type(purchaser))
 	{
-		return 3;
+		return PurchaseStatus_FactoryUnavailable;
 	}
-	return -1;
+	return PurchaseStatus_Allow;
 }
 
 void JFW_Spawn_Object_Repair::Damaged(GameObject *obj,GameObject *damager,float amount)

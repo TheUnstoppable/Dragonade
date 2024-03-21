@@ -51,11 +51,11 @@ public:
         monitor_handle = 0;
     }
 
-    int PurchaseHook(BaseControllerClass* base, GameObject* purchaser, unsigned int cost, unsigned int preset)
+    PurchaseStatus PurchaseHook(BaseControllerClass* base, GameObject* purchaser, unsigned int cost, unsigned int preset)
     {
-       if (preset != preset_id || base->Get_Player_Type() != Get_Player_Type(purchaser)) return -1; // not ours, process normally
+       if (preset != preset_id || base->Get_Player_Type() != Get_Player_Type(purchaser)) return PurchaseStatus_Allow; // not ours, process normally
 
-       return -3; // process normally, but prevent creation
+       return PurchaseStatus_AllowNoSpawn; // process normally, but prevent creation
     }
 
     void PurchaseMonitor(BaseControllerClass* base, GameObject* purchaser, unsigned int cost, unsigned int preset, unsigned int purchase_status)
@@ -85,7 +85,7 @@ public:
         Commands->Send_Custom_Event(owner, cinematic, CINEMATIC_START, 0, 0);
     }
 
-    static int PurchaseHook(BaseControllerClass* base, GameObject* purchaser, unsigned int cost, unsigned int preset, const char* instance)
+    static PurchaseStatus PurchaseHook(BaseControllerClass* base, GameObject* purchaser, unsigned int cost, unsigned int preset, const char* instance)
     {
         return ((SH_CinematicVehicleFactoryBypass*)instance)->PurchaseHook(base, purchaser, cost, preset);
     }

@@ -581,60 +581,60 @@ void DAPlayerClass::Team_Change() {
 	}
 }
 
-int DAPlayerClass::Character_Purchase_Request(float &Cost,const SoldierGameObjDef *Item) {
+PurchaseStatus DAPlayerClass::Character_Purchase_Request(float &Cost,const SoldierGameObjDef *Item) {
 	Cost *= Get_Character_Discount();
 	for (int i = 0;i < Observers.Count();i++) {
-		int Return = Observers[i]->Character_Purchase_Request(Cost,Item);
-		if (Return != -1) {
+		PurchaseStatus Return = Observers[i]->Character_Purchase_Request(Cost,Item);
+		if (Return != PurchaseStatus_Allow) {
 			return Return;
 		}
 	}
-	return -1;
+	return PurchaseStatus_Allow;
 }
 
-int DAPlayerClass::Vehicle_Purchase_Request(float &Cost,const VehicleGameObjDef *Item) {
+PurchaseStatus DAPlayerClass::Vehicle_Purchase_Request(float &Cost,const VehicleGameObjDef *Item) {
 	Cost *= Get_Vehicle_Discount();
 	for (int i = 0;i < Observers.Count();i++) {
-		int Return = Observers[i]->Vehicle_Purchase_Request(Cost,Item);
-		if (Return != -1) {
+		PurchaseStatus Return = Observers[i]->Vehicle_Purchase_Request(Cost,Item);
+		if (Return != PurchaseStatus_Allow) {
 			return Return;
 		}
 	}
-	return -1;
+	return PurchaseStatus_Allow;
 }
 
-int DAPlayerClass::PowerUp_Purchase_Request(float &Cost,const PowerUpGameObjDef *Item) {
+PurchaseStatus DAPlayerClass::PowerUp_Purchase_Request(float &Cost,const PowerUpGameObjDef *Item) {
 	Cost *= Get_PowerUp_Discount();
 	if (Item->GrantWeapon) {
 		WeaponDefinitionClass *WeapDef = (WeaponDefinitionClass*)Find_Definition(Item->GrantWeaponID);
 		if (WeapDef) {
 			if (Is_C4_Locked() && WeapDef->Style == STYLE_C4) {
 				if (((AmmoDefinitionClass*)Find_Definition(WeapDef->PrimaryAmmoDefID))->AmmoType != 2) {
-					return 4;
+					return PurchaseStatus_OutOfStock;
 				}
 			}
 			else if (Is_Beacon_Locked() && WeapDef->Style == STYLE_BEACON) {
-				return 4;
+				return PurchaseStatus_OutOfStock;
 			}
 		}
 	}
 	for (int i = 0;i < Observers.Count();i++) {
-		int Return = Observers[i]->PowerUp_Purchase_Request(Cost,Item);
+		PurchaseStatus Return = Observers[i]->PowerUp_Purchase_Request(Cost,Item);
 		if (Return != -1) {
 			return Return;
 		}
 	}
-	return -1;
+	return PurchaseStatus_Allow;
 }
 
-int DAPlayerClass::Custom_Purchase_Request(float &Cost,unsigned int ID) {
+PurchaseStatus DAPlayerClass::Custom_Purchase_Request(float &Cost,unsigned int ID) {
 	for (int i = 0;i < Observers.Count();i++) {
-		int Return = Observers[i]->Custom_Purchase_Request(Cost,ID);
-		if (Return != -1) {
+		PurchaseStatus Return = Observers[i]->Custom_Purchase_Request(Cost,ID);
+		if (Return != PurchaseStatus_Allow) {
 			return Return;
 		}
 	}
-	return -1;
+	return PurchaseStatus_Allow;
 }
 
 void DAPlayerClass::Character_Purchase(float Cost,const SoldierGameObjDef *Item) {
@@ -1217,30 +1217,30 @@ void DAPlayerManager::Name_Change_Event(cPlayer *Player) {
 	Player->Get_DA_Player()->Name_Change();
 }
 
-int DAPlayerManager::Character_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const SoldierGameObjDef *Item) {
+PurchaseStatus DAPlayerManager::Character_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const SoldierGameObjDef *Item) {
 	if (!Player->Get_GameObj()->Get_Defense_Object()->Get_Health() || Player->Get_GameObj()->Get_Vehicle()) {
-		return 3;
+		return PurchaseStatus_FactoryUnavailable;
 	}
 	return Player->Get_DA_Player()->Character_Purchase_Request(Cost,Item);
 }
 
-int DAPlayerManager::Vehicle_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const VehicleGameObjDef *Item) {
+PurchaseStatus DAPlayerManager::Vehicle_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const VehicleGameObjDef *Item) {
 	if (!Player->Get_GameObj()->Get_Defense_Object()->Get_Health()) { //Make it so players can't buy something if they died while in the PT screen.
-		return 3;
+		return PurchaseStatus_FactoryUnavailable;
 	}
 	return Player->Get_DA_Player()->Vehicle_Purchase_Request(Cost,Item);
 }
 
-int DAPlayerManager::PowerUp_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const PowerUpGameObjDef *Item) {
+PurchaseStatus DAPlayerManager::PowerUp_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,const PowerUpGameObjDef *Item) {
 	if (!Player->Get_GameObj()->Get_Defense_Object()->Get_Health()) {
-		return 3;
+		return PurchaseStatus_FactoryUnavailable;
 	}
 	return Player->Get_DA_Player()->PowerUp_Purchase_Request(Cost,Item);
 }
 
-int DAPlayerManager::Custom_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,unsigned int ID) {
+PurchaseStatus DAPlayerManager::Custom_Purchase_Request_Event(BaseControllerClass *Base,cPlayer *Player,float &Cost,unsigned int ID) {
 	if (!Player->Get_GameObj()->Get_Defense_Object()->Get_Health()) {
-		return 3;
+		return PurchaseStatus_FactoryUnavailable;
 	}
 	return Player->Get_DA_Player()->Custom_Purchase_Request(Cost,ID);
 }

@@ -440,7 +440,7 @@ class JFW_C4_Explode : public ScriptImpClass {
 class JFW_Beacon_Building : public ScriptImpClass {
 	int pos;
 	void Created(GameObject *obj);
-	static int PowerupPurchaseHook(BaseControllerClass *base,GameObject *purchaser,unsigned int cost,unsigned int preset,const char *data);
+	static PurchaseStatus PowerupPurchaseHook(BaseControllerClass *base,GameObject *purchaser,unsigned int cost,unsigned int preset,const char *data);
 public:
 	JFW_Beacon_Building() {pos = 0;}
 	~JFW_Beacon_Building();

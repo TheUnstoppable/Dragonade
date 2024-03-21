@@ -324,6 +324,8 @@ SCRIPTS_API spsui Set_Gloominess_Color;
 SCRIPTS_API gtod Get_Time_Of_Day;
 SCRIPTS_API stod Set_Time_Of_Day;
 SCRIPTS_API icbad Is_Connection_Bad;
+SCRIPTS_API fws Forward_Server;
+SCRIPTS_API asmsg Add_Shadow_Message;
 
 SCRIPTS_API bool Can_Team_Build_Vehicle(int Team)
 {
