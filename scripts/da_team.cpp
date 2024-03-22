@@ -42,6 +42,7 @@ void DATeamManager::Settings_Loaded_Event() {
 	SwapChance = DASettingsManager::Get_Int("SwapChance",50);
 	EnableFreeTeamChanging = DASettingsManager::Get_Bool("EnableFreeTeamChanging",false);
 	EnableRebalance = DASettingsManager::Get_Bool("EnableRebalance",true);
+	ForceTeam = DASettingsManager::Get_Int("ForceTeam",-1);
 	if (EnableRebalance) {
 		Register_Event(DAEvent::PLAYERLEAVE,INT_MAX);
 	}
