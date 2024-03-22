@@ -1,4 +1,4 @@
-Dragonade 1.10.9
+Dragonade 1.11.0
 Created by Whitedragon and Black-Cell.net
 
 Special thanks to:
@@ -25,6 +25,13 @@ Installation:
 
 
 Update History:
+
+Version 1.11.0
+  Additions:
+   - Updated to TT 4.8.3
+
+  Bug Fixes:
+   - Fixed ForceTeam not being loaded from configuration.
 
 Version 1.10.9
   Additions:
