@@ -1560,6 +1560,26 @@ class DARemoveTagConsoleFunctionClass : public ConsoleFunctionClass {
 };
 Register_Console_Function(DARemoveTagConsoleFunctionClass);
 
+class DAGetAccessLevelConsoleFunctionClass : public ConsoleFunctionClass {
+	const char* Get_Name() { return "getaccesslevel"; }
+	const char* Get_Alias() { return "gal"; }
+	const char* Get_Help() { return "GETACCESSLEVEL [playerid] - Gets access level of all players, or specified player."; }
+	void Activate(const char* ArgumentsString) {
+		DATokenParserClass Parser(ArgumentsString, ' ');
+		int ID = 0;
+		if (Parser.Get_Int(ID)) {
+			if (cPlayer* Player = Find_Player(ID)) {
+				Console_Output("Access level of player %d is %d\n", ID, Player->Get_DA_Player()->Get_Access_Level());
+			}
+			return;
+		}
+		for (SLNode<cPlayer>* z = Get_Player_List()->Head(); z; z = z->Next()) {
+			Console_Output("Access level of player %d is %d\n", z->Data()->Get_Id(), z->Data()->Get_DA_Player()->Get_Access_Level());
+		}
+	}
+};
+Register_Console_Function(DAGetAccessLevelConsoleFunctionClass);
+
 class DASetAccessLevelConsoleFunctionClass : public ConsoleFunctionClass {
 	const char *Get_Name() { return "setaccesslevel"; }
 	const char *Get_Alias() { return "sal"; }

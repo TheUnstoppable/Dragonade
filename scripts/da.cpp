@@ -616,6 +616,18 @@ void DebugMsg(const char *Format,...) {
 
 
 
+class DAVersionConsoleFunctionClass : public ConsoleFunctionClass {
+public:
+	const char* Get_Name() { return "daversion"; }
+	const char* Get_Alias() { return "daver"; }
+	const char* Get_Help() { return "DAVERSION - Prints Dragonade version text."; }
+	void Activate(const char* ArgumentsString) {
+		Console_Output("Dragonade %s with Scripts %.1f\n", DA::Get_Version(), GetTTVersion());
+		Console_Output("Created by Black-Cell.net\n");
+	}
+};
+Register_Console_Function(DAVersionConsoleFunctionClass);
+
 class DAMsgConsoleFunctionClass : public ConsoleFunctionClass {
 public:
 	const char *Get_Name() { return "message"; }
