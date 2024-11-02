@@ -385,6 +385,16 @@ public:
 };
 Register_Console_Function(DATimeoutConsoleFunctionClass);
 
+class DAReloadLevelConsoleFunctionClass : public ConsoleFunctionClass {
+public:
+	const char* Get_Name() { return "reloadlevel"; }
+	const char* Get_Help() { return "RELOADLEVEL - Reloads the current level."; }
+	void Activate(const char* ArgumentsString) {
+		Reload_Level();
+	}
+};
+Register_Console_Function(DAReloadLevelConsoleFunctionClass);
+
 class DATimeChatCommandClass : public DAChatCommandClass {
 	bool Activate(cPlayer *Player, const DATokenClass &Text, TextMessageEnum ChatType) {
 		DA::Host_Message("Time Elapsed: %s", Format_Time((unsigned long)The_Game()->Get_Game_Duration_S()));

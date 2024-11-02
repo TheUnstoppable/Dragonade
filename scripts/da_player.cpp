@@ -1762,6 +1762,18 @@ class MapCHConsoleFunctionClass : public ConsoleFunctionClass {
 };
 Register_Console_Function(MapCHConsoleFunctionClass);
 
+class ForceClientReloadConsoleFunctionClass : public ConsoleFunctionClass {
+	const char* Get_Name() { return "fcr"; }
+	const char* Get_Help() { return "FCR <playerid> - Forces given client to reload the current level. Host only."; }
+	void Activate(const char* ArgumentsString) {
+		int ID = atoi(ArgumentsString);
+		if (Find_Player(ID)) {
+			Force_Client_Reload(ID);
+		}
+	}
+};
+Register_Console_Function(ForceClientReloadConsoleFunctionClass);
+
 
 
 class DAVoteYesKeyHookClass : public DAKeyHookClass {
