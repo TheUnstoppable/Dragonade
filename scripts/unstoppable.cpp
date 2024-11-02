@@ -1475,3 +1475,124 @@ void UP_Sound_Controller_3D::Custom(GameObject* obj, int type, int param, GameOb
 ScriptRegistrant<UP_Sound_Controller_3D> UP_Sound_Controller_3D_Registrant("UP_Sound_Controller_3D", "SoundDef:string,StartCustomType=12300:int,StopCustomType=12301:int");
 
 /******************************************************************************************************/
+
+void UP_Teleport_Killer_On_Death::Created(GameObject* obj)
+{
+	TeleportObj = Get_Int_Parameter("TeleportObj");
+}
+
+void UP_Teleport_Killer_On_Death::Killed(GameObject* obj, GameObject* killer)
+{
+	if (!killer) return;
+
+	if (GameObject* target = Commands->Find_Object(TeleportObj))
+	{
+		if (!Find_Script_On_Object(target, "UP_Teleport_Killer_Immunity"))
+		{
+			Commands->Set_Position(killer, Commands->Get_Position(target));
+		}
+	}
+}
+
+ScriptRegistrant<UP_Teleport_Killer_On_Death> UP_Teleport_Killer_On_Death_Registrant("UP_Teleport_Killer_On_Death", "TeleportObj:int");
+
+/******************************************************************************************************/
+
+void UP_Teleport_Killer_Immunity::Created(GameObject* obj)
+{
+	Expire = Get_Float_Parameter("Expire");
+
+	if (Expire > WWMATH_EPSILON)
+	{
+		Commands->Start_Timer(obj, this, Expire, 123);
+	}
+}
+
+void UP_Teleport_Killer_Immunity::Timer_Expired(GameObject* obj, int number)
+{
+	if (number == 123)
+	{
+		Destroy_Script();
+	}
+}
+
+ScriptRegistrant<UP_Teleport_Killer_Immunity> UP_Teleport_Killer_Immunity_Registrant("UP_Teleport_Killer_Immunity", "Expire=0:float");
+
+/******************************************************************************************************/
+
+void UP_Teleport_On_Zone_Kill::Created(GameObject* obj)
+{
+	TeleportObj = Get_Int_Parameter("TeleportObj");
+}
+
+void UP_Teleport_On_Zone_Kill::Entered(GameObject* obj, GameObject* enterer)
+{
+	Attach_Script_V(enterer, "UP_Teleport_On_Death", "%d", TeleportObj);
+}
+
+void UP_Teleport_On_Zone_Kill::Exited(GameObject* obj, GameObject* exiter)
+{
+	if (ScriptImpClass* Script = Find_Script_On_Object(exiter, "UP_Teleport_On_Death"))
+	{
+		Script->Destroy_Script();
+	}
+}
+
+ScriptRegistrant<UP_Teleport_On_Zone_Kill> UP_Teleport_On_Zone_Kill_Registrant("UP_Teleport_On_Zone_Kill", "TeleportObj:int");
+
+/******************************************************************************************************/
+
+void UP_Teleport_Killer_Immunity_Zone::Created(GameObject* obj)
+{
+	Expire = Get_Float_Parameter("Expire");
+}
+
+void UP_Teleport_Killer_Immunity_Zone::Entered(GameObject* obj, GameObject* enterer)
+{
+	Attach_Script_V(enterer, "UP_Teleport_Killer_Immunity", "%f", Expire);
+}
+
+void UP_Teleport_Killer_Immunity_Zone::Exited(GameObject* obj, GameObject* exiter)
+{
+	if (ScriptImpClass* Script = Find_Script_On_Object(exiter, "UP_Teleport_Killer_Immunity"))
+	{
+		Script->Destroy_Script();
+	}
+}
+
+ScriptRegistrant<UP_Teleport_Killer_Immunity_Zone> UP_Teleport_Killer_Immunity_Zone_Registrant("UP_Teleport_Killer_Immunity_Zone", "Expire=0:float");
+
+/******************************************************************************************************/
+
+void UP_Gravity_Zone::Created(GameObject* obj)
+{
+	Multiplier = Get_Float_Parameter("Multiplier");
+}
+
+void UP_Gravity_Zone::Entered(GameObject* obj, GameObject* enterer)
+{
+	Set_Gravity_Multiplier(enterer, Multiplier);
+}
+
+void UP_Gravity_Zone::Exited(GameObject* obj, GameObject* exiter)
+{
+	Set_Gravity_Multiplier(exiter, 1.0f);
+}
+
+ScriptRegistrant<UP_Gravity_Zone> UP_Gravity_Zone_Registrant("UP_Gravity_Zone", "Multiplier=0.5:float");
+
+/******************************************************************************************************/
+
+void UP_No_Targeting_Zone::Entered(GameObject* obj, GameObject* enterer)
+{
+	Enable_Global_Targeting_Player(enterer, false);
+}
+
+void UP_No_Targeting_Zone::Exited(GameObject* obj, GameObject* exiter)
+{
+	Enable_Global_Targeting_Player(exiter, true);
+}
+
+ScriptRegistrant<UP_No_Targeting_Zone> UP_No_Targeting_Zone_Registrant("UP_No_Targeting_Zone", "");
+
+/******************************************************************************************************/
