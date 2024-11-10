@@ -978,3 +978,384 @@ private:
 	int StartCustomType;
 	int StopCustomType;
 };
+
+/*!
+ * \brief Teleport Killer on Death
+ * \author Unstoppable
+ * \ingroup UnstoppableScripts
+ *
+ * Teleports the player who killed this object to the specified object.
+ *
+ * \param TeleportObj
+ *   ID of the object to teleport to.
+ */
+class UP_Teleport_Killer_On_Death : public ScriptImpClass
+{
+public:
+	void Created(GameObject* obj);
+	void Killed(GameObject* obj, GameObject* killer);
+
+private:
+	int TeleportObj;
+};
+
+/*!
+ * \brief Immunity for Teleport Killer on Death
+ * \author Unstoppable
+ * \ingroup UnstoppableScripts
+ *
+ * This is a flag that hints \b UP_Teleport_Killer_On_Death to not teleport the killer.
+ *
+ * \param Expire
+ *	 Duration in seconds of this immunity. 0 means infinite immunity.
+ */
+class UP_Teleport_Killer_Immunity : public ScriptImpClass
+{
+public:
+	void Created(GameObject* obj);
+	void Timer_Expired(GameObject* obj, int number);
+
+private:
+	float Expire;
+};
+
+/*!
+ * \brief Teleport on Kill inside Zone
+ * \author Unstoppable
+ * \ingroup UnstoppableScripts
+ *
+ * Teleports the killer to specified object when killer kills someone who's inside this zone.
+ *
+ * \param TeleportObj
+ *   ID of the object to teleport to.
+ */
+class UP_Teleport_On_Zone_Kill : public ScriptImpClass
+{
+public:
+	void Created(GameObject* obj);
+	void Entered(GameObject* obj, GameObject* enterer);
+	void Exited(GameObject* obj, GameObject* exiter);
+
+private:
+	int TeleportObj;
+};
+
+/*!
+ * \brief Teleport on Kill Immunity Zone
+ * \author Unstoppable
+ * \ingroup UnstoppableScripts
+ *
+ *	Makes the objects who enter this zone immune to the UP_Teleport_Killer_On_Death script.
+ *
+ * \param Expire
+ *	 Duration in seconds of this immunity. 0 means infinite immunity.
+ */
+class UP_Teleport_Killer_Immunity_Zone : public ScriptImpClass
+{
+public:
+	void Created(GameObject* obj);
+	void Entered(GameObject* obj, GameObject* enterer);
+	void Exited(GameObject* obj, GameObject* exiter);
+
+private:
+	float Expire;
+};
+
+/*!
+ * \brief Gravity Zone
+ * \author Unstoppable
+ * \ingroup UnstoppableScripts
+ *
+ *	Changes the gravity multiplier of objects in the zone.
+ *
+ * \param Multiplier
+ *   The gravity multiplier to set.
+ */
+class UP_Gravity_Zone : public ScriptImpClass
+{
+public:
+	void Created(GameObject* obj);
+	void Entered(GameObject* obj, GameObject* enterer);
+	void Exited(GameObject* obj, GameObject* exiter);
+
+private:
+	float Multiplier;
+};
+
+/*!
+ * \brief No Targeting Zone
+ * \author Unstoppable
+ * \ingroup UnstoppableScripts
+ *
+ *	Disables the global targeting of players in the zone. (Except for pokeable objects and buildings)
+ */
+class UP_No_Targeting_Zone : public ScriptImpClass
+{
+public:
+	void Entered(GameObject* obj, GameObject* enterer);
+	void Exited(GameObject* obj, GameObject* exiter);
+};
+
+/*!
+ * \brief Send Message to Self On Custom
+ * \author Unstoppable
+ * \ingroup UnstoppableScripts
+ *
+ *	Sends a chat message to the attached object when a custom event is received. If the attached object is not a player, then script destroys itself.
+ *
+ *	\param ID
+ *	 The custom message ID.
+ *	\param Param
+ *	 The custom message parameter.
+ *	\param Red
+ *	 Red tone of the message.
+ *	\param Green
+ *	 Green tone of the message.
+ *	\param Blue
+ *	 Blue tone of the message.
+ *	\param Message
+ *	 The message to be displayed.
+ *	\param DestroyAfterSend
+ *	 Destroys the script after sending the message if set to 1.
+ */
+class UP_Send_Message_Self_On_Custom : public ScriptImpClass
+{
+public:
+	void Created(GameObject* obj);
+	void Custom(GameObject* obj, int type, int param, GameObject* sender);
+};
+
+/*!
+ * \brief Send Message to Sender On Custom
+ * \author Unstoppable
+ * \ingroup UnstoppableScripts
+ *
+ *	Sends a chat message to the sender of a custom event.
+ *
+ *	\param ID
+ *	 The custom message ID.
+ *	\param Param
+ *	 The custom message parameter.
+ *	\param Red
+ *	 Red tone of the message.
+ *	\param Green
+ *	 Green tone of the message.
+ *	\param Blue
+ *	 Blue tone of the message.
+ *	\param Message
+ *	 The message to be displayed.
+ *	\param DestroyAfterSend
+ *	 Destroys the script after sending the message if set to 1.
+ */
+class UP_Send_Message_Sender_On_Custom : public ScriptImpClass
+{
+public:
+	void Custom(GameObject* obj, int type, int param, GameObject* sender);
+};
+
+/*!
+ * \brief Print Console of Self On Custom
+ * \author Unstoppable
+ * \ingroup UnstoppableScripts
+ *
+ *	Prints a message to the console of the attached object when a custom event is received. If the attached object is not a player, then script destroys itself.
+ *
+ *	\param ID
+ *	 The custom message ID.
+ *	\param Param
+ *	 The custom message parameter.
+ *	\param Alpha
+ *	 Alpha (transparency) tone of the message.
+ *	\param Red
+ *	 Red tone of the message.
+ *	\param Green
+ *	 Green tone of the message.
+ *	\param Blue
+ *	 Blue tone of the message.
+ *	\param Message
+ *	 The message to be displayed.
+ *	\param DestroyAfterSend
+ *	 Destroys the script after printing the message if set to 1.
+ */
+class UP_Print_Console_Self_On_Custom : public ScriptImpClass
+{
+public:
+	void Created(GameObject* obj);
+	void Custom(GameObject* obj, int type, int param, GameObject* sender);
+};
+
+/*!
+ * \brief Print Console of Sender On Custom
+ * \author Unstoppable
+ * \ingroup UnstoppableScripts
+ *
+ *	Prints a message to the console of the sender of a custom event.
+ *
+ *	\param ID
+ *	 The custom message ID.
+ *	\param Param
+ *	 The custom message parameter.
+ *	\param Alpha
+ *	 Alpha (transparency) tone of the message.
+ *	\param Red
+ *	 Red tone of the message.
+ *	\param Green
+ *	 Green tone of the message.
+ *	\param Blue
+ *	 Blue tone of the message.
+ *	\param Message
+ *	 The message to be displayed.
+ *	\param DestroyAfterSend
+ *	 Destroys the script after printing the message if set to 1.
+ */
+class UP_Print_Console_Sender_On_Custom : public ScriptImpClass
+{
+public:
+	void Custom(GameObject* obj, int type, int param, GameObject* sender);
+};
+
+/*!
+ * \brief Add Chat History to Self On Custom
+ * \author Unstoppable
+ * \ingroup UnstoppableScripts
+ *
+ *	Adds a message to the chat history (without displaying in chat) of attached object when a custom event is received. If the attached object is not a player, then script destroys itself.
+ *
+ *	\param ID
+ *	 The custom message ID.
+ *	\param Param
+ *	 The custom message parameter.
+ *	\param Red
+ *	 Red tone of the message.
+ *	\param Green
+ *	 Green tone of the message.
+ *	\param Blue
+ *	 Blue tone of the message.
+ *	\param Message
+ *	 The message to be displayed.
+ *	\param DestroyAfterSend
+ *	 Destroys the script after sending the message if set to 1.
+ */
+class UP_Add_Chat_History_Self_On_Custom : public ScriptImpClass
+{
+public:
+	void Created(GameObject* obj);
+	void Custom(GameObject* obj, int type, int param, GameObject* sender);
+};
+
+/*!
+ * \brief Add Chat History to Sender On Custom
+ * \author Unstoppable
+ * \ingroup UnstoppableScripts
+ *
+ *	Sends a chat message to the sender of a custom event.
+ *
+ *	\param ID
+ *	 The custom message ID.
+ *	\param Param
+ *	 The custom message parameter.
+ *	\param Red
+ *	 Red tone of the message.
+ *	\param Green
+ *	 Green tone of the message.
+ *	\param Blue
+ *	 Blue tone of the message.
+ *	\param Message
+ *	 The message to be displayed.
+ *	\param DestroyAfterSend
+ *	 Destroys the script after sending the message if set to 1.
+ */
+class UP_Add_Chat_History_Sender_On_Custom : public ScriptImpClass
+{
+public:
+	void Custom(GameObject* obj, int type, int param, GameObject* sender);
+};
+
+/*!
+ * \brief Grant Credits to Self On Custom
+ * \author Unstoppable
+ * \ingroup UnstoppableScripts
+ *
+ *	Grants credits to attached object when a custom event is received. The amount is determined by the custom message's parameter. If the attached object is not a player, then script destroys itself.
+ *
+ *	\param ID
+ *	 The custom message ID.
+ *	\param DestroyAfterGrant
+ *	 Destroys the script after sending the message if set to 1.
+ */
+class UP_Grant_Credits_Self_On_Custom : public ScriptImpClass
+{
+public:
+	void Created(GameObject* obj);
+	void Custom(GameObject* obj, int type, int param, GameObject* sender);
+};
+
+/*!
+ * \brief Grant Credits to Sender On Custom
+ * \author Unstoppable
+ * \ingroup UnstoppableScripts
+ *
+ *	Grants credits to the sender of a custom event. The amount is determined by the custom message's parameter.
+ *
+ *	\param ID
+ *	 The custom message ID.
+ *	\param DestroyAfterGrant
+ *	 Destroys the script after sending the message if set to 1.
+ */
+class UP_Grant_Credits_Sender_On_Custom : public ScriptImpClass
+{
+public:
+	void Custom(GameObject* obj, int type, int param, GameObject* sender);
+};
+
+/*!
+ * \brief Grant Credits to Team On Custom
+ * \author Unstoppable
+ * \ingroup UnstoppableScripts
+ *
+ *	Grants credits to the entire team on a custom event. The amount is determined by the custom message's parameter.
+ *
+ *	\param Team
+ *	 The team which receives the credits.
+ *	\param ID
+ *	 The custom message ID.
+ *	\param DestroyAfterGrant
+ *	 Destroys the script after sending the message if set to 1.
+ */
+class UP_Grant_Credits_Team_On_Custom : public ScriptImpClass
+{
+public:
+	void Custom(GameObject* obj, int type, int param, GameObject* sender);
+};
+
+/*!
+ * \brief Steal Credits On Custom
+ * \author Unstoppable
+ * \ingroup UnstoppableScripts
+ *
+ *	Steal credits from a team and evenly distributes the stolen credits to the opponent team on a custom event.
+ *
+ *	\param Team
+ *	 The team which loses the credits.
+ *	\param Percentage
+ *	 The percentage of credits to be stolen from the team. Setting to a negative value (such as -1) will use the custom message's parameter value as the percentage.
+ *	\param ID
+ *	 The custom message ID.
+ *	\param DestroyAfterSteal
+ *	 Destroys the script after stealing the credits if set to 1.
+ *
+ *	\remark
+ *	 The "Team" parameter has 4 special values.
+ *	 -1 = Steal credits from the team of the sender object.
+ *	 -2 = Steal credits from the team of the attached object.
+ *	 -3 = Steal credits from the opponent team of the sender object.
+ *	 -4 = Steal credits from the opponent team of the attached object.
+ *
+ *	\remark
+ *	 Normally, the range of "Percentage" parameter is [0, 1]. However, if the "Percentage" parameter is negative, then the custom message's parameter value's range is [0, 100].
+ */
+class UP_Steal_Credits_On_Custom : public ScriptImpClass
+{
+public:
+	void Custom(GameObject* obj, int type, int param, GameObject* sender);
+};
