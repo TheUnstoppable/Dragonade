@@ -1066,6 +1066,9 @@ void Fix_Stuck_Objects(const Vector3 &Position,float CheckRange,float Range,bool
 }
 
 bool Fix_Stuck_Object(PhysicalGameObj *obj,float Range) {
+	if (!(obj && obj->Peek_Physical_Object() && obj->Peek_Physical_Object()->As_MoveablePhysClass())) {
+		return false;
+	}
 	MoveablePhysClass *Phys = (MoveablePhysClass*)obj->Peek_Physical_Object();
 	Collision_Group_Type CollisionSave = Phys->Get_Collision_Group();
 	float MinDistance = FLT_MAX;
