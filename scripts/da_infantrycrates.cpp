@@ -412,8 +412,9 @@ class DAHumanSiloCrateObserverClass : public DAGameObjObserverClass {
 
 	virtual void Damage_Received(ArmedGameObj *Damager,float Damage,unsigned int Warhead,float Scale,DADamageType::Type Type) {
 		if (Type == DADamageType::TIBERIUM || Warhead == 9 || Warhead == 10 || Warhead == 11) { //Tiberium based warheads.
-			Give_Credits_Team(((SoldierGameObj*)Get_Owner())->Get_Player_Type(),Damage/2);
-			Total += Damage;
+			float Amount = WWMath::Fabs(Damage);
+			Give_Credits_Team(((SoldierGameObj*)Get_Owner())->Get_Player_Type(), Amount/2);
+			Total += Amount;
 			DefenseObjectClass *Defense = ((SoldierGameObj*)Get_Owner())->Get_Defense_Object();
 			if (Total >= (Defense->Get_Health_Max()+Defense->Get_Shield_Strength_Max())) { //Wear off after taking tiberium damage equal to character's health.
 				Set_Delete_Pending();
