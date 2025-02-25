@@ -59,8 +59,8 @@ void Nod_Obelisk_CnC::Create_Weapon(GameObject* ObeliskObj) {
 				Commands->Select_Weapon(WeaponObj, Def->Get_Name());
 			}
 		}
-		Set_Object_Type(WeaponObj, Get_Object_Type(ObeliskObj));
 		Commands->Attach_Script(WeaponObj, "Obelisk_Weapon_CnC", Get_Parameter("EffectModel"));
+		Set_Object_Type(WeaponObj, Get_Object_Type(ObeliskObj));
 		WeaponID = Commands->Get_ID(WeaponObj);
 	}
 }
@@ -72,7 +72,6 @@ void Nod_Obelisk_CnC::Destroy_Weapon(GameObject* ObeliskObj) {
 void Obelisk_Weapon_CnC::Created(GameObject* WeaponObj) {
 	// Some settings
 	Commands->Set_Is_Rendered(WeaponObj, false); // It's not visible
-	Commands->Set_Player_Type(WeaponObj, 0); // We're a Nod Obelisk, GDI will not own an Obelisk
 	Commands->Enable_Enemy_Seen(WeaponObj, true); // We want to get notified when we see an enemy
 	Commands->Enable_Hibernation(WeaponObj, false); // Not controlled, or whatever?
 	Commands->Innate_Enable(WeaponObj); // Dunno :)
@@ -313,8 +312,9 @@ void Nod_Obelisk_CnC_Ground::Created(GameObject* ObeliskObj) {
 					Commands->Select_Weapon(WeaponObj, Def->Get_Name());
 				}
 			}
-			WeaponID = Commands->Get_ID(WeaponObj);
 			Commands->Attach_Script(WeaponObj, "Obelisk_Weapon_CnC_Ground", "");
+			Set_Object_Type(WeaponObj, Get_Object_Type(ObeliskObj));
+			WeaponID = Commands->Get_ID(WeaponObj);
 		}
 	}
 }
@@ -363,7 +363,6 @@ void Nod_Obelisk_CnC_Ground::Custom(GameObject* ObeliskObj, int type, int Param,
 void Obelisk_Weapon_CnC_Ground::Created(GameObject* WeaponObj) {
 	// Some settings
 	Commands->Set_Is_Rendered(WeaponObj, false); // It's not visible
-	Commands->Set_Player_Type(WeaponObj, 0); // We're a Nod Obelisk, GDI will not own an Obelisk
 	Commands->Enable_Enemy_Seen(WeaponObj, true); // We want to get notified when we see an enemy
 	Commands->Enable_Hibernation(WeaponObj, false); // Not controlled, or whatever?
 	Commands->Innate_Enable(WeaponObj); // Dunno :)

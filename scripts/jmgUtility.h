@@ -159,7 +159,7 @@ class JMG_Utility_Poke_Send_Self_Custom : public ScriptImpClass {
 };
 
 /*!
-* \brief Basic turret attach script, turrets match team of vehicle attached to, turrets are destroyed by destroy event
+* \brief Use JMG_Utility_Turret_Spawn instead
 * \Turret_Preset - Preset of the turret
 * \Bone_Name - Bone to hook the turret to
 * \author jgray
@@ -920,11 +920,11 @@ public:
 		char markerModel[16];
 		int markerColor;
 		char attachBone[16];
-		bool overrideTextColor;
+		int overrideTextColor;
 		Vector3 textColor;
-		bool overrideHudColor;
+		int overrideHudColor;
 		Vector3 hudColor;
-		ObjectiveVisibleSettingOverride(int objectiveId,const char *model,int markerColor,const char *attachBone,bool overrideTextColor,Vector3 textColor,bool overrideHudColor,Vector3 hudColor)
+		ObjectiveVisibleSettingOverride(int objectiveId,const char *model,int markerColor,const char *attachBone,int overrideTextColor,Vector3 textColor,int overrideHudColor,Vector3 hudColor)
 		{
 			this->objectiveId = objectiveId;
 			sprintf(this->markerModel,"%s",model);
@@ -934,6 +934,21 @@ public:
 			this->textColor = textColor;
 			this->overrideHudColor = overrideHudColor;
 			this->hudColor = hudColor;
+		}
+		static Vector3 DefaultRenegadeColors(int color)
+		{
+			switch (color)
+			{
+			case RADAR_BLIP_COLOR_NOD:return Vector3(200,0,0);
+			case RADAR_BLIP_COLOR_GDI:return Vector3(225,175,65);
+			case RADAR_BLIP_COLOR_NEUTRAL:return Vector3(225,225,240);
+			case RADAR_BLIP_COLOR_MUTANT:return Vector3(0,100,0);
+			case RADAR_BLIP_COLOR_RENEGADE:return Vector3(0,0,255);
+			case RADAR_BLIP_COLOR_PRIMARY_OBJECTIVE:return Vector3(50,225,50);
+			case RADAR_BLIP_COLOR_SECONDARY_OBJECTIVE:return Vector3(50,150,250);
+			case RADAR_BLIP_COLOR_TERTIARY_OBJECTIVE:return Vector3(150,50,150);
+			default:return Vector3(0,0,0);
+			}
 		}
 	};
 	SList<ObjectiveVisibleSettingOverride> overrideVisibleObjectiveSettings;
@@ -994,7 +1009,13 @@ private:
 	{
 		ObjectiveVisibleSettingOverride *overrideMarker = FindOverrideForObjective(objectiveId);
 		if (overrideMarker && overrideMarker->overrideTextColor)
-			JmgUtility::MessageTeamPlayersAndType((int)overrideMarker->textColor.X,(int)overrideMarker->textColor.Y,(int)overrideMarker->textColor.Z,team,format);
+			if (overrideMarker->overrideTextColor == -1)
+			{
+				Vector3 color = ObjectiveVisibleSettingOverride::DefaultRenegadeColors(overrideMarker->markerColor);
+				JmgUtility::MessageTeamPlayersAndType((int)color.X,(int)color.Y,(int)color.Z,team,format);
+			}
+			else
+				JmgUtility::MessageTeamPlayersAndType((int)overrideMarker->textColor.X,(int)overrideMarker->textColor.Y,(int)overrideMarker->textColor.Z,team,format);
 		else
 			switch (priority)
 			{
@@ -1004,7 +1025,27 @@ private:
 			default: JmgUtility::MessageTeamPlayersAndType(125,150,150,team,format); break;
 			}
 	}
-	void messagePlayerAndColor(GameObject *player,const char *format,Priority priority)
+	void messagePlayerAndColor(int objectiveId,GameObject *player,const char *format,Priority priority)
+	{
+		ObjectiveVisibleSettingOverride *overrideMarker = FindOverrideForObjective(objectiveId);
+		if (overrideMarker && overrideMarker->overrideTextColor)
+			if (overrideMarker->overrideTextColor == -1)
+			{
+				Vector3 color = ObjectiveVisibleSettingOverride::DefaultRenegadeColors(overrideMarker->markerColor);
+				JmgUtility::DisplayChatMessage(player,(int)color.X,(int)color.Y,(int)color.Z,format);
+			}
+			else
+				JmgUtility::DisplayChatMessage(player,(int)overrideMarker->textColor.X,(int)overrideMarker->textColor.Y,(int)overrideMarker->textColor.Z,format);
+		else
+			switch (priority)
+			{
+				case Primary: JmgUtility::DisplayChatMessage(player,50,255,50,format); break;
+				case Secondary: JmgUtility::DisplayChatMessage(player,50,150,250,format); break;
+				case Tertiary:case Unknown: JmgUtility::DisplayChatMessage(player,150,50,150,format); break;
+				default: JmgUtility::DisplayChatMessage(player,125,150,150,format); break;
+			}
+	}
+	void messagePlayerAndColorBasic(GameObject *player,const char *format,Priority priority)
 	{
 		switch (priority)
 		{
@@ -1398,7 +1439,13 @@ public:
 			{
 				ObjectiveVisibleSettingOverride *overrideMarker = FindOverrideForObjective(current->id);
 				if (overrideMarker && overrideMarker->overrideHudColor)
-					Set_HUD_Help_Text_Player(obj,current->nameId,Vector3(overrideMarker->hudColor.X/255.0f,overrideMarker->hudColor.Y/255.0f,overrideMarker->hudColor.Z/255.0f));
+					if (overrideMarker->overrideHudColor == -1)
+					{
+						Vector3 color = ObjectiveVisibleSettingOverride::DefaultRenegadeColors(overrideMarker->markerColor);
+						Set_HUD_Help_Text_Player(obj,current->nameId,Vector3(color.X/255.0f,color.Y/255.0f,color.Z/255.0f));
+					}
+					else
+						Set_HUD_Help_Text_Player(obj,current->nameId,Vector3(overrideMarker->hudColor.X/255.0f,overrideMarker->hudColor.Y/255.0f,overrideMarker->hudColor.Z/255.0f));
 				else
 					Set_HUD_Help_Text_Player(obj,current->nameId,Vector3(0,1,0));
 				return;
@@ -1408,7 +1455,7 @@ public:
 	}
 	void Display_Current_Objectives(GameObject *player,Priority priority)
 	{
-		messagePlayerAndColor(player,formatObjectiveString(objectiveListString,objectivePrioritieStrings[priority]),priority);
+		messagePlayerAndColorBasic(player,formatObjectiveString(objectiveListString,objectivePrioritieStrings[priority]),priority);
 		ObjectiveNode *current = objectiveNodeList;
 		while (current)
 		{
@@ -1419,7 +1466,7 @@ public:
 					sprintf(objectiveMsg,"*%s",formatObjectiveString(Get_Translated_String(current->nameId),current->objectiveNumber));
 				else
 					sprintf(objectiveMsg,"*%s",Get_Translated_String(current->nameId));
-				messagePlayerAndColor(player,objectiveMsg,priority);
+				messagePlayerAndColor(current->id,player,objectiveMsg,priority);
 			}
 			current = current->next;
 		}
@@ -1514,6 +1561,11 @@ public:
 		return true;
 	}
 	GameObject *GetObjectiveMarker(int objectiveMarkerId,GameObject *sender,int objectiveId);
+	void OverrideObjectiveVisibilitySettings(int objectiveId,const char *model,int markerColor,const char *attachBone,int overrideTextColor,Vector3 textColor,int overrideHudColor,Vector3 hudColor)
+	{
+		ObjectiveVisibleSettingOverride *overrideObject = new ObjectiveVisibleSettingOverride(objectiveId,model,markerColor,attachBone,overrideTextColor,textColor,overrideHudColor,hudColor);
+		overrideVisibleObjectiveSettings.Add_Tail(overrideObject);
+	}
 };
 
 class ClientNetworkObjectPositionSync
@@ -2022,6 +2074,31 @@ public:
 			if (Current->value)
 				Current->value--;
 			Current = Current->next;
+		}
+	}
+	void ChangeAllWanderPointGroupIdsThatMatch(int changeId,int newId)
+	{
+		SimplePositionNode *current = SimplePositionNodeList;
+		while (current)
+		{
+			if (changeId == current->value)
+				current->value = newId;
+			current = current->next;
+		}
+	}
+	void ChangeAllWanderPointGroupIdsThatMatchAndAreInRange(int changeId,Vector3 pos,float range,int newId)
+	{
+		float rangeSq = range*range;
+		SimplePositionNode *current = SimplePositionNodeList;
+		while (current)
+		{
+			if (changeId == current->value)
+			{
+				float tempDist = JmgUtility::SimpleDistance(pos,current->position);
+				if (tempDist <= rangeSq)
+					current->value = newId;
+			}
+			current = current->next;
 		}
 	}
 };
@@ -6984,6 +7061,7 @@ private:
 	void SetFacing(GameObject *obj,float facing);
 	void Initial_Spawn(GameObject *obj);
 	int GetPlayerLimitModifier();
+	JMG_Utility_Basic_Spawner_In_Radius::SpawnFailureTypes TryPlacement(GameObject *spawned,Vector3 bottomRay);
 };
 
 /*!
@@ -11564,11 +11642,11 @@ class JMG_Utility_Spawn_With_Last_Selected_Gun_Ignore : public ScriptImpClass {
 * \brief Allows the visible marker, text color, and radar blip color to be overridden for a specific objective
 * \ObjectiveID - ID of the objective to override
 * \MarkerModel - Model to use instead, leave blank if you don't want it to override
-* \MarkerColor - Radar color to make use of, leave -1 if you don't want it to override
+* \MarkerColor - Radar color to make use of, leave -1 if you don't want it to override (RADAR_BLIP_COLOR_NOD = 0, RADAR_BLIP_COLOR_GDI, RADAR_BLIP_COLOR_NEUTRAL, RADAR_BLIP_COLOR_MUTANT, RADAR_BLIP_COLOR_RENEGADE, RADAR_BLIP_COLOR_PRIMARY_OBJECTIVE, RADAR_BLIP_COLOR_SECONDARY_OBJECTIVE, RADAR_BLIP_COLOR_TERTIARY_OBJECTIVE)
 * \AttachBone - Bone to attach to, leave blank if you don't want it to override
-* \OverrideTextColor - 0 means don't override text color, any other number will override
+* \OverrideTextColor - 0 means don't override text color, 1 means override, -1 uses default renegade team coloring, specified by MarkerColor 
 * \TextColor - Color to use for the objective text, 0-255
-* \OverrideHudColor - 0 means don't override HUD color, any other number will override
+* \OverrideHudColor - 0 means don't override text color, 1 means override, -1 uses default renegade team coloring, specified by MarkerColor
 * \HudColor - Color to use for the objective HUD message, 0-255
 * \author jgray
 * \ingroup JmgUtility
@@ -12324,6 +12402,57 @@ class JMG_Utility_Created_Fire_Randomly : public ScriptImpClass {
 	float minHeight;
 	float maxHeight;
 	float useFacing;
+	void Created(GameObject *obj);
+	void Timer_Expired(GameObject *obj,int number);
+};
+
+/*!
+* \brief Basic turret attach script, turrets match team of vehicle attached to, turrets are destroyed by destroy event
+* \Turret_Preset - Preset of the turret
+* \Bone_Name - Bone to hook the turret to
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Turret_Spawn : public ScriptImpClass
+{
+  int turretId;
+  bool hasDriver;
+  void Created(GameObject *obj);
+  void Custom(GameObject *obj,int message,int param,GameObject *sender);
+  void Killed(GameObject *obj,GameObject *killer);
+  void Destroyed(GameObject *obj);
+  void Detach(GameObject *obj);
+};
+
+/*!
+* \brief Sends a custom on a custom from the sender
+* \Custom - Custom to watch for
+* \ID - ID to send to, 0 sends to self, -1 sends to sender
+* \SendCustom - custom to send
+* \Param - param to send (-1 sends the param that was received)
+* \Delay - delay to add
+* \RandomDelay - Max amount of random delay that can be added to the delay
+* \RandomChance - If non-zero this will be the chance that the custom can send 0.0-1.0, 1 will always send
+* \author jgray
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Custom_Send_Custom_Sender : public ScriptImpClass {
+	int recieveMessage;
+	int id;
+	int custom;
+	int Param;
+	float delay;
+	float randomDelay;
+	float randomChance;
+	void Created(GameObject *obj);
+	void Custom(GameObject *obj,int message,int param,GameObject *sender);
+};
+
+/*!
+* \brief Disables the footstep effects of the attached infantry
+* \ingroup JmgUtility
+*/
+class JMG_Utility_Created_Disable_Footsteps : public ScriptImpClass {
 	void Created(GameObject *obj);
 	void Timer_Expired(GameObject *obj,int number);
 };

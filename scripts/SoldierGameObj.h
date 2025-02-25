@@ -216,6 +216,9 @@ public:
 	virtual int			Get_Override_Weapon_Hold_Style();
 	virtual void 		Set_Human_Anim_Override(bool enableHumanAnimOverride);
 	virtual int			Get_Human_Anim_Override();
+	virtual void 		Set_Enable_Foot_Steps(bool enableFootSteps);
+	virtual void 		Trigger_Smooth_Skeleton_Height_Resize(float targetHeight, float speed);
+	virtual void 		Trigger_Smooth_Skeleton_Width_Resize(float targetWidth, float speed);
 
 	cPlayer* Get_Player() { //DA
 		return (cPlayer*)Get_Player_Data();
@@ -302,6 +305,11 @@ protected:
 	bool						enableHumanAnimOverride;
 	WideStringClass				botTag;
 	int sight_bone;
+	bool						enableFootSteps;
+	float targetSoldierHeight;
+	float targetSoldierWidth;
+	float targetSoldierHeightSpeed;
+	float targetSoldierWidthSpeed;
 	TT_DEPRECATED("Do not use") int						Check(void);
 }; // size: 3404
 

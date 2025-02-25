@@ -69,6 +69,7 @@ public:
 	const StringClass &							Get_Mesh_Prefix (void) const	{ return MeshPrefix; }
 	int Get_Damage_Report(int team) const;
 	int Get_Destroy_Report(int team) const;
+	bool Get_Hide_Team_Battlefield_Information() const;
 //protected: //DA
 	StringClass MeshPrefix; // 0084
 	ArmorType MCTSkin; // 0088
@@ -79,6 +80,7 @@ public:
 	int NodDestroyReportID; // 009C
 	friend class BuildingGameObj;
 	friend class PresetDump;
+	bool HideTeamBattlefieldInformation;
 }; // 00A0
 
 

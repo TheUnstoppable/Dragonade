@@ -1359,3 +1359,24 @@ class UP_Steal_Credits_On_Custom : public ScriptImpClass
 public:
 	void Custom(GameObject* obj, int type, int param, GameObject* sender);
 };
+
+/*!
+ * \brief No Refill
+ * \author Unstoppable
+ * \ingroup UnstoppableScripts
+ *
+ *	Disables refilling as long as there is at least 1 instance of the script.
+ */
+class UP_No_Refill : public ScriptImpClass
+{
+public:
+	void Created(GameObject* obj);
+	void Destroyed(GameObject* obj);
+
+protected:
+	static bool Refill_Hook(GameObject* purchaser);
+
+private:
+	static bool RefillHookInstalled;
+	static int AliveScriptCount;
+};

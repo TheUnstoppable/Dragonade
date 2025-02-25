@@ -113,6 +113,64 @@ public:
 
 
 
+	HashTemplateClass(const HashTemplateClass& o) : unusedEntryIndex(o.unusedEntryIndex), maxHashCount(o.maxHashCount)
+	{
+		if (o.indices)
+		{
+			indices = new int[o.maxHashCount];
+			memcpy(indices, o.indices, sizeof(int) * o.maxHashCount);
+		}
+		else
+		{
+			indices = NULL;
+		}
+
+		if (o.entries)
+		{
+			entries = new Entry[o.maxHashCount];
+			memcpy(entries, o.entries, sizeof(Entry) * o.maxHashCount);
+		}
+		else
+		{
+			entries = NULL;
+		}
+	}
+
+
+	HashTemplateClass& operator= (const HashTemplateClass& o)
+	{
+		if (this == &o)
+			return *this;
+
+		delete[] indices;
+		delete[] entries;
+		unusedEntryIndex = o.unusedEntryIndex;
+		maxHashCount = o.maxHashCount;
+
+		if (o.indices)
+		{
+			indices = new int[o.maxHashCount];
+			memcpy(indices, o.indices, sizeof(int) * o.maxHashCount);
+		}
+		else
+		{
+			indices = NULL;
+		}
+
+		if (o.entries)
+		{
+			entries = new Entry[o.maxHashCount];
+			memcpy(entries, o.entries, sizeof(Entry) * o.maxHashCount);
+		}
+		else
+		{
+			entries = NULL;
+		}
+
+		return *this;
+	}
+
+
 	~HashTemplateClass()
 	{
 		delete[] indices;

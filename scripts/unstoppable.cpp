@@ -1596,3 +1596,291 @@ void UP_No_Targeting_Zone::Exited(GameObject* obj, GameObject* exiter)
 ScriptRegistrant<UP_No_Targeting_Zone> UP_No_Targeting_Zone_Registrant("UP_No_Targeting_Zone", "");
 
 /******************************************************************************************************/
+
+void UP_Send_Message_Self_On_Custom::Created(GameObject* obj)
+{
+	if (!Commands->Is_A_Star(obj))
+	{
+		Destroy_Script();
+	}
+}
+
+void UP_Send_Message_Self_On_Custom::Custom(GameObject* obj, int type, int param, GameObject* sender)
+{
+	if (type == Get_Int_Parameter("ID") && param == Get_Int_Parameter("Param"))
+	{
+		Send_Message_Player(obj, Get_Int_Parameter("Red"), Get_Int_Parameter("Green"), Get_Int_Parameter("Blue"), Get_Parameter("Message"));
+
+		if (Get_Int_Parameter("DestroyAfterSend"))
+		{
+			Destroy_Script();
+		}
+	}
+}
+
+ScriptRegistrant<UP_Send_Message_Self_On_Custom> UP_Send_Message_Self_On_Custom_Registrant("UP_Send_Message_Self_On_Custom", "ID:int,Param:int,Red=255:int,Green=255:int,Blue=255:int,Message:string,DestroyAfterSend=0:int");
+
+/******************************************************************************************************/
+
+void UP_Send_Message_Sender_On_Custom::Custom(GameObject* obj, int type, int param, GameObject* sender)
+{
+	if (type == Get_Int_Parameter("ID") && param == Get_Int_Parameter("Param"))
+	{
+		if (sender && Commands->Is_A_Star(sender))
+		{
+			Send_Message_Player(sender, Get_Int_Parameter("Red"), Get_Int_Parameter("Green"), Get_Int_Parameter("Blue"), Get_Parameter("Message"));
+
+			if (Get_Int_Parameter("DestroyAfterSend"))
+			{
+				Destroy_Script();
+			}
+		}
+	}
+}
+
+ScriptRegistrant<UP_Send_Message_Sender_On_Custom> UP_Send_Message_Sender_On_Custom_Registrant("UP_Send_Message_Sender_On_Custom", "ID:int,Param:int,Red=255:int,Green=255:int,Blue=255:int,Message:string,DestroyAfterSend=0:int");
+
+/******************************************************************************************************/
+
+void UP_Print_Console_Self_On_Custom::Created(GameObject* obj)
+{
+	if (!Commands->Is_A_Star(obj))
+	{
+		Destroy_Script();
+	}
+}
+
+void UP_Print_Console_Self_On_Custom::Custom(GameObject* obj, int type, int param, GameObject* sender)
+{
+	if (type == Get_Int_Parameter("ID") && param == Get_Int_Parameter("Param"))
+	{
+		Print_Client_Console_Player(obj, Get_Parameter("Message"), Vector4(Get_Int_Parameter("Alpha") / 255.f, Get_Int_Parameter("Red") / 255.f, Get_Int_Parameter("Green") / 255.f, Get_Int_Parameter("Blue") / 255.f));
+
+		if (Get_Int_Parameter("DestroyAfterSend"))
+		{
+			Destroy_Script();
+		}
+	}
+}
+
+ScriptRegistrant<UP_Print_Console_Self_On_Custom> UP_Print_Console_Self_On_Custom_Registrant("UP_Print_Console_Self_On_Custom", "ID:int,Param:int,Alpha=255:int,Red=255:int,Green=255:int,Blue=255:int,Message:string,DestroyAfterSend=0:int");
+
+/******************************************************************************************************/
+
+void UP_Print_Console_Sender_On_Custom::Custom(GameObject* obj, int type, int param, GameObject* sender)
+{
+	if (type == Get_Int_Parameter("ID") && param == Get_Int_Parameter("Param"))
+	{
+		if (sender && Commands->Is_A_Star(sender))
+		{
+			Print_Client_Console_Player(sender, Get_Parameter("Message"), Vector4(Get_Int_Parameter("Alpha") / 255.f, Get_Int_Parameter("Red") / 255.f, Get_Int_Parameter("Green") / 255.f, Get_Int_Parameter("Blue") / 255.f));
+
+			if (Get_Int_Parameter("DestroyAfterSend"))
+			{
+				Destroy_Script();
+			}
+		}
+	}
+}
+
+ScriptRegistrant<UP_Print_Console_Sender_On_Custom> UP_Print_Console_Sender_On_Custom_Registrant("UP_Print_Console_Sender_On_Custom", "ID:int,Param:int,Alpha=255:int,Red=255:int,Green=255:int,Blue=255:int,Message:string,DestroyAfterSend=0:int");
+
+/******************************************************************************************************/
+
+void UP_Add_Chat_History_Self_On_Custom::Created(GameObject* obj)
+{
+	if (!Commands->Is_A_Star(obj))
+	{
+		Destroy_Script();
+	}
+}
+
+void UP_Add_Chat_History_Self_On_Custom::Custom(GameObject* obj, int type, int param, GameObject* sender)
+{
+	if (type == Get_Int_Parameter("ID") && param == Get_Int_Parameter("Param"))
+	{
+		Add_Shadow_Message(Get_Player_ID(obj), Vector3(Get_Int_Parameter("Red") / 255.f, Get_Int_Parameter("Green") / 255.f, Get_Int_Parameter("Blue") / 255.f), WideStringClass(Get_Parameter("Message")));
+
+		if (Get_Int_Parameter("DestroyAfterSend"))
+		{
+			Destroy_Script();
+		}
+	}
+}
+
+ScriptRegistrant<UP_Add_Chat_History_Self_On_Custom> UP_Add_Chat_History_Self_On_Custom_Registrant("UP_Add_Chat_History_Self_On_Custom", "ID:int,Param:int,Red=255:int,Green=255:int,Blue=255:int,Message:string,DestroyAfterSend=0:int");
+
+/******************************************************************************************************/
+
+void UP_Add_Chat_History_Sender_On_Custom::Custom(GameObject* obj, int type, int param, GameObject* sender)
+{
+	if (type == Get_Int_Parameter("ID") && param == Get_Int_Parameter("Param"))
+	{
+		if (sender && Commands->Is_A_Star(sender))
+		{
+			Add_Shadow_Message(Get_Player_ID(sender), Vector3(Get_Int_Parameter("Red") / 255.f, Get_Int_Parameter("Green") / 255.f, Get_Int_Parameter("Blue") / 255.f), WideStringClass(Get_Parameter("Message")));
+
+			if (Get_Int_Parameter("DestroyAfterSend"))
+			{
+				Destroy_Script();
+			}
+		}
+	}
+}
+
+ScriptRegistrant<UP_Add_Chat_History_Sender_On_Custom> UP_Add_Chat_History_Sender_On_Custom_Registrant("UP_Add_Chat_History_Sender_On_Custom", "ID:int,Param:int,Red=255:int,Green=255:int,Blue=255:int,Message:string,DestroyAfterSend=0:int");
+
+/******************************************************************************************************/
+
+void UP_Grant_Credits_Self_On_Custom::Created(GameObject* obj)
+{
+	if (!Commands->Is_A_Star(obj))
+	{
+		Destroy_Script();
+	}
+}
+
+void UP_Grant_Credits_Self_On_Custom::Custom(GameObject* obj, int type, int param, GameObject* sender)
+{
+	if (type == Get_Int_Parameter("ID"))
+	{
+		Commands->Give_Money(obj, (float)param, false);
+
+		if (Get_Int_Parameter("DestroyAfterSend"))
+		{
+			Destroy_Script();
+		}
+	}
+}
+
+ScriptRegistrant<UP_Grant_Credits_Self_On_Custom> UP_Grant_Credits_Self_On_Custom_Registrant("UP_Grant_Credits_Self_On_Custom", "ID:int,DestroyAfterSend=0:int");
+
+/******************************************************************************************************/
+
+void UP_Grant_Credits_Sender_On_Custom::Custom(GameObject* obj, int type, int param, GameObject* sender)
+{
+	if (type == Get_Int_Parameter("ID"))
+	{
+		if (sender && Commands->Is_A_Star(sender))
+		{
+			Commands->Give_Money(sender, (float)param, false);
+
+			if (Get_Int_Parameter("DestroyAfterSend"))
+			{
+				Destroy_Script();
+			}
+		}
+	}
+}
+
+ScriptRegistrant<UP_Grant_Credits_Sender_On_Custom> UP_Grant_Credits_Sender_On_Custom_Registrant("UP_Grant_Credits_Sender_On_Custom", "ID:int,DestroyAfterSend=0:int");
+
+/******************************************************************************************************/
+
+void UP_Grant_Credits_Team_On_Custom::Custom(GameObject* obj, int type, int param, GameObject* sender)
+{
+	if (type == Get_Int_Parameter("ID"))
+	{
+		if (sender && Commands->Is_A_Star(sender))
+		{
+			int team = Get_Int_Parameter("Team");
+
+			for(SLNode<cPlayer>* n = Get_Player_List()->Head(); n; n = n->Next())
+			{
+				if (n->Data()->Get_Player_Type() == team)
+				{
+					n->Data()->Increment_Money((float)param);
+				}
+			}
+
+			if (Get_Int_Parameter("DestroyAfterSend"))
+			{
+				Destroy_Script();
+			}
+		}
+	}
+}
+
+ScriptRegistrant<UP_Grant_Credits_Team_On_Custom> UP_Grant_Credits_Team_On_Custom_Registrant("UP_Grant_Credits_Sender_On_Custom", "Team:int,ID:int,DestroyAfterSend=0:int");
+
+/******************************************************************************************************/
+
+void UP_Steal_Credits_On_Custom::Custom(GameObject* obj, int type, int param, GameObject* sender)
+{
+	if (type == Get_Int_Parameter("ID"))
+	{
+		int team = Get_Int_Parameter("Team");
+		switch (team)
+		{
+			case -1:
+				if (sender) team = Get_Object_Type(sender);
+				break;
+
+			case -2:
+				team = Get_Object_Type(obj);
+				break;
+
+			case -3:
+				if (sender) team = Get_Object_Type(sender) ? 0 : 1;
+				break;
+
+			case -4:
+				team = Get_Object_Type(obj) ? 0 : 1;
+				break;
+		}
+
+		float percentage = Get_Float_Parameter("Percentage");
+		if (percentage < 0)
+		{
+			percentage = param / 100.f;
+		}
+
+		int otherTeam = team ? 0 : 1;
+		float stolenCredits = Steal_Team_Credits(percentage, team);
+		float distributedCredits = stolenCredits / Get_Team_Player_Count(otherTeam);
+
+		for (SLNode<cPlayer>* n = Get_Player_List()->Head(); n; n = n->Next())
+		{
+			if (n->Data()->Get_Player_Type() == otherTeam)
+			{
+				n->Data()->Increment_Money(distributedCredits);
+			}
+		}
+
+		if (Get_Int_Parameter("DestroyAfterSteal"))
+		{
+			Destroy_Script();
+		}
+	}
+}
+
+ScriptRegistrant<UP_Steal_Credits_On_Custom> UP_Steal_Credits_On_Custom_Registrant("UP_Steal_Credits_On_Custom", "Team=-2:int,Percentage:int,ID:int,DestroyAfterSteal=0:int");
+
+/******************************************************************************************************/
+
+bool UP_No_Refill::RefillHookInstalled = false;
+int UP_No_Refill::AliveScriptCount = 0;
+
+void UP_No_Refill::Created(GameObject* obj)
+{
+	if (!RefillHookInstalled)
+	{
+		AddRefillHook(Refill_Hook);
+		RefillHookInstalled = true;
+	}
+	AliveScriptCount++;
+}
+
+void UP_No_Refill::Destroyed(GameObject* obj)
+{
+	AliveScriptCount--;
+}
+
+bool UP_No_Refill::Refill_Hook(GameObject* purchaser)
+{
+	return !AliveScriptCount;
+}
+
+ScriptRegistrant<UP_No_Refill> UP_No_Refill_Registrant("UP_No_Refill", "");
+
+/******************************************************************************************************/

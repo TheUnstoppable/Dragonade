@@ -53,8 +53,8 @@ typedef enum {
 	
 	PLAYER_BUILDING_COLLISION_GROUP,			// behaves like a mix of TERRAIN/DEFAULT but doesn't collde with PLAYER_BUILDING_GHOST
 	PLAYER_BUILDING_GHOST_COLLISION_GROUP,		// behaves like DEFAULT but doesn't collde with PLAYER_BUILDING
-	TRAIN_COLLISION_GROUP,						// behaves like DEFAULT but collides with TRAIN_TRACK and doesn't collide with WATER_EDGE
-	TRAIN_TRACK_COLLISION_GROUP,				// collides only with TRAIN
+	TRAIN_COLLISION_GROUP,						// collides with TRAIN_TRACK, SOLDIER, DEFAULT, BULLET, and C4, (And the other navel unit types)
+	TRAIN_TRACK_COLLISION_GROUP,				// collides only with itself
 
 	COLLISION_GROUP_MAX = 32,					// not a collision group
 } Collision_Group_Type;

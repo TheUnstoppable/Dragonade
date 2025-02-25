@@ -272,6 +272,9 @@ void JMG_Utility_Poke_Send_Self_Custom::Timer_Expired(GameObject *obj,int number
 }
 void JMG_Turret_Spawn::Created(GameObject *obj)
 {
+char debug[220];
+sprintf(debug,"msg Use JMG_Utility_Turret_Spawn instead! Preset: %s",Commands->Get_Preset_Name(obj));
+Console_Input(debug);
 	GameObject *turret = Commands->Create_Object(Get_Parameter("Turret_Preset"),Vector3());
 	if(!turret)
 	{
@@ -9854,25 +9857,9 @@ JMG_Utility_Basic_Spawner_In_Radius::SpawnFailureTypes JMG_Utility_Basic_Spawner
 			SetFacing(spawned,Commands->Get_Random(-180.0f,180.0f));
 		if (collisionCheck)
 		{
-			for (int x = 0;x <= retryAttempts;x++)
-			{
-				MoveablePhysClass *mphys = spawned->As_PhysicalGameObj() ? spawned->As_PhysicalGameObj()->Peek_Physical_Object()->As_MoveablePhysClass() : nullptr;
-				if (!mphys)
-				{
-					Console_Input("msg JMG_Utility_Basic_Spawner_In_Radius ERROR: Collision check is turned on but the created object isn't a PhysicalGameObj!");
-					Destroy_Script();
-					return SpawnFailureTypes::SPAWN_CODE_ERROR;
-				}
-				if (!mphys->Can_Teleport(Matrix3D(bottomRay)) || (pointMustBeInPathfind && !Get_Random_Pathfind_Spot(bottomRay,0.0f,&unneeded)))
-				{
-					if (x >= retryAttempts)
-					{
-						Commands->Destroy_Object(spawned);
-						return SpawnFailureTypes::SPAWN_BLOCKED;
-					}
-					bottomRay.Z += addHeight;
-				}
-			}
+			SpawnFailureTypes failure = TryPlacement(spawned,bottomRay);
+			if (failure != SpawnFailureTypes::SUCCESS)
+				return failure;
 			Commands->Set_Position(spawned,bottomRay);
 		}
 		spawnCount++;
@@ -9888,6 +9875,30 @@ JMG_Utility_Basic_Spawner_In_Radius::SpawnFailureTypes JMG_Utility_Basic_Spawner
 		return SpawnFailureTypes::SPAWN_CODE_ERROR;
 	}
 	return SpawnFailureTypes::SPAWN_BLOCKED;
+}
+JMG_Utility_Basic_Spawner_In_Radius::SpawnFailureTypes JMG_Utility_Basic_Spawner_In_Radius::TryPlacement(GameObject *spawned,Vector3 bottomRay)
+{
+	Vector3 unneeded;
+	for (int x = 0;x <= retryAttempts;x++)
+	{
+		MoveablePhysClass *mphys = spawned->As_PhysicalGameObj() ? spawned->As_PhysicalGameObj()->Peek_Physical_Object()->As_MoveablePhysClass() : nullptr;
+		if (!mphys)
+		{
+			Console_Input("msg JMG_Utility_Basic_Spawner_In_Radius ERROR: Collision check is turned on but the created object isn't a PhysicalGameObj!");
+			Destroy_Script();
+			return SpawnFailureTypes::SPAWN_CODE_ERROR;
+		}
+		if (!mphys->Can_Teleport(Matrix3D(bottomRay)) || (pointMustBeInPathfind && !Get_Random_Pathfind_Spot(bottomRay,0.0f,&unneeded)))
+		{
+			if (x >= retryAttempts)
+			{
+				Commands->Destroy_Object(spawned);
+				return SpawnFailureTypes::SPAWN_BLOCKED;
+			}
+			bottomRay.Z += addHeight;
+		}
+	}
+	return SpawnFailureTypes::SUCCESS;
 }
 void JMG_Utility_Basic_Spawner_In_Radius::Initial_Spawn(GameObject *obj)
 {
@@ -17407,8 +17418,7 @@ void JMG_Utility_Objective_System_Override_Visible_Settings::Timer_Expired(GameO
 {
 	if (number == 1)
 	{
-		NewObjectiveSystem::ObjectiveVisibleSettingOverride *overrideObject = new NewObjectiveSystem::ObjectiveVisibleSettingOverride(Get_Int_Parameter("ObjectiveID"),Get_Parameter("MarkerModel"),Get_Int_Parameter("MarkerColor"),Get_Parameter("AttachBone"),Get_Int_Parameter("OverrideTextColor") ? true : false,Get_Vector3_Parameter("TextColor"),Get_Int_Parameter("OverrideHudColor") ? true : false,Get_Vector3_Parameter("HudColor"));
-		BasicObjectiveSystem.overrideVisibleObjectiveSettings.Add_Tail(overrideObject);
+		BasicObjectiveSystem.OverrideObjectiveVisibilitySettings(Get_Int_Parameter("ObjectiveID"),Get_Parameter("MarkerModel"),Get_Int_Parameter("MarkerColor"),Get_Parameter("AttachBone"),Get_Int_Parameter("OverrideTextColor"),Get_Vector3_Parameter("TextColor"),Get_Int_Parameter("OverrideHudColor"),Get_Vector3_Parameter("HudColor"));
 	}
 }
 void JMG_Utility_Custom_Create_Object_At_Bone::Created(GameObject *obj)
@@ -18480,7 +18490,6 @@ void JMG_Utility_Custom_Send_Custom_To_All_Objects_Sender::Custom(GameObject *ob
 		}
 	}
 }
-
 void JMG_Utility_Created_Fire_Randomly::Created(GameObject *obj)
 {
 	rate = Get_Float_Parameter("UpdateRate");
@@ -18505,6 +18514,103 @@ void JMG_Utility_Created_Fire_Randomly::Timer_Expired(GameObject *obj,int number
 		params.AttackForceFire = true;
 		Commands->Action_Attack(obj,params);
 		Commands->Start_Timer(obj,this,rate,1);
+	}
+}
+void JMG_Utility_Turret_Spawn::Created(GameObject *obj)
+{
+	GameObject *turret = Commands->Create_Object(Get_Parameter("Turret_Preset"),Vector3());
+	if(!turret)
+	{
+		Console_Output("[%d:%s:%s] JMG_Utility_Turret_Spawn Critical Error: Failed to create an instance of the preset %s. Destroying script...\n", Commands->Get_ID(obj), Commands->Get_Preset_Name(obj), this->Get_Name(), Get_Parameter("Turret_Preset"));
+		Destroy_Script();
+		return;
+	}
+	Commands->Attach_To_Object_Bone(turret,obj,Get_Parameter("Bone_Name"));
+	turretId = Commands->Get_ID(turret);
+	if (turret->As_VehicleGameObj())
+		turret->As_VehicleGameObj()->Set_Is_Scripts_Visible(false);
+	hasDriver = false;
+}
+void JMG_Utility_Turret_Spawn::Custom(GameObject *obj,int message,int param,GameObject *sender)
+{
+	if (message == CUSTOM_EVENT_VEHICLE_ENTERED)
+	{
+		if (!hasDriver)
+		{
+			hasDriver = true;
+			GameObject *turret = Commands->Find_Object(turretId);
+			if (turret)
+			{
+				Commands->Set_Player_Type(turret,Commands->Get_Player_Type(sender));
+				Commands->Action_Reset(turret,100);
+			}
+		}
+	}
+	if (message == CUSTOM_EVENT_VEHICLE_EXITED)
+	{
+		if (hasDriver && obj->As_VehicleGameObj() && !Get_Vehicle_Occupant_Count(obj))
+		{
+			hasDriver = false;
+			GameObject *turret = Commands->Find_Object(turretId);
+			if (turret)
+			{
+				Commands->Set_Player_Type(turret,Commands->Get_Player_Type(obj));
+				Commands->Action_Reset(turret,100);
+			}
+		}
+	}
+}
+void JMG_Utility_Turret_Spawn::Killed(GameObject *obj,GameObject *killer)
+{
+	Destroyed(obj);
+}
+void JMG_Utility_Turret_Spawn::Destroyed(GameObject *obj)
+{
+	GameObject *turret = Commands->Find_Object(turretId);
+	if (turret)
+		Commands->Destroy_Object(turret);
+}
+void JMG_Utility_Turret_Spawn::Detach(GameObject *obj)
+{
+	if (Exe == 4)
+		return;
+	Destroyed(obj);
+}
+void JMG_Utility_Custom_Send_Custom_Sender::Created(GameObject *obj)
+{
+	recieveMessage = Get_Int_Parameter("Custom");
+	id = Get_Int_Parameter("ID");
+	custom = Get_Int_Parameter("SendCustom");
+	Param = Get_Int_Parameter("Param");
+	delay = Get_Float_Parameter("Delay");
+	randomDelay = Get_Float_Parameter("RandomDelay");
+	randomChance = Get_Float_Parameter("RandomChance");
+}
+void JMG_Utility_Custom_Send_Custom_Sender::Custom(GameObject *obj,int message,int param,GameObject *sender)
+{
+	if (message == recieveMessage)
+	{
+		if (randomChance && randomChance < Commands->Get_Random(0.0f,1.0f))
+			return;
+		GameObject *object = id ? (id == -1 ? sender : Commands->Find_Object(id)) : obj;
+ 		Commands->Send_Custom_Event(sender,object,custom,Param == -1 ? param : Param,delay+(randomDelay > 0 ? Commands->Get_Random(0.0f,randomDelay) : 0.0f));
+	}
+}
+void JMG_Utility_Created_Disable_Footsteps::Created(GameObject *obj)
+{
+	SoldierGameObj *soldobj = obj->As_SoldierGameObj();
+	if (!soldobj)
+	{
+		Console_Input("msg JMG_Utility_Created_Disable_Footsteps can only be attached to soldier class objects.");
+		return;
+	}
+	Commands->Start_Timer(obj,this,0.1f,1);
+}
+void JMG_Utility_Created_Disable_Footsteps::Timer_Expired(GameObject *obj,int number)
+{
+	if (number == 1)
+	{
+		obj->As_SoldierGameObj()->Set_Enable_Foot_Steps(false);
 	}
 }
 ScriptRegistrant<JMG_Utility_Check_If_Script_Is_In_Library> JMG_Utility_Check_If_Script_Is_In_Library_Registrant("JMG_Utility_Check_If_Script_Is_In_Library","ScriptName:string,CppName:string");
@@ -18959,3 +19065,6 @@ ScriptRegistrant<JMG_Utility_Killed_Send_Custom> JMG_Utility_Killed_Send_Custom_
 ScriptRegistrant<JMG_Utility_Killed_Send_Custom_Killer> JMG_Utility_Killed_Send_Custom_Killer_Registrant("JMG_Utility_Killed_Send_Custom_Killer","ID:int,Custom:int,Param:int,Delay:float");
 ScriptRegistrant<JMG_Utility_Custom_Send_Custom_To_All_Objects_Sender> JMG_Utility_Custom_Send_Custom_To_All_Objects_Sender_Registrant("JMG_Utility_Custom_Send_Custom_To_All_Objects_Sender","Custom:int,SendCustom:int,Param:int,Team=2:int,Delay=0.0:float,MaxDistance=0.0:float");
 ScriptRegistrant<JMG_Utility_Created_Fire_Randomly> JMG_Utility_Created_Fire_Randomly_Registrant("JMG_Utility_Created_Fire_Randomly","FireAngle=45.0:float,MinHeight=0:float,MaxHeight=0:float,UpdateRate=1.5:float,UseFacing=-999.0:float");
+ScriptRegistrant<JMG_Utility_Turret_Spawn> JMG_Utility_Turret_Spawn_Registrant("JMG_Utility_Turret_Spawn","Turret_Preset:string,Bone_Name=Tur_Mount:string");
+ScriptRegistrant<JMG_Utility_Custom_Send_Custom_Sender> JMG_Utility_Custom_Send_Custom_Sender_Registrant("JMG_Utility_Custom_Send_Custom_Sender","Custom:int,ID=0:int,SendCustom:int,Param:int,Delay=0.0:float,RandomDelay=0.0:float,RandomChance=0.0:float");
+ScriptRegistrant<JMG_Utility_Created_Disable_Footsteps> JMG_Utility_Created_Disable_Footsteps_Registrant("JMG_Utility_Created_Disable_Footsteps","");
