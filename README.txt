@@ -1,4 +1,4 @@
-Dragonade 1.11.0
+Dragonade 1.11.1
 Created by Whitedragon and Black-Cell.net
 
 Special thanks to:
@@ -15,8 +15,8 @@ dblaney1, misc. code and fixes.
 
 Installation:
 
-1. Download and install the latest server version of TT from http://www.tiberiantechnologies.org/downloads. 
-   Note that DA was designed to work with TT 4.7. It probably won't work with other versions.
+1. Download and install the latest server version of TT from https://tiberiantechnologies.org/Downloads. 
+   Note that DA was designed to work with TT 4.8. It probably won't work with other versions.
 2. Copy the contents of the server folder included in this zip to the server folder of your FDS, overwriting any existing files.
 3. Configure da.ini, da_crates.ini, and the relevant gamemode.ini to your liking.
 
@@ -25,6 +25,18 @@ Installation:
 
 
 Update History:
+
+Version 1.11.1
+  Additions:
+   - Updated to TT 4.8.4 (and some missing bits from 4.8.3)
+   - Added console command GETACCESSLEVEL to print the access level of player(s).
+   - Added console command DAVERSION to print the Dragonade version.
+   - Added console command RELOADLEVEL to reload the level.
+   - Added console command FCR to force a client to reload the level.
+
+  Bug Fixes:
+   - Fix negative credits with Human Silo.
+   - Fix a rare crash while unstucking when the stuck object is not a MoveablePhysClass.
 
 Version 1.11.0
   Additions:
