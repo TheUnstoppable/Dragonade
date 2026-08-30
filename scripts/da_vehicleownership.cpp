@@ -124,6 +124,7 @@ void DAVehicleOwnershipObserverClass::Free() {
 		Create_Icons();
 	}
 	Set_State(DAVehicleOwnershipState::FREE);
+	Stop_Timer(1);
 }
 
 void DAVehicleOwnershipObserverClass::Unbind() {
