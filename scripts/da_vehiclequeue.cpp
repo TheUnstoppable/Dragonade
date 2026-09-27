@@ -82,7 +82,7 @@ PurchaseStatus DAVehicleQueueGameFeatureClass::Vehicle_Purchase_Request_Event(Ba
 		if ((unsigned int)Player->Get_Money() < Cost) {
 			return PurchaseStatus_InsufficientFunds;
 		}
-		else if (!Is_Building(Team)) { //Build if VF is free.
+		else if (!Building[Team]) { //Build if VF is free.
 			Player->Purchase_Item(Cost);
 			Spawn_Vehicle(Team, Player, Item, Cost, 0);
 			return PurchaseStatus_Granted;
