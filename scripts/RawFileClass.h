@@ -401,33 +401,39 @@ public:
 	~TextFileClass()
 	{
 	}
-	bool Read_Line(StringClass &str)
+	bool Read_Line(StringClass& str)
 	{
 		str = "";
 		char buf[64];
-		memset(buf,0,sizeof(buf));
-		bool b = false;
-		do
+		bool got = false;
+		bool more = true;
+
+		while (more)
 		{
-			int sz = Read(buf,63);
-			b = (sz == 63);
-			if (sz > 0)
+			memset(buf, 0, sizeof(buf));
+			int sz = Read(buf, 63);
+			if (sz <= 0) break;
+			got = true;
+
+			more = (sz == 63);
+			for (int i = 0; i < sz; i++)
 			{
-				for (int i = 0;i < sz;i++)
+				if (buf[i] == '\n')
 				{
-					if (buf[i] == '\n')
-					{
-						buf[i + 1] = 0;
-						Seek(i - sz + 1,1);
-						b = false;
-						break;
-					}
+					buf[i] = 0;
+					if (i > 0 && buf[i - 1] == '\r') buf[i - 1] = 0;
+					int unread = sz - i - 1;
+					if (unread > 0) Seek(-unread, SEEK_CUR);
+					more = false;
+					break;
 				}
-				str += buf;
 			}
-		} while (b);
+			str += buf;
+		}
+
+		if (!got) return false;
 		strtrim(str.Peek_Buffer());
-		return false;
+		return true;
 	}
 	bool Write_Line(StringClass const &str)
 	{
